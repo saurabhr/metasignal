@@ -1,0 +1,106 @@
+[build-system]
+requires = ["uv-build"]
+build-backend = "uv_build"
+
+[project]
+name = "metasignal"
+version = "2025.1.0"
+description = "SDT using python."
+authors = [{name = "Saurabh Ranjan", email = ""}]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = []
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
+requires-python = "~=3.9"
+dependencies = [
+    "click",
+]
+
+[dependency-groups]
+tests = [
+    "pytest",
+]
+docs = [
+    "furo",
+    "myst-parser",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinxext-opengraph",
+]
+dev = [
+    { include-group = "tests" },
+    { include-group = "docs" },
+]
+
+[project.urls]
+Documentation = "https://metasignal.readthedocs.io/en/stable/"
+Changelog = "https://metasignal.readthedocs.io/en/stable/changelog.html"
+"Source Code" = "https://github.com/saurabhr/metasignal"
+"Issue Tracker" = "https://github.com/saurabhr/metasignal/issues"
+
+[project.scripts]
+metasignal = "metasignal.__main__:cli"
+
+[tool.ruff]
+lint.select = ["ALL"]
+lint.ignore = [
+    "E501",  # line too long (pycodestyle), handled by ruff-format
+    "ANN002",  # missing-type-args (flake8-annotations)
+    "ANN003",  # missing-type-kwargs (flake8-annotations)
+    "ANN401",  # any-type (flake8-annotations)
+    "COM",  # flake8-commas, handled by ruff-format
+    "CPY",  # flake8-copyright
+    "ISC001",  # single-line-implicit-string-concatenation (flake8-implicit-str-concat)
+    "INP",  # flake8-no-pep420
+]
+src = ["src", "tests", "docs"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401",  # unused-import (Pyflakes)
+]
+"noxfile.py" = [
+    "D100",  # undocumented-public-module (pydocstyle)
+    "ERA001",  # commented-out-code (eradicate)
+]
+"docs/conf.py" = [
+    "A001",  # builtin-variable-shadowing (flake8-builtins)
+]
+"src/metasignal/cli.py" = [
+    "C901",  # complex-structure (mccabe)
+    "FBT001",  # boolean-type-hint-positional-argument (flake8-boolean-trap)
+    "A001",  # builtin-variable-shadowing (flake8-builtins)
+    "A002",  # builtin-argument-shadowing (flake8-builtins)
+    "PLR0913",  # too-many-arguments (Pylint)
+]
+"tests/**/test_*.py" = [
+    "D",  # pydocstyle
+    "ANN201",  # missing-return-type-undocumented-public-function (flake8-annotations)
+    "S101",   # assert (flake8-bandit)
+    "SIM300",   # yoda-conditions (flake8-simplify)
+    "PLR2004",   # magic-value-comparison (Pylint)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+  "metasignal",
+  "tests",
+]
+lines-between-types = 0
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

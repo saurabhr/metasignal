@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/test.yml"
+      - "**.py"
+  push:
+    paths:
+      - ".github/workflows/test.yml"
+      - "**.py"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Install the latest version of uv with caching enabled
+        id: setup-uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Run nox "tests" session
+        run: uvx nox --error-on-missing-interpreters --session tests-${{ matrix.python_version }}
