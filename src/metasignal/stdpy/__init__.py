@@ -7,8 +7,11 @@ from metasignal.stdpy.measures import (
     compute_type2_auc,
     compute_gamma,
     compute_phi,
+    compute_delta_conf,
 )
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
+from metasignal.stdpy.metanoise import compute_meta_noise
+from metasignal.stdpy.compute_all import compute_all_measures
 
 __all__ = [
     "compute_sdt_resp",
@@ -19,4 +22,7 @@ __all__ = [
     "compute_gamma",
     "compute_phi",
     "compute_meta_uncertainty",
+    "compute_delta_conf",
+    "compute_meta_noise",
+    "compute_all_measures",
 ]

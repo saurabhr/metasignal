@@ -6,8 +6,14 @@ import contextlib
 import pathlib
 from typing import Any
 
-import matlab.engine
 import numpy as np
+
+try:
+    import matlab
+    import matlab.engine
+    MATLAB_AVAILABLE = True
+except ImportError:
+    MATLAB_AVAILABLE = False
 
 
 class MetaSignal:
@@ -19,6 +25,12 @@ class MetaSignal:
         Args:
             engine: An existing MATLAB engine instance. If None, a new one will be started.
         """
+        if not MATLAB_AVAILABLE:
+            raise RuntimeError(
+                "MATLAB engine is not available. Please install it with "
+                "`pip install metasignal[matlab]` if you have MATLAB locally."
+            )
+
         if engine is None:
             self.eng = matlab.engine.start_matlab()
         else:

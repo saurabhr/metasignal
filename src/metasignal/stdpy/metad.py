@@ -37,6 +37,8 @@ def fit_meta_d_mle(
     # Calculate initial d1 and t1c
     rating_hr = np.cumsum(nr_s2[::-1]) / np.sum(nr_s2)
     rating_far = np.cumsum(nr_s1[::-1]) / np.sum(nr_s1)
+    rating_hr = rating_hr[:-1][::-1]
+    rating_far = rating_far[:-1][::-1]
 
     t1_index = n_ratings - 1
 

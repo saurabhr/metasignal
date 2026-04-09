@@ -108,20 +108,74 @@ def compute_gamma(nr_s1: np.ndarray, nr_s2: np.ndarray) -> float:
 def compute_phi(nr_s1: np.ndarray, nr_s2: np.ndarray) -> float:
     """Compute Phi coefficient (correlation between correctness and confidence)."""
     n_ratings = len(nr_s1) // 2
-    counts_i = nr_s1[n_ratings:] + nr_s2[:n_ratings][::-1]
-    counts_c = nr_s2[n_ratings:] + nr_s1[:n_ratings][::-1]
+    multiplier = np.concatenate([np.arange(n_ratings, 0, -1), np.arange(1, n_ratings + 1)])
+    correct_trials_s1 = np.concatenate([np.ones(n_ratings), np.zeros(n_ratings)])
+    correct_trials_s2 = np.concatenate([np.zeros(n_ratings), np.ones(n_ratings)])
 
-    correct = np.concatenate(
-        [np.zeros(int(np.sum(counts_i))), np.ones(int(np.sum(counts_c)))]
-    )
-    conf = np.concatenate(
-        [
-            np.repeat(np.arange(1, n_ratings + 1), counts_i.astype(int)),
-            np.repeat(np.arange(1, n_ratings + 1), counts_c.astype(int)),
-        ]
-    )
+    correct_cells = np.concatenate([nr_s1[:n_ratings], nr_s2[n_ratings:]])
+    incorrect_cells = np.concatenate([nr_s2[:n_ratings], nr_s1[n_ratings:]])
 
-    if len(np.unique(correct)) < 2 or len(np.unique(conf)) < 2:
+    total = np.sum(correct_cells) + np.sum(incorrect_cells)
+    if total == 0:
         return np.nan
 
-    return float(np.corrcoef(correct, conf)[0, 1])
+    av_acc = np.sum(correct_cells) / total
+    av_conf = np.sum((correct_cells + incorrect_cells) * multiplier) / total
+
+    numerator = np.sum(
+        (multiplier - av_conf) * (correct_trials_s1 - av_acc) * nr_s1 +
+        (multiplier - av_conf) * (correct_trials_s2 - av_acc) * nr_s2
+    )
+
+    den1 = np.sum((multiplier - av_conf)**2 * (nr_s1 + nr_s2))
+    den2 = np.sum((correct_trials_s1 - av_acc)**2 * (nr_s1 + nr_s2[::-1]))
+    denominator = np.sqrt(den1 * den2)
+
+    if denominator == 0:
+        return np.nan
+
+    return float(numerator / denominator)
+
+
+def compute_delta_conf(nr_s1: np.ndarray, nr_s2: np.ndarray) -> dict[str, float]:
+    """Compute Delta Confidence and related expected measures.
+
+    Args:
+        nr_s1: Counts array for S1 stimulus responses
+        nr_s2: Counts array for S2 stimulus responses
+
+    Returns:
+        Dictionary containing delta_conf, delta_conf_ratio, and delta_conf_diff.
+    """
+    n_ratings = len(nr_s1) // 2
+
+    def _compute_delta(n_s1: np.ndarray, n_s2: np.ndarray) -> float:
+        multiplier = np.concatenate(
+            [np.arange(n_ratings, 0, -1), np.arange(1, n_ratings + 1)]
+        )
+        correct_cells = np.concatenate([n_s1[:n_ratings], n_s2[n_ratings:]])
+        incorrect_cells = np.concatenate([n_s2[:n_ratings], n_s1[n_ratings:]])
+
+        sum_c = np.sum(correct_cells)
+        sum_i = np.sum(incorrect_cells)
+
+        mean_conf_correct = np.sum(correct_cells * multiplier) / sum_c if sum_c > 0 else 0.0
+        mean_conf_incorrect = np.sum(incorrect_cells * multiplier) / sum_i if sum_i > 0 else 0.0
+
+        return float(mean_conf_correct - mean_conf_incorrect)
+
+    # Actual delta conf
+    delta_conf = _compute_delta(nr_s1, nr_s2)
+
+    # Expected delta conf from SDT expectations
+    sdt_expect = sdt_expect_conf(nr_s1, nr_s2)
+    conf_diff_expected = _compute_delta(
+        np.array(sdt_expect["nR_S1_exp"]),
+        np.array(sdt_expect["nR_S2_exp"])
+    )
+
+    return {
+        "delta_conf": delta_conf,
+        "delta_conf_ratio": delta_conf / conf_diff_expected if conf_diff_expected != 0 else np.nan,
+        "delta_conf_diff": delta_conf - conf_diff_expected,
+    }

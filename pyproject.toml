@@ -28,11 +28,13 @@ classifiers = [
 requires-python = "~=3.9"
 dependencies = [
     "click",
-    "matlabengine",
     "numpy",
     "scipy",
     "matplotlib",
 ]
+
+[project.optional-dependencies]
+matlab = ["matlabengine"]
 
 [dependency-groups]
 tests = [
