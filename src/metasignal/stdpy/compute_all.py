@@ -3,7 +3,7 @@
 import numpy as np
 
 from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
-from metasignal.stdpy.measures import (
+from metasignal.stdpy.type2 import (
     sdt_expect_conf,
     compute_type2_auc,
     compute_gamma,
