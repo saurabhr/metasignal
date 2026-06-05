@@ -39,14 +39,14 @@ def test_returns_dict(good_observer_counts):
 def test_required_keys(good_observer_counts):
     nr_s1, nr_s2 = good_observer_counts
     result = fit_meta_d_mle(nr_s1, nr_s2)
-    for key in ("meta_d", "M_ratio", "M_diff"):
+    for key in ("meta_da", "M_ratio", "M_diff"):
         assert key in result, f"Missing key: {key}"
 
 
 def test_meta_d_positive(good_observer_counts):
     nr_s1, nr_s2 = good_observer_counts
     result = fit_meta_d_mle(nr_s1, nr_s2)
-    assert result["meta_d"] > 0.0
+    assert result["meta_da"] > 0.0
 
 
 def test_m_ratio_positive(good_observer_counts):

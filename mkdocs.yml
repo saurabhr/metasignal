@@ -1,0 +1,54 @@
+site_name: metasignal
+site_description: Python interface for Signal Detection Theory (SDT) and meta-measures analysis
+site_author: Saurabh Ranjan
+repo_name: saurabhr/metasignal
+repo_url: https://github.com/saurabhr/metasignal
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.code.select
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_object_full_path: false
+            docstring_section_style: google
+  - include-markdown
+  - click
+
+nav:
+  - Home: index.md
+  - User's Guide:
+    - Installation: installation.md
+    - Usage: usage.md
+  - MATLAB to Python Mapping: matlab_to_python_mapping.md
+  - CLI Reference: cli.md
+  - Changelog: changelog.md

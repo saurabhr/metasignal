@@ -1,17 +1,22 @@
 # metasignal
 
+<!-- start docs-include-index -->
 Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025).
+<!-- end docs-include-index -->
 
 ## Installation
 
+<!-- start docs-include-installation -->
 This package requires a local MATLAB installation and the MATLAB Engine API for Python.
 
 ```bash
 pip install .
 ```
+<!-- end docs-include-installation -->
 
 ## Usage
 
+<!-- start docs-include-usage -->
 ### Python API
 
 ```python
@@ -62,6 +67,7 @@ print(f"Meta-d' M-Ratio: {results['M_ratio']}")
 ```bash
 metasignal compute --stim "0,1,0,1" --resp "0,1,1,0" --conf "1,2,2,1" --n-ratings 2
 ```
+<!-- end docs-include-usage -->
 
 ## Reference
 

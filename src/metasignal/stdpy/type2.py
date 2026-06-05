@@ -25,6 +25,9 @@ def sdt_expect_conf(nr_s1: np.ndarray, nr_s2: np.ndarray) -> dict[str, Any]:
 
     sum1 = np.sum(nr_s1_c)
     sum2 = np.sum(nr_s2_c)
+    # Keep original totals for scaling so expected counts match actual totals
+    orig_sum1 = np.sum(nr_s1)
+    orig_sum2 = np.sum(nr_s2)
 
     # Cumulative sums for HR and FAR across criteria
     hr = np.cumsum(nr_s2_c[::-1]) / sum2
@@ -45,13 +48,14 @@ def sdt_expect_conf(nr_s1: np.ndarray, nr_s2: np.ndarray) -> dict[str, Any]:
     exp_far = 1 - norm.cdf(c, -dprime / 2, 1)
     exp_hr = 1 - norm.cdf(c, dprime / 2, 1)
 
-    # Expected proportions
+    # Expected proportions — scale by original (uncorrected) totals so that
+    # sum(nR_S1_exp) == sum(nR_S1_act) even when zero-cell correction was applied
     exp_nr_s1 = np.diff(np.concatenate([[0], exp_far[::-1], [1]]))[::-1]
     exp_nr_s2 = np.diff(np.concatenate([[0], exp_hr[::-1], [1]]))[::-1]
 
     return {
-        "nR_S1_exp": exp_nr_s1 * sum1,
-        "nR_S2_exp": exp_nr_s2 * sum2,
+        "nR_S1_exp": exp_nr_s1 * orig_sum1,
+        "nR_S2_exp": exp_nr_s2 * orig_sum2,
         "nR_S1_act": nr_s1,
         "nR_S2_act": nr_s2,
         "dprime": dprime,

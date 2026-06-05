@@ -107,3 +107,74 @@ def test_icc_returns_dataframe():
     result = icc(data)
     assert hasattr(result, "columns"), "Expected a DataFrame"
     assert "ICC" in result.columns
+
+
+def test_icc_uses_consistency_type():
+    """Paper uses consistency ICC (C-k), not absolute agreement.
+    Confirmed in Rahnev (2025) Nat Commun and peer review response to Reviewer #2.
+    pingouin >= 0.6 labels this type as 'ICC(C,k)' for k raters.
+    """
+    from metasignal.stdpy.stats_helpers import icc
+    rng = np.random.default_rng(5)
+    data = rng.normal(size=(20, 2))
+    result = icc(data)
+    assert "ICC(C,k)" in result["Type"].values, (
+        "Expected ICC(C,k) (consistency, k-rater) row — paper uses C-k type"
+    )
+
+
+def _get_icc_ck(result):
+    """Extract the ICC(C,k) consistency value from a pingouin result DataFrame."""
+    return result.loc[result["Type"] == "ICC(C,k)", "ICC"].values[0]
+
+
+def test_icc_perfect_reliability():
+    """Perfectly correlated sessions should yield ICC ≈ 1.
+    Consistent with paper's finding that split-half ICC is near 1 for large bins.
+    """
+    from metasignal.stdpy.stats_helpers import icc
+    base = np.linspace(0, 1, 30)
+    # Two sessions that differ by only a small constant (avoids divide-by-zero)
+    data = np.column_stack([base, base + 1e-6 * np.arange(30)])
+    result = icc(data)
+    icc_ck = _get_icc_ck(result)
+    assert icc_ck > 0.99, f"Near-identical sessions should give ICC ≈ 1, got {icc_ck:.3f}"
+
+
+def test_icc_random_data_near_zero():
+    """Independent sessions should yield ICC near 0.
+    Consistent with paper's finding of poor test-retest reliability (ICC < 0.5
+    for most measures even at 400 trials; Rahnev 2025, Fig. 6).
+    """
+    from metasignal.stdpy.stats_helpers import icc
+    rng = np.random.default_rng(42)
+    # Generate one session and permute it to create a fully independent second session
+    session1 = rng.normal(size=70)
+    session2 = rng.permutation(session1)  # same marginal distribution, zero rank correlation
+    data = np.column_stack([session1, session2])
+    result = icc(data)
+    icc_ck = _get_icc_ck(result)
+    assert abs(icc_ck) < 0.15, f"Permuted (independent) sessions should give ICC ≈ 0, got {icc_ck:.3f}"
+
+
+def test_icc_high_reliability_beats_low():
+    """High-consistency data should yield higher ICC than low-consistency data.
+    Mirrors Rahnev (2025): ΔConf ICC = 0.75 at 400 trials > M-Ratio ICC = 0.42.
+    """
+    from metasignal.stdpy.stats_helpers import icc
+    rng = np.random.default_rng(7)
+    n = 70  # Haddara n
+
+    true_scores = rng.normal(size=n)
+    # High reliability: session 2 ≈ session 1 + small noise
+    high_rel = np.column_stack([true_scores, true_scores + rng.normal(scale=0.2, size=n)])
+    # Low reliability: session 2 ≈ session 1 + large noise
+    low_rel = np.column_stack([true_scores, true_scores + rng.normal(scale=2.0, size=n)])
+
+    icc_high = _get_icc_ck(icc(high_rel))
+    icc_low = _get_icc_ck(icc(low_rel))
+
+    assert icc_high > icc_low, (
+        f"High-reliability data (ICC={icc_high:.3f}) should exceed "
+        f"low-reliability (ICC={icc_low:.3f})"
+    )

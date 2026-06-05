@@ -98,11 +98,11 @@ def test_phi_finite(counts):
 # compute_delta_conf
 # ---------------------------------------------------------------------------
 
-def test_delta_conf_positive_for_good_observer(raw_data):
+def test_delta_conf_positive_for_good_observer(counts):
     """Correct trials should receive higher mean confidence than incorrect ones."""
-    stim, resp, conf = raw_data
-    dc = compute_delta_conf(stim, resp, conf)
-    assert dc > 0.0
+    nr_s1, nr_s2 = counts
+    result = compute_delta_conf(nr_s1, nr_s2)
+    assert result["delta_conf"] > 0.0
 
 
 # ---------------------------------------------------------------------------

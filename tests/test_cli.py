@@ -26,7 +26,12 @@ def test_run_as_module() -> None:
 
 def test_run_as_executable() -> None:
     """Is the script installed (as a `console_script`) and runnable as an executable?"""
-    result = run_command_in_shell("metasignal --help")
+    import shutil
+    import os
+    # The console_script may be installed outside the default PATH (e.g. ~/.local/bin).
+    # Resolve the full path so the test works regardless of shell PATH configuration.
+    exe = shutil.which("metasignal") or os.path.expanduser("~/.local/bin/metasignal")
+    result = run_command_in_shell(f"{exe} --help")
     assert result.exit_code == 0
 
 

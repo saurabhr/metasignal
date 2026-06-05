@@ -41,11 +41,11 @@ tests = [
     "pytest",
 ]
 docs = [
-    "furo",
-    "myst-parser",
-    "sphinx",
-    "sphinx-copybutton",
-    "sphinxext-opengraph",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-include-markdown-plugin",
+    "mkdocs-click",
 ]
 dev = [
     { include-group = "tests" },
