@@ -1,7 +1,7 @@
 # metasignal
 
 <!-- start docs-include-index -->
-Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025).
+Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) *Nature Communications*, 16(1), 701.
 <!-- end docs-include-index -->
 
 ## Installation
@@ -68,7 +68,3 @@ print(f"Meta-d' M-Ratio: {results['M_ratio']}")
 metasignal compute --stim "0,1,0,1" --resp "0,1,1,0" --conf "1,2,2,1" --n-ratings 2
 ```
 <!-- end docs-include-usage -->
-
-## Reference
-
-Rahnev, D. (2025). [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) *Nature Communications*, 16(1), 701.
