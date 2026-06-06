@@ -71,8 +71,12 @@ def compute_type2_auc(nr_s1: np.ndarray, nr_s2: np.ndarray) -> float:
     counts_i = nr_s1[n_ratings:] + nr_s2[:n_ratings][::-1]
 
     # Type-2 HR and FAR
-    hr2 = np.cumsum(counts_c[::-1]) / np.sum(counts_c)
-    far2 = np.cumsum(counts_i[::-1]) / np.sum(counts_i)
+    sum_c = np.sum(counts_c)
+    sum_i = np.sum(counts_i)
+    if sum_c == 0 or sum_i == 0:
+        return np.nan
+    hr2 = np.cumsum(counts_c[::-1]) / sum_c
+    far2 = np.cumsum(counts_i[::-1]) / sum_i
 
     # Add (0,0) and sort
     hr2 = np.concatenate([[0], hr2])
@@ -104,7 +108,7 @@ def compute_gamma(nr_s1: np.ndarray, nr_s2: np.ndarray) -> float:
                 concordant += table[i, j] * np.sum(table[0, :j])
                 discordant += table[i, j] * np.sum(table[0, j + 1 :])
 
-    if (concordant + discordant) == 0:
+    if (concordant + discordant) < 1e-10:
         return np.nan
     return (concordant - discordant) / (concordant + discordant)
 

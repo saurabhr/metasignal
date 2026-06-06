@@ -41,7 +41,7 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
 
     # Make input 0/1
     stim_min, stim_max = np.min(stim), np.max(stim)
-    resp_min, resp_max = np.min(resp), np.max(resp)
+    resp_max = np.max(resp)
 
     stim_bin = np.zeros_like(stim, dtype=int)
     stim_bin[stim == stim_max] = 1
@@ -60,6 +60,13 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
     nr_s1, nr_s2 = trials_to_counts(stim_bin, resp_bin, conf.astype(int), n_ratings)
     nr_s1 = np.array(nr_s1)
     nr_s2 = np.array(nr_s2)
+
+    # Zero-cell padding (matches MATLAB type2_SDT_MLE.m behaviour):
+    # add 1/(2*nRatings) to ALL cells when ANY cell is zero
+    if np.any(nr_s1 == 0) or np.any(nr_s2 == 0):
+        pad = 1.0 / (2 * n_ratings)
+        nr_s1 = nr_s1 + pad
+        nr_s2 = nr_s2 + pad
 
     # meta-d', M-Ratio, M-Diff
     try:
@@ -111,8 +118,7 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
 
     # metaUncertainty
     try:
-        uncert_res = compute_meta_uncertainty(stim_bin, resp_bin, conf.astype(int), n_ratings)
-        meta_uncert = uncert_res["meta_uncertainty"]
+        meta_uncert = compute_meta_uncertainty(stim_bin, resp_bin, conf.astype(int), n_ratings)
     except Exception:
         meta_uncert = np.nan
 

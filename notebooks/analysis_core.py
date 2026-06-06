@@ -233,7 +233,7 @@ def xue_recode(conf, low_high_recoding):
     Returns new conf array with (n_ratings-1) categories.
     """
     valid = conf[~np.isnan(conf)]
-    if len(np.unique(valid)) < 3 or not np.all(valid == np.round(valid)):
+    if len(np.unique(valid)) < 3 or not np.allclose(valid, np.round(valid)):
         return np.full_like(conf, np.nan)
 
     conf_new = conf.copy().astype(float)

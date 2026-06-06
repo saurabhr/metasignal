@@ -59,7 +59,11 @@ def get_llh_choice(stim_value: np.ndarray, model_params: np.ndarray) -> np.ndarr
 
 
 def compute_meta_uncertainty(
-    stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
+    stim: np.ndarray,
+    resp: np.ndarray,
+    conf: np.ndarray,
+    n_ratings: int,
+    rng: np.random.Generator | None = None,
 ) -> float:
     """Estimate meta-uncertainty.
 
@@ -90,7 +94,8 @@ def compute_meta_uncertainty(
         return float(-np.sum(n_choice * np.log(llh)))
 
     n_conf_crit = n_ratings - 1
-    guess = np.concatenate([[1.0, 0.0, 0.2], np.sort(2 * np.random.rand(n_conf_crit))])
+    _rng = rng if rng is not None else np.random.default_rng()
+    guess = np.concatenate([[1.0, 0.0, 0.2], np.sort(2 * _rng.random(n_conf_crit))])
 
     bounds = [
         (0.0, 10.0),  # stim_sens

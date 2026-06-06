@@ -24,6 +24,11 @@ def compute_sdt_resp(
     n_s1 = np.sum(stimulus == s_min)
     n_s2 = np.sum(stimulus == s_max)
 
+    if n_s1 == 0 or n_s2 == 0:
+        raise ValueError(
+            "stimulus must contain both classes; found only one class in input."
+        )
+
     # Determine hit and FA rate
     hit_rate = np.sum((stimulus == s_max) & (response == s_max)) / n_s2
     fa_rate = np.sum((stimulus == s_min) & (response == s_max)) / n_s1

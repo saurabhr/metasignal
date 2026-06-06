@@ -94,7 +94,9 @@ def group_summary(
     n_valid = np.sum(~np.isnan(individual), axis=0).astype(int)
     mean = np.nanmean(individual, axis=0)
     median = np.nanmedian(individual, axis=0)
-    sem = np.nanstd(individual, axis=0, ddof=1) / np.sqrt(np.maximum(n_valid, 1))
+    # Require at least 2 valid values for a meaningful SEM; return NaN otherwise
+    std = np.nanstd(individual, axis=0, ddof=1)
+    sem = np.where(n_valid >= 2, std / np.sqrt(n_valid), np.nan)
 
     return {
         "individual": individual,
