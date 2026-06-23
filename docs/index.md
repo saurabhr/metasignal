@@ -31,11 +31,3 @@ print(results)  # array of 20 float values
 ```
 
 See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples.
-
-## Citation
-
-If you use metasignal in your research, please cite:
-
-> Rahnev, D. (2025). A comprehensive assessment of current methods for measuring metacognition.
-> *Nature Communications*, 16(1), 701.
-> <https://doi.org/10.1038/s41467-025-56117-0>
