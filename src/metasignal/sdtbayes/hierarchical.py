@@ -34,23 +34,20 @@ def _trials_to_dataframe(
 ) -> "pd.DataFrame":
     """Convert a list of (stim, resp, conf) tuples to a long-format DataFrame."""
     import pandas as pd
-    rows = []
+    frames = []
     for pid, (stim, resp, conf) in enumerate(participants):
         stim = np.asarray(stim, dtype=int)
         resp = np.asarray(resp, dtype=int)
         conf = np.asarray(conf, dtype=int)
-        correct = (stim == resp).astype(int)
-        participant_id = f"{pid_prefix}{pid:03d}"
-        for i in range(len(stim)):
-            rows.append({
-                "participant": participant_id,
-                "stimulus": stim[i],
-                "response": resp[i],
-                "conf": conf[i],
-                "correct": correct[i],
-                "group": group_label,
-            })
-    df = pd.DataFrame(rows)
+        frames.append(pd.DataFrame({
+            "participant": f"{pid_prefix}{pid:03d}",
+            "stimulus": stim,
+            "response": resp,
+            "conf": conf,
+            "correct": (stim == resp).astype(int),
+            "group": group_label,
+        }))
+    df = pd.concat(frames, ignore_index=True)
     df["conf"] = pd.Categorical(
         df["conf"],
         categories=list(range(1, n_ratings + 1)),

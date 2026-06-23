@@ -1,9 +1,16 @@
-"""Python wrapper for the MATLAB meta-signal analysis functions."""
+"""Python wrapper for the MATLAB meta-signal analysis functions.
+
+.. deprecated::
+    :class:`MetaSignal` is deprecated. Use :mod:`metasignal.stdpy` instead,
+    which provides equivalent pure-Python implementations without a MATLAB
+    licence.
+"""
 
 from __future__ import annotations
 
 import contextlib
 import pathlib
+import warnings
 from typing import Any
 
 import numpy as np
@@ -25,6 +32,12 @@ class MetaSignal:
         Args:
             engine: An existing MATLAB engine instance. If None, a new one will be started.
         """
+        warnings.warn(
+            "MetaSignal is deprecated and will be removed in a future release. "
+            "Use metasignal.stdpy instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not MATLAB_AVAILABLE:
             raise RuntimeError(
                 "MATLAB engine is not available. Please install it with "

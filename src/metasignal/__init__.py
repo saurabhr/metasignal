@@ -4,7 +4,7 @@ from metasignal.wrapper import MetaSignal
 from metasignal import stdpy
 from metasignal import analysis
 
-__all__ = ["MetaSignal", "stdpy", "analysis", "sdtbayes"]
+__all__ = ["MetaSignal", "stdpy", "analysis"]
 
 
 def __getattr__(name: str) -> object:

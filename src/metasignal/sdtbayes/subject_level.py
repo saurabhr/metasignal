@@ -258,7 +258,9 @@ def fit_subject_level(
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor for multinomial cells (default 1e-5,
-            matching metadpy's ``Tol``).
+            matching metadpy's ``Tol``). This intentionally differs from
+            :func:`fit_full_metad` (1e-7) to reproduce metadpy's numerical
+            behaviour; use 1e-7 if you need closer agreement with that model.
         **kwargs: Forwarded to ``brmspy.brms.brm``.
 
     Returns:
@@ -289,14 +291,6 @@ def fit_subject_level(
         #   sl_c1      mean ≈ -0.01,  sd ≈ 0.07
         #   sl_meta_d  mean ≈  1.57,  sd ≈ 0.20
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
-
     nR_S1 = np.asarray(nR_S1, dtype=int)
     nR_S2 = np.asarray(nR_S2, dtype=int)
 
@@ -304,6 +298,14 @@ def fit_subject_level(
         raise ValueError("nR_S1 and nR_S2 must have the same length.")
     if len(nR_S1) % 2 != 0:
         raise ValueError("Length of nR_S1 must be even (= 2 * nratings).")
+
+    try:
+        from brmspy import brms
+        import pandas as pd
+    except ImportError as e:
+        raise ImportError(
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
+        ) from e
 
     n_ratings = len(nR_S1) // 2
     t1 = _extract_type1(nR_S1, nR_S2)

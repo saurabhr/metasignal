@@ -77,7 +77,7 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
     except Exception:
         meta_d, m_ratio, m_diff = np.nan, np.nan, np.nan
 
-    if dprime < 0.2:
+    if dprime < 0.2:  # avoid dividing by a negative or very small d' (matches MATLAB)
         m_ratio = np.nan
 
     # SDT Expectations for ratios/diffs
