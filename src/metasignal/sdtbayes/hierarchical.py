@@ -12,6 +12,20 @@ The formula mirrors the HMeta-d formulation of Fleming (2017) but is
 specified as a mixed-effects ordered regression rather than a custom
 Stan program, making it extensible with standard brms syntax.
 
+Crossed random effects
+----------------------
+Both :func:`fit_hierarchical_metad` and :func:`fit_group_comparison` accept
+an optional ``items`` argument — a list of integer arrays (one per participant)
+giving stimulus item IDs.  When supplied, an item-level random intercept
+``(1 | item)`` is added to the formula, producing a cross-classified model
+that separates participant-level metacognition from item-level variability::
+
+    conf ~ correct + (correct | participant) + (1 | item)
+
+This is appropriate when the same set of stimuli is seen by all participants
+(e.g. word lists, face images, dot-motion stimuli identified by their
+coherence level).
+
 References
 ----------
 Fleming, S. M. (2017). HMeta-d: hierarchical Bayesian estimation of
@@ -33,22 +47,35 @@ def _trials_to_dataframe(
     n_ratings: int,
     group_label: int = 0,
     pid_prefix: str = "P",
+    items: list[np.ndarray] | None = None,
 ) -> "pd.DataFrame":
-    """Convert a list of (stim, resp, conf) tuples to a long-format DataFrame."""
+    """Convert a list of (stim, resp, conf) tuples to a long-format DataFrame.
+
+    Args:
+        participants: List of ``(stim, resp, conf)`` tuples.
+        n_ratings: Number of confidence rating categories.
+        group_label: Integer group label added as a column (default 0).
+        pid_prefix: String prefix for participant IDs (default ``"P"``).
+        items: Optional list of item-ID arrays, one per participant (parallel
+            to ``participants``).  If supplied, an ``"item"`` column is added.
+    """
     import pandas as pd
     frames = []
     for pid, (stim, resp, conf) in enumerate(participants):
         stim = np.asarray(stim, dtype=int)
         resp = np.asarray(resp, dtype=int)
         conf = np.asarray(conf, dtype=int)
-        frames.append(pd.DataFrame({
+        row: dict[str, Any] = {
             "participant": f"{pid_prefix}{pid:03d}",
             "stimulus": stim,
             "response": resp,
             "conf": conf,
             "correct": (stim == resp).astype(int),
             "group": group_label,
-        }))
+        }
+        if items is not None:
+            row["item"] = np.asarray(items[pid])
+        frames.append(pd.DataFrame(row))
     df = pd.concat(frames, ignore_index=True)
     df["conf"] = pd.Categorical(
         df["conf"],
@@ -65,6 +92,7 @@ def fit_hierarchical_metad(
     iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
+    items: list[np.ndarray] | None = None,
     **kwargs: Any,
 ) -> Any:
     """Fit a hierarchical Bayesian meta-d' model across participants.
@@ -86,6 +114,12 @@ def fit_hierarchical_metad(
         iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup (burn-in) iterations per chain (default 1000).
         seed: Random seed for reproducibility (default 42).
+        items: Optional list of item-ID arrays, one per participant (same
+            length as ``participants``).  Each array gives the stimulus item
+            identity for every trial of that participant.  When supplied, an
+            item-level random intercept ``(1 | item)`` is added, producing a
+            cross-classified model that separates participant-level
+            metacognition from item-level difficulty effects.
         **kwargs: Additional arguments forwarded to ``brmspy.brms.brm``.
 
     Returns:
@@ -97,6 +131,8 @@ def fit_hierarchical_metad(
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
+        ValueError: If ``items`` is provided but has a different length from
+            ``participants``.
 
     Example::
 
@@ -104,13 +140,19 @@ def fit_hierarchical_metad(
         from metasignal.sdtbayes import fit_hierarchical_metad, posterior_summary
 
         rng = np.random.default_rng(0)
+        N, n_items = 20, 50
         participants = [
             (rng.integers(0, 2, 200), rng.integers(0, 2, 200), rng.integers(1, 5, 200))
-            for _ in range(20)
+            for _ in range(N)
         ]
 
+        # Without item effects
         fit = fit_hierarchical_metad(participants, n_ratings=4)
-        print(posterior_summary(fit))
+
+        # With crossed item random effects
+        item_ids = [rng.integers(0, n_items, 200) for _ in range(N)]
+        fit_crossed = fit_hierarchical_metad(participants, n_ratings=4, items=item_ids)
+        print(posterior_summary(fit_crossed, var_names=["b_correct", "sd_item__Intercept"]))
     """
     try:
         from brmspy import brms
@@ -119,9 +161,19 @@ def fit_hierarchical_metad(
             "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
-    df = _trials_to_dataframe(participants, n_ratings)
+    if items is not None and len(items) != len(participants):
+        msg = (
+            f"'items' has {len(items)} entries but 'participants' has "
+            f"{len(participants)}.  They must have the same length."
+        )
+        raise ValueError(msg)
 
-    formula = brms.bf("conf ~ correct + (correct | participant)")
+    df = _trials_to_dataframe(participants, n_ratings, items=items)
+
+    formula_str = "conf ~ correct + (correct | participant)"
+    if items is not None:
+        formula_str += " + (1 | item)"
+    formula = brms.bf(formula_str)
 
     priors = [
         brms.prior("normal(0, 2)", class_="b"),
@@ -152,13 +204,15 @@ def fit_group_comparison(
     iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
+    items_a: list[np.ndarray] | None = None,
+    items_b: list[np.ndarray] | None = None,
     **kwargs: Any,
 ) -> Any:
     """Bayesian comparison of metacognition between two groups.
 
     Extends the hierarchical meta-d' model with a ``group`` predictor and a
     ``correct × group`` interaction.  The interaction coefficient
-    ``b_correct:group`` represents the difference in meta-d' between groups
+    ``b_correct:group1`` represents the difference in meta-d' between groups
     on the log-odds scale, with a full posterior distribution.
 
     Args:
@@ -169,6 +223,10 @@ def fit_group_comparison(
         iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations per chain (default 1000).
         seed: Random seed (default 42).
+        items_a: Optional item-ID arrays for group A (parallel to ``group_a``).
+            When provided alongside ``items_b``, adds ``(1 | item)`` to the
+            formula for crossed stimulus random effects.
+        items_b: Optional item-ID arrays for group B (parallel to ``group_b``).
         **kwargs: Additional arguments forwarded to ``brmspy.brms.brm``.
 
     Returns:
@@ -178,6 +236,7 @@ def fit_group_comparison(
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
+        ValueError: If ``items_a`` / ``items_b`` lengths do not match groups.
 
     Example::
 
@@ -194,13 +253,24 @@ def fit_group_comparison(
             "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
+    if items_a is not None and len(items_a) != len(group_a):
+        msg = f"'items_a' has {len(items_a)} entries but 'group_a' has {len(group_a)}."
+        raise ValueError(msg)
+    if items_b is not None and len(items_b) != len(group_b):
+        msg = f"'items_b' has {len(items_b)} entries but 'group_b' has {len(group_b)}."
+        raise ValueError(msg)
+
     import pandas as pd
-    df_a = _trials_to_dataframe(group_a, n_ratings, group_label=0, pid_prefix="A")
-    df_b = _trials_to_dataframe(group_b, n_ratings, group_label=1, pid_prefix="B")
+    df_a = _trials_to_dataframe(group_a, n_ratings, group_label=0, pid_prefix="A", items=items_a)
+    df_b = _trials_to_dataframe(group_b, n_ratings, group_label=1, pid_prefix="B", items=items_b)
     df = pd.concat([df_a, df_b], ignore_index=True)
     df["group"] = df["group"].astype("category")
 
-    formula = brms.bf("conf ~ correct * group + (correct | participant)")
+    use_items = (items_a is not None) and (items_b is not None)
+    formula_str = "conf ~ correct * group + (correct | participant)"
+    if use_items:
+        formula_str += " + (1 | item)"
+    formula = brms.bf(formula_str)
 
     priors = [
         brms.prior("normal(0, 2)", class_="b"),
