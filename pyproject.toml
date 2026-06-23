@@ -5,7 +5,7 @@ build-backend = "uv_build"
 [project]
 name = "metasignal"
 version = "2025.1.0"
-description = "SDT using python."
+description = "Signal Detection Theory and metacognitive measures for Python."
 authors = [{name = "Saurabh Ranjan", email = ""}]
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -41,6 +41,7 @@ docs = [
     "mkdocstrings[python]",
     "mkdocs-include-markdown-plugin",
     "mkdocs-click",
+    "mkdocs-jupyter",
 ]
 
 [dependency-groups]
@@ -53,6 +54,7 @@ docs = [
     "mkdocstrings[python]",
     "mkdocs-include-markdown-plugin",
     "mkdocs-click",
+    "mkdocs-jupyter",
 ]
 dev = [
     { include-group = "tests" },

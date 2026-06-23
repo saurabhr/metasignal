@@ -42,6 +42,10 @@ plugins:
             show_object_full_path: false
             docstring_section_style: google
   - include-markdown
+  - mkdocs-jupyter:
+      execute: false
+      include_source: true
+      ignore_h1_titles: true
 
 markdown_extensions:
   - mkdocs-click
@@ -56,12 +60,12 @@ nav:
     - Usage: usage.md
   - Tutorials:
     - Overview: tutorials/index.md
-    - 1. Getting Started: tutorials/getting_started.md
-    - 2. Computing All 20 Measures: tutorials/computing_measures.md
-    - 3. Statistical Inference: tutorials/statistical_inference.md
-    - 4. Difficulty Dependence: tutorials/difficulty_dependence.md
-    - 5. Metacognitive Bias: tutorials/metacognitive_bias.md
-    - 6. Split-Half Reliability: tutorials/split_half_reliability.md
+    - 1. Getting Started: tutorials/01_getting_started.ipynb
+    - 2. Computing All 20 Measures: tutorials/02_computing_measures.ipynb
+    - 3. Statistical Inference: tutorials/03_statistical_inference.ipynb
+    - 4. Difficulty Dependence: tutorials/04_difficulty_dependence.ipynb
+    - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
+    - 6. Split-Half Reliability: tutorials/06_split_half_reliability.ipynb
   - API Reference: api.md
   - MATLAB to Python Mapping: matlab_to_python_mapping.md
   - CLI Reference: cli.md
