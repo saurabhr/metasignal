@@ -12,7 +12,7 @@ This approach does not propagate Stage-1 estimation uncertainty into Stage 2,
 but is computationally fast (Stage 2 runs in seconds) and suitable for the
 typical sample sizes in metacognition research (20–50 participants with
 100–300 trials each).  For a fully Bayesian single-stage model, see
-:mod:`metasignal.bayesian.full_metad`.
+:mod:`metasignal.sdtbayes.full_metad`.
 """
 
 from __future__ import annotations
@@ -90,14 +90,15 @@ def fit_two_stage_group(
         **kwargs: Forwarded to ``brmspy.brms.brm``.
 
     Returns:
-        Tuple of:
+        Tuple of ``FitResult`` and ``pd.DataFrame``.
 
-        - ``FitResult`` with ``.idata`` (ArviZ InferenceData) and ``.r``
-          (R handle). The key population-level parameter is ``b_Intercept``
-          (group mean log M-ratio).
-        - ``pd.DataFrame`` — per-participant Stage-1 MLE estimates
-          (columns: ``participant``, ``dprime``, ``c``, ``meta_da``, ``da``,
-          ``m_ratio``, ``log_m_ratio``).
+        The ``FitResult`` has ``.idata`` (ArviZ InferenceData) and ``.r``
+        (R handle). The key population-level parameter is ``b_Intercept``
+        (group mean log M-ratio).
+
+        The ``pd.DataFrame`` contains per-participant Stage-1 MLE estimates
+        (columns: ``participant``, ``dprime``, ``c``, ``meta_da``, ``da``,
+        ``m_ratio``, ``log_m_ratio``).
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
@@ -105,7 +106,7 @@ def fit_two_stage_group(
     Example::
 
         import numpy as np
-        from metasignal.bayesian import fit_two_stage_group, posterior_summary
+        from metasignal.sdtbayes import fit_two_stage_group, posterior_summary
 
         rng = np.random.default_rng(0)
         participants = [
@@ -121,7 +122,7 @@ def fit_two_stage_group(
         from brmspy import brms
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     mle_df = _compute_participant_estimates(participants, n_ratings)
@@ -197,7 +198,7 @@ def fit_two_stage_comparison(
         from brmspy import brms
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     import pandas as pd

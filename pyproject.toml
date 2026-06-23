@@ -35,7 +35,7 @@ dependencies = [
 
 [project.optional-dependencies]
 matlab = ["matlabengine"]
-bayesian = [
+sdtbayes = [
     "brmspy",
     "arviz",
     "pandas",

@@ -1,8 +1,8 @@
 """ArviZ-based posterior analysis and diagnostics for metasignal Bayesian fits.
 
 All functions accept a ``FitResult`` returned by
-:func:`~metasignal.bayesian.fit_hierarchical_metad` or
-:func:`~metasignal.bayesian.fit_group_comparison` and delegate to ArviZ
+:func:`~metasignal.sdtbayes.fit_hierarchical_metad` or
+:func:`~metasignal.sdtbayes.fit_group_comparison` and delegate to ArviZ
 for computation and plotting.
 """
 
@@ -43,7 +43,7 @@ def posterior_summary(
         import arviz as az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[bayesian]"
+            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     return az.summary(fit.idata, var_names=var_names, hdi_prob=hdi_prob)
@@ -77,7 +77,7 @@ def plot_trace(
         import arviz as az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[bayesian]"
+            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     return az.plot_trace(fit.idata, var_names=var_names, **kwargs)
@@ -112,7 +112,7 @@ def plot_posterior(
         import arviz as az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[bayesian]"
+            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     kw: dict[str, Any] = {"hdi_prob": hdi_prob}
@@ -156,7 +156,7 @@ def plot_forest(
         import arviz as az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[bayesian]"
+            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     return az.plot_forest(
@@ -193,7 +193,7 @@ def convergence_diagnostics(fit: Any) -> pd.DataFrame:
         import arviz as az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[bayesian]"
+            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     summary = az.summary(fit.idata)

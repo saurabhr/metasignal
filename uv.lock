@@ -2332,15 +2332,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-bayesian = [
-    { name = "arviz", version = "0.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "arviz", version = "0.23.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.12'" },
-    { name = "arviz", version = "1.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "brmspy", version = "0.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "brmspy", version = "0.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "pandas", version = "3.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-]
 docs = [
     { name = "mkdocs" },
     { name = "mkdocs-click" },
@@ -2352,6 +2343,15 @@ docs = [
 ]
 matlab = [
     { name = "matlabengine" },
+]
+sdtbayes = [
+    { name = "arviz", version = "0.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "arviz", version = "0.23.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.12'" },
+    { name = "arviz", version = "1.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "brmspy", version = "0.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "brmspy", version = "0.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "pandas", version = "3.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 
 [package.dev-dependencies]
@@ -2382,8 +2382,8 @@ tests = [
 
 [package.metadata]
 requires-dist = [
-    { name = "arviz", marker = "extra == 'bayesian'" },
-    { name = "brmspy", marker = "extra == 'bayesian'" },
+    { name = "arviz", marker = "extra == 'sdtbayes'" },
+    { name = "brmspy", marker = "extra == 'sdtbayes'" },
     { name = "click" },
     { name = "matlabengine", marker = "extra == 'matlab'" },
     { name = "matplotlib" },
@@ -2394,10 +2394,10 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'" },
     { name = "numpy" },
-    { name = "pandas", marker = "extra == 'bayesian'" },
+    { name = "pandas", marker = "extra == 'sdtbayes'" },
     { name = "scipy" },
 ]
-provides-extras = ["matlab", "bayesian", "docs"]
+provides-extras = ["matlab", "sdtbayes", "docs"]
 
 [package.metadata.requires-dev]
 dev = [

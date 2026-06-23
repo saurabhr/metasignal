@@ -17,7 +17,7 @@ def setup_runtime(use_prebuilt: bool = True) -> None:
 
     Example::
 
-        from metasignal.bayesian import setup_runtime
+        from metasignal.sdtbayes import setup_runtime
         setup_runtime()   # ~5 min on first run
     """
     try:
@@ -25,7 +25,7 @@ def setup_runtime(use_prebuilt: bool = True) -> None:
     except ImportError as e:
         msg = (
             "brmspy is not installed. Run:\n"
-            "    pip install metasignal[bayesian]"
+            "    pip install metasignal[sdtbayes]"
         )
         raise ImportError(msg) from e
 

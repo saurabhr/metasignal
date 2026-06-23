@@ -223,16 +223,19 @@ def _build_count_matrix(
 
         nr_s1, nr_s2 = trials_to_counts(stim, resp, conf, n_ratings)
 
-        # nr_s1: [FA_highconf→lowconf | CR_lowconf→highconf]  (length 2*nR)
-        # nr_s2: [M_highconf→lowconf  | H_lowconf→highconf]   (length 2*nR)
-        # Our trials_to_counts stores: first nR = S2-responses, last nR = S1-responses
-
-        nc_rs1 = nr_s1[n_ratings:]    # CR: S1 trial, S1 response, low→high conf
-        ni_rs2 = nr_s1[:n_ratings][::-1]  # FA: S1 trial, S2 response, low→high conf
-        ni_rs1 = nr_s2[n_ratings:]    # M:  S2 trial, S1 response, low→high conf
-        nc_rs2 = nr_s2[:n_ratings][::-1]  # H:  S2 trial, S2 response, low→high conf
-
-        rows.append(np.concatenate([nc_rs1, ni_rs2, ni_rs1, nc_rs2]))
+        # trials_to_counts layout (same as metadpy nR_S1/nR_S2):
+        #   nr_s1[:nR]  = CRs   (S1 stim, S1 resp), rating nR→1 (high→low conf)
+        #   nr_s1[nR:]  = FAs   (S1 stim, S2 resp), rating  1→nR (low→high conf)
+        #   nr_s2[:nR]  = Misses(S2 stim, S1 resp), rating nR→1 (high→low conf)
+        #   nr_s2[nR:]  = Hits  (S2 stim, S2 resp), rating  1→nR (low→high conf)
+        # Stan probability ordering:
+        #   prCR[1]=highest-conf CR, prFA[1]=lowest-conf FA, prM[1]=highest-conf M, prH[1]=lowest-conf H
+        rows.append(np.concatenate([
+            nr_s1[:n_ratings],   # CRs,    high→low confidence
+            nr_s1[n_ratings:],   # FAs,    low→high confidence
+            nr_s2[:n_ratings],   # Misses, high→low confidence
+            nr_s2[n_ratings:],   # Hits,   low→high confidence
+        ]))
 
     return np.array(rows, dtype=int)
 
@@ -286,7 +289,7 @@ def fit_full_metad(
     Example::
 
         import numpy as np
-        from metasignal.bayesian import fit_full_metad, posterior_summary
+        from metasignal.sdtbayes import fit_full_metad, posterior_summary
 
         rng = np.random.default_rng(0)
         participants = [
@@ -303,7 +306,7 @@ def fit_full_metad(
         import pandas as pd
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     nsubj = len(participants)
@@ -393,7 +396,7 @@ def fit_full_metad_comparison(
         import pandas as pd
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     na = len(group_a)

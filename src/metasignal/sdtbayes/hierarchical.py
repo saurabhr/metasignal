@@ -102,7 +102,7 @@ def fit_hierarchical_metad(
     Example::
 
         import numpy as np
-        from metasignal.bayesian import fit_hierarchical_metad, posterior_summary
+        from metasignal.sdtbayes import fit_hierarchical_metad, posterior_summary
 
         rng = np.random.default_rng(0)
         participants = [
@@ -117,7 +117,7 @@ def fit_hierarchical_metad(
         from brmspy import brms
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     df = _trials_to_dataframe(participants, n_ratings)
@@ -191,7 +191,7 @@ def fit_group_comparison(
         from brmspy import brms
     except ImportError as e:
         raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[bayesian]"
+            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
     import pandas as pd
