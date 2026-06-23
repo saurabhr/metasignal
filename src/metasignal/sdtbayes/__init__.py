@@ -58,6 +58,7 @@ from metasignal.sdtbayes.two_stage import fit_two_stage_group, fit_two_stage_com
 from metasignal.sdtbayes.full_metad import fit_full_metad, fit_full_metad_comparison
 from metasignal.sdtbayes.subject_level import fit_subject_level
 from metasignal.sdtbayes.diagnostics import (
+    FitResult,
     posterior_summary,
     plot_trace,
     plot_posterior,
@@ -68,6 +69,7 @@ from metasignal.sdtbayes._runtime import setup_runtime
 
 __all__ = [
     "setup_runtime",
+    "FitResult",
     # Approach 1 — ordered logistic
     "fit_hierarchical_metad",
     "fit_group_comparison",

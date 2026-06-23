@@ -1,128 +1,214 @@
-"""ArviZ-based posterior analysis and diagnostics for metasignal Bayesian fits.
+"""FitResult and ArviZ-based diagnostics — shared vertical layer for all sdtbayes approaches.
 
-All functions accept a ``FitResult`` returned by
-:func:`~metasignal.sdtbayes.fit_hierarchical_metad` or
-:func:`~metasignal.sdtbayes.fit_group_comparison` and delegate to ArviZ
-for computation and plotting.
+All four estimation approaches (hierarchical, two_stage, full_metad, subject_level)
+return a :class:`FitResult`.  Diagnostic methods are defined here once and
+available on every fit object.
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Sequence
 
 
+@dataclass
+class FitResult:
+    """Container returned by every sdtbayes fitting function.
+
+    Wraps the brmspy/Stan fit with ArviZ diagnostics as methods, so that
+    every approach exposes the same interface::
+
+        fit = fit_hierarchical_metad(participants, n_ratings=4)
+        fit.posterior_summary()
+        fit.plot_trace(var_names=["b_correct"])
+        fit.convergence_diagnostics()
+
+    Attributes:
+        idata: ArviZ ``InferenceData`` with posterior samples, log-likelihood,
+            and (if requested) prior predictive.
+        r: Lightweight R object handle for downstream brms calls (e.g.
+            ``brms.hypothesis(fit.r, "b_correct > 0")``).
+    """
+
+    idata: Any
+    r: Any
+
+    # ------------------------------------------------------------------
+    # Diagnostics — one implementation, shared by all four approaches
+    # ------------------------------------------------------------------
+
+    def posterior_summary(
+        self,
+        var_names: Sequence[str] | None = None,
+        *,
+        hdi_prob: float = 0.94,
+    ) -> Any:
+        """Posterior summary table (mean, SD, HDI, R-hat, ESS).
+
+        Args:
+            var_names: Parameter names to include. ``None`` returns all.
+            hdi_prob: Highest density interval probability mass (default 0.94).
+
+        Returns:
+            ``pandas.DataFrame`` with one row per parameter.
+
+        Example::
+
+            summary = fit.posterior_summary()
+            print(summary[["mean", "sd", "hdi_3%", "hdi_97%", "r_hat"]])
+        """
+        az = _require_arviz()
+        return az.summary(self.idata, var_names=var_names, hdi_prob=hdi_prob)
+
+    def convergence_diagnostics(self) -> Any:
+        """R-hat and ESS for all parameters, with a ``converged`` flag.
+
+        R-hat > 1.01 or ESS < 400 indicates sampling problems.
+
+        Returns:
+            ``pandas.DataFrame`` with columns ``r_hat``, ``ess_bulk``,
+            ``ess_tail``, ``converged``.
+
+        Example::
+
+            diag = fit.convergence_diagnostics()
+            print(diag[~diag["converged"]])   # non-converged parameters
+        """
+        az = _require_arviz()
+        summary = az.summary(self.idata)
+        diag = summary[["r_hat", "ess_bulk", "ess_tail"]].copy()
+        diag["converged"] = diag["r_hat"] <= 1.01
+        return diag
+
+    def plot_trace(
+        self,
+        var_names: Sequence[str] | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        """MCMC trace and rank plots for convergence inspection.
+
+        Args:
+            var_names: Parameters to plot. ``None`` plots all (can be slow).
+            **kwargs: Forwarded to ``arviz.plot_trace``.
+
+        Returns:
+            Array of ``matplotlib.axes.Axes``.
+
+        Example::
+
+            fit.plot_trace(var_names=["b_correct", "sd_participant__correct"])
+        """
+        az = _require_arviz()
+        return az.plot_trace(self.idata, var_names=var_names, **kwargs)
+
+    def plot_posterior(
+        self,
+        var_names: Sequence[str] | None = None,
+        *,
+        hdi_prob: float = 0.94,
+        ref_val: float | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Marginal posterior density plots with HDI.
+
+        Args:
+            var_names: Parameters to plot.
+            hdi_prob: HDI probability mass to shade (default 0.94).
+            ref_val: Optional reference line (e.g. ``0`` for a null).
+            **kwargs: Forwarded to ``arviz.plot_posterior``.
+
+        Returns:
+            Array of ``matplotlib.axes.Axes``.
+
+        Example::
+
+            fit.plot_posterior(var_names=["b_correct:group1"], ref_val=0)
+        """
+        az = _require_arviz()
+        kw: dict[str, Any] = {"hdi_prob": hdi_prob}
+        if ref_val is not None:
+            kw["ref_val"] = ref_val
+        kw.update(kwargs)
+        return az.plot_posterior(self.idata, var_names=var_names, **kw)
+
+    def plot_forest(
+        self,
+        var_names: Sequence[str] | None = None,
+        *,
+        hdi_prob: float = 0.94,
+        r_hat: bool = True,
+        ess: bool = True,
+        **kwargs: Any,
+    ) -> Any:
+        """Forest plot of parameter estimates with HDI intervals.
+
+        Args:
+            var_names: Parameters to include. Defaults to all.
+            hdi_prob: HDI probability mass (default 0.94).
+            r_hat: Show R-hat values (default True).
+            ess: Show effective sample size (default True).
+            **kwargs: Forwarded to ``arviz.plot_forest``.
+
+        Returns:
+            Array of ``matplotlib.axes.Axes``.
+
+        Example::
+
+            fit.plot_forest(var_names=["b_correct", "r_participant"])
+        """
+        az = _require_arviz()
+        return az.plot_forest(
+            self.idata,
+            var_names=var_names,
+            hdi_prob=hdi_prob,
+            r_hat=r_hat,
+            ess=ess,
+            **kwargs,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Module-level convenience functions (thin wrappers — kept for backwards compat)
+# ---------------------------------------------------------------------------
+
 def posterior_summary(
-    fit: Any,
+    fit: FitResult,
     var_names: Sequence[str] | None = None,
     *,
     hdi_prob: float = 0.94,
-) -> pd.DataFrame:
-    """Posterior summary table for all (or selected) parameters.
+) -> Any:
+    """Module-level alias for :meth:`FitResult.posterior_summary`."""
+    return fit.posterior_summary(var_names=var_names, hdi_prob=hdi_prob)
 
-    Returns mean, standard deviation, 94% HDI bounds, Monte Carlo standard
-    error, R-hat, and bulk/tail effective sample sizes — matching the
-    conventions used in the brms ``summary()`` output.
 
-    Args:
-        fit: ``FitResult`` from :func:`fit_hierarchical_metad` or
-            :func:`fit_group_comparison`.
-        var_names: Parameter names to include. ``None`` returns all parameters.
-        hdi_prob: Highest density interval probability mass (default 0.94).
-
-    Returns:
-        ``pandas.DataFrame`` with one row per parameter.
-
-    Example::
-
-        summary = posterior_summary(fit)
-        print(summary[["mean", "sd", "hdi_3%", "hdi_97%", "r_hat"]])
-    """
-    try:
-        import arviz as az
-    except ImportError as e:
-        raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
-
-    import pandas as pd  # noqa: F401  (az.summary returns a DataFrame; ensure pandas is present)
-    return az.summary(fit.idata, var_names=var_names, hdi_prob=hdi_prob)
+def convergence_diagnostics(fit: FitResult) -> Any:
+    """Module-level alias for :meth:`FitResult.convergence_diagnostics`."""
+    return fit.convergence_diagnostics()
 
 
 def plot_trace(
-    fit: Any,
+    fit: FitResult,
     var_names: Sequence[str] | None = None,
     **kwargs: Any,
 ) -> Any:
-    """MCMC trace and rank plots for convergence diagnostics.
-
-    Displays the sampled parameter values over iterations (trace) and their
-    rank-normalised values (rank plot).  Healthy chains show well-mixed
-    traces and uniform rank distributions.
-
-    Args:
-        fit: ``FitResult`` from a hierarchical model fit.
-        var_names: Parameters to plot. ``None`` plots all parameters
-            (can be slow for large models).
-        **kwargs: Forwarded to ``arviz.plot_trace``.
-
-    Returns:
-        Array of ``matplotlib.axes.Axes``.
-
-    Example::
-
-        plot_trace(fit, var_names=["b_correct", "sd_participant__correct"])
-    """
-    try:
-        import arviz as az
-    except ImportError as e:
-        raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
-
-    return az.plot_trace(fit.idata, var_names=var_names, **kwargs)
+    """Module-level alias for :meth:`FitResult.plot_trace`."""
+    return fit.plot_trace(var_names=var_names, **kwargs)
 
 
 def plot_posterior(
-    fit: Any,
+    fit: FitResult,
     var_names: Sequence[str] | None = None,
     *,
     hdi_prob: float = 0.94,
     ref_val: float | None = None,
     **kwargs: Any,
 ) -> Any:
-    """Marginal posterior density plots with HDI and optional reference value.
-
-    Args:
-        fit: ``FitResult`` from a hierarchical model fit.
-        var_names: Parameters to plot. Defaults to population-level effects.
-        hdi_prob: HDI probability mass to shade (default 0.94).
-        ref_val: Optional vertical reference line (e.g. 0 for a null hypothesis).
-        **kwargs: Forwarded to ``arviz.plot_posterior``.
-
-    Returns:
-        Array of ``matplotlib.axes.Axes``.
-
-    Example::
-
-        # For group comparison — is b_correct:group1 credibly different from 0?
-        plot_posterior(fit, var_names=["b_correct:group1"], ref_val=0)
-    """
-    try:
-        import arviz as az
-    except ImportError as e:
-        raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
-
-    kw: dict[str, Any] = {"hdi_prob": hdi_prob}
-    if ref_val is not None:
-        kw["ref_val"] = ref_val
-    kw.update(kwargs)
-    return az.plot_posterior(fit.idata, var_names=var_names, **kw)
+    """Module-level alias for :meth:`FitResult.plot_posterior`."""
+    return fit.plot_posterior(var_names=var_names, hdi_prob=hdi_prob, ref_val=ref_val, **kwargs)
 
 
 def plot_forest(
-    fit: Any,
+    fit: FitResult,
     var_names: Sequence[str] | None = None,
     *,
     hdi_prob: float = 0.94,
@@ -130,73 +216,19 @@ def plot_forest(
     ess: bool = True,
     **kwargs: Any,
 ) -> Any:
-    """Forest plot of parameter estimates with HDI intervals.
+    """Module-level alias for :meth:`FitResult.plot_forest`."""
+    return fit.plot_forest(var_names=var_names, hdi_prob=hdi_prob, r_hat=r_hat, ess=ess, **kwargs)
 
-    Useful for visualising participant-level random effects alongside
-    the group-level (population) estimate in a single panel.
 
-    Args:
-        fit: ``FitResult`` from a hierarchical model fit.
-        var_names: Parameters to include. Defaults to all.
-        hdi_prob: HDI probability mass (default 0.94).
-        r_hat: Show R-hat values alongside estimates (default True).
-        ess: Show effective sample size alongside estimates (default True).
-        **kwargs: Forwarded to ``arviz.plot_forest``.
+# ---------------------------------------------------------------------------
+# Internal helper
+# ---------------------------------------------------------------------------
 
-    Returns:
-        Array of ``matplotlib.axes.Axes``.
-
-    Example::
-
-        # Show group-level effect and all participant random slopes
-        plot_forest(fit, var_names=["b_correct", "r_participant"])
-    """
+def _require_arviz() -> Any:
     try:
         import arviz as az
+        return az
     except ImportError as e:
         raise ImportError(
             "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
-
-    return az.plot_forest(
-        fit.idata,
-        var_names=var_names,
-        hdi_prob=hdi_prob,
-        r_hat=r_hat,
-        ess=ess,
-        **kwargs,
-    )
-
-
-def convergence_diagnostics(fit: Any) -> pd.DataFrame:
-    """Return R-hat and effective sample size (ESS) for all parameters.
-
-    R-hat values above 1.01 indicate poor convergence; ESS values below
-    ~400 indicate insufficient sampling.  Both thresholds follow the
-    recommendations of Vehtari et al. (2021).
-
-    Args:
-        fit: ``FitResult`` from a hierarchical model fit.
-
-    Returns:
-        ``pandas.DataFrame`` with columns ``r_hat``, ``ess_bulk``,
-        ``ess_tail``, indexed by parameter name.  Parameters exceeding
-        the R-hat threshold are flagged in a ``converged`` column.
-
-    Example::
-
-        diag = convergence_diagnostics(fit)
-        print(diag[~diag["converged"]])   # show any non-converged parameters
-    """
-    try:
-        import arviz as az
-    except ImportError as e:
-        raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
-
-    import pandas as pd  # noqa: F401  (az.summary returns a DataFrame; ensure pandas is present)
-    summary = az.summary(fit.idata)
-    diag = summary[["r_hat", "ess_bulk", "ess_tail"]].copy()
-    diag["converged"] = diag["r_hat"] <= 1.01
-    return diag

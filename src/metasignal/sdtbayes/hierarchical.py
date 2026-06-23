@@ -25,6 +25,8 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes.diagnostics import FitResult
+
 
 def _trials_to_dataframe(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
@@ -128,7 +130,7 @@ def fit_hierarchical_metad(
         brms.prior("lkj(2)", class_="cor"),
     ]
 
-    return brms.brm(
+    _result = brms.brm(
         formula=formula,
         data=df,
         family="cumulative",
@@ -139,6 +141,7 @@ def fit_hierarchical_metad(
         seed=seed,
         **kwargs,
     )
+    return FitResult(idata=_result.idata, r=_result.r)
 
 
 def fit_group_comparison(
@@ -206,7 +209,7 @@ def fit_group_comparison(
         brms.prior("lkj(2)", class_="cor"),
     ]
 
-    return brms.brm(
+    _result = brms.brm(
         formula=formula,
         data=df,
         family="cumulative",
@@ -217,3 +220,4 @@ def fit_group_comparison(
         seed=seed,
         **kwargs,
     )
+    return FitResult(idata=_result.idata, r=_result.r)

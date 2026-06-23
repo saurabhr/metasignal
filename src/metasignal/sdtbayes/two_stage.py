@@ -22,6 +22,8 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes.diagnostics import FitResult
+
 
 def _compute_participant_estimates(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
@@ -154,7 +156,7 @@ def fit_two_stage_group(
         seed=seed,
         **kwargs,
     )
-    return fit, mle_df
+    return FitResult(idata=fit.idata, r=fit.r), mle_df
 
 
 def fit_two_stage_comparison(
@@ -247,4 +249,4 @@ def fit_two_stage_comparison(
         seed=seed,
         **kwargs,
     )
-    return fit, mle_df
+    return FitResult(idata=fit.idata, r=fit.r), mle_df

@@ -43,6 +43,8 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes.diagnostics import FitResult
+
 
 # ---------------------------------------------------------------------------
 # Stan code blocks — matching metadpy's subject_level_pymc.py exactly
@@ -326,7 +328,7 @@ def fit_subject_level(
         "sl_Tol":     tol,
     }
 
-    return brms.brm(
+    _result = brms.brm(
         formula=brms.bf("dummy ~ 1"),
         data=pd.DataFrame({"dummy": [0]}),
         family=brms.call("empty"),
@@ -338,3 +340,4 @@ def fit_subject_level(
         seed=seed,
         **kwargs,
     )
+    return FitResult(idata=_result.idata, r=_result.r)

@@ -50,6 +50,8 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes.diagnostics import FitResult
+
 # ---------------------------------------------------------------------------
 # Stan code blocks — faithful port of Fleming (2017) JAGS model
 # ---------------------------------------------------------------------------
@@ -473,7 +475,7 @@ def fit_full_metad(
         "Tol":            tol,
     }
 
-    return brms.brm(
+    _result = brms.brm(
         formula=brms.bf("dummy ~ 1"),
         data=dummy_df,
         family=brms.call("empty"),
@@ -485,6 +487,7 @@ def fit_full_metad(
         seed=seed,
         **kwargs,
     )
+    return FitResult(idata=_result.idata, r=_result.r)
 
 
 def fit_full_metad_comparison(
@@ -563,7 +566,7 @@ def fit_full_metad_comparison(
         "Tol":               tol,
     }
 
-    return brms.brm(
+    _result = brms.brm(
         formula=brms.bf("dummy ~ 1"),
         data=dummy_df,
         family=brms.call("empty"),
@@ -575,3 +578,4 @@ def fit_full_metad_comparison(
         seed=seed,
         **kwargs,
     )
+    return FitResult(idata=_result.idata, r=_result.r)

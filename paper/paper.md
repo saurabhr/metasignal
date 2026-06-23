@@ -41,6 +41,8 @@ The canonical meta-d' implementation by @maniscalco2014 has been the field's wor
 
 # Software Design
 
+![Computational architecture of `metasignal`. Trial-level arrays flow top-down through three layers: (1) `stdpy` computes SDT statistics and all twenty metacognitive measures; (2) `analysis` provides bootstrap CIs, permutation tests, and group summaries; (3) `sdtbayes` (optional) offers four Bayesian estimation approaches, all returning a `FitResult` with shared diagnostics. The CLI exposes the full measure suite without Python code.](structure.png)
+
 `metasignal` accepts NumPy arrays of stimulus labels, responses, and confidence ratings as its universal input and exposes all measures through the `stdpy` submodule, implemented in NumPy [@harris2020] and SciPy [@virtanen2020]. Core estimation routines include:
 
 - `compute_sdt_resp` — d' and criterion *c* from trial-level stimulus and response vectors.
