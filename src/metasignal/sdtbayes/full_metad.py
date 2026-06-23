@@ -87,6 +87,149 @@ array[nsubj] ordered[nratings - 1] cS1_raw;
 array[nsubj] ordered[nratings - 1] cS2_raw;
 """
 
+_STAN_PARAMETERS_TWO_GROUP = """\
+// --- Group-level Type-1 parameters (shared across groups) ---
+real mu_d1;
+real<lower=0> sigma_d1;
+vector[nsubj_a + nsubj_b] d1_z;
+
+real mu_c1;
+real<lower=0> sigma_c1;
+vector[nsubj_a + nsubj_b] c1_z;
+
+// --- Group-level M-ratio (log scale) — separate per group ---
+real mu_logMratio_a;
+real mu_logMratio_b;
+real<lower=0> sigma_logMratio;
+vector[nsubj_a] logMratio_z_a;
+vector[nsubj_b] logMratio_z_b;
+
+// --- Group-level Type-2 criterion hyperparameters ---
+real<lower=0> mu_c2;
+real<lower=0> sigma_c2;
+
+// --- Per-subject Type-2 criteria ---
+array[nsubj_a] ordered[nratings - 1] cS1_a;
+array[nsubj_a] ordered[nratings - 1] cS2_a;
+array[nsubj_b] ordered[nratings - 1] cS1_b;
+array[nsubj_b] ordered[nratings - 1] cS2_b;
+"""
+
+_STAN_DATA_TWO_GROUP = """\
+int<lower=1> nsubj_a;
+int<lower=1> nsubj_b;
+int<lower=1> nratings;
+array[nsubj_a, nratings * 4] int hmetad_counts_a;
+array[nsubj_b, nratings * 4] int hmetad_counts_b;
+real<lower=0> Tol;
+"""
+
+_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP = """\
+vector[nsubj_a] d1_a;
+vector[nsubj_b] d1_b;
+vector[nsubj_a] c1_a;
+vector[nsubj_b] c1_b;
+vector[nsubj_a] Mratio_a;
+vector[nsubj_b] Mratio_b;
+vector[nsubj_a] meta_d_a;
+vector[nsubj_b] meta_d_b;
+real delta_logMratio;
+
+d1_a = mu_d1 + sigma_d1 * d1_z[1:nsubj_a];
+d1_b = mu_d1 + sigma_d1 * d1_z[(nsubj_a + 1):(nsubj_a + nsubj_b)];
+c1_a = mu_c1 + sigma_c1 * c1_z[1:nsubj_a];
+c1_b = mu_c1 + sigma_c1 * c1_z[(nsubj_a + 1):(nsubj_a + nsubj_b)];
+for (s in 1:nsubj_a) {
+    Mratio_a[s] = exp(mu_logMratio_a + sigma_logMratio * logMratio_z_a[s]);
+    meta_d_a[s] = Mratio_a[s] * d1_a[s];
+}
+for (s in 1:nsubj_b) {
+    Mratio_b[s] = exp(mu_logMratio_b + sigma_logMratio * logMratio_z_b[s]);
+    meta_d_b[s] = Mratio_b[s] * d1_b[s];
+}
+delta_logMratio = mu_logMratio_b - mu_logMratio_a;
+"""
+
+
+def _group_likelihood_block(
+    nsubj_var: str,
+    counts_var: str,
+    mratio_var: str,
+    d1_var: str,
+    c1_var: str,
+    cs1_var: str,
+    cs2_var: str,
+) -> str:
+    """Generate the Stan model likelihood block for one group."""
+    return f"""\
+for (s in 1:{nsubj_var}) {{
+    real S1mu = -{mratio_var}[s] * {d1_var}[s] / 2.0;
+    real S2mu =  {mratio_var}[s] * {d1_var}[s] / 2.0;
+    real C_area_rS1 = fmax(Phi({c1_var}[s] - S1mu), Tol);
+    real I_area_rS1 = fmax(Phi({c1_var}[s] - S2mu), Tol);
+    real C_area_rS2 = fmax(1.0 - Phi({c1_var}[s] - S2mu), Tol);
+    real I_area_rS2 = fmax(1.0 - Phi({c1_var}[s] - S1mu), Tol);
+    vector[nratings] prCR;
+    vector[nratings] prFA;
+    vector[nratings] prM;
+    vector[nratings] prH;
+    prCR[1] = fmax(Phi({cs1_var}[s, 1] - S1mu) / C_area_rS1, Tol);
+    for (k in 1:(nratings - 2)) {{
+        prCR[k + 1] = fmax((Phi({cs1_var}[s, k + 1] - S1mu) - Phi({cs1_var}[s, k] - S1mu)) / C_area_rS1, Tol);
+    }}
+    prCR[nratings] = fmax((Phi({c1_var}[s] - S1mu) - Phi({cs1_var}[s, nratings - 1] - S1mu)) / C_area_rS1, Tol);
+    prFA[1] = fmax(((1.0 - Phi({c1_var}[s] - S1mu)) - (1.0 - Phi({cs2_var}[s, 1] - S1mu))) / I_area_rS2, Tol);
+    for (k in 1:(nratings - 2)) {{
+        prFA[k + 1] = fmax(((1.0 - Phi({cs2_var}[s, k] - S1mu)) - (1.0 - Phi({cs2_var}[s, k + 1] - S1mu))) / I_area_rS2, Tol);
+    }}
+    prFA[nratings] = fmax((1.0 - Phi({cs2_var}[s, nratings - 1] - S1mu)) / I_area_rS2, Tol);
+    prM[1] = fmax(Phi({cs1_var}[s, 1] - S2mu) / I_area_rS1, Tol);
+    for (k in 1:(nratings - 2)) {{
+        prM[k + 1] = fmax((Phi({cs1_var}[s, k + 1] - S2mu) - Phi({cs1_var}[s, k] - S2mu)) / I_area_rS1, Tol);
+    }}
+    prM[nratings] = fmax((Phi({c1_var}[s] - S2mu) - Phi({cs1_var}[s, nratings - 1] - S2mu)) / I_area_rS1, Tol);
+    prH[1] = fmax(((1.0 - Phi({c1_var}[s] - S2mu)) - (1.0 - Phi({cs2_var}[s, 1] - S2mu))) / C_area_rS2, Tol);
+    for (k in 1:(nratings - 2)) {{
+        prH[k + 1] = fmax(((1.0 - Phi({cs2_var}[s, k] - S2mu)) - (1.0 - Phi({cs2_var}[s, k + 1] - S2mu))) / C_area_rS2, Tol);
+    }}
+    prH[nratings] = fmax((1.0 - Phi({cs2_var}[s, nratings - 1] - S2mu)) / C_area_rS2, Tol);
+    target += multinomial_lpmf({counts_var}[s, 1:nratings] | prCR / sum(prCR));
+    target += multinomial_lpmf({counts_var}[s, (nratings + 1):(2 * nratings)] | prFA / sum(prFA));
+    target += multinomial_lpmf({counts_var}[s, (2 * nratings + 1):(3 * nratings)] | prM / sum(prM));
+    target += multinomial_lpmf({counts_var}[s, (3 * nratings + 1):(4 * nratings)] | prH / sum(prH));
+}}
+"""
+
+
+_STAN_MODEL_TWO_GROUP = """\
+mu_d1 ~ normal(1, 2);
+sigma_d1 ~ exponential(1);
+d1_z ~ normal(0, 1);
+mu_c1 ~ normal(0, 1);
+sigma_c1 ~ exponential(1);
+c1_z ~ normal(0, 1);
+mu_logMratio_a ~ normal(0, 1);
+mu_logMratio_b ~ normal(0, 1);
+sigma_logMratio ~ exponential(1);
+logMratio_z_a ~ normal(0, 1);
+logMratio_z_b ~ normal(0, 1);
+mu_c2 ~ normal(1, 1);
+sigma_c2 ~ exponential(1);
+for (s in 1:nsubj_a) {
+    cS1_a[s] ~ normal(c1_a[s] - mu_c2, sigma_c2);
+    cS2_a[s] ~ normal(c1_a[s] + mu_c2, sigma_c2);
+}
+for (s in 1:nsubj_b) {
+    cS1_b[s] ~ normal(c1_b[s] - mu_c2, sigma_c2);
+    cS2_b[s] ~ normal(c1_b[s] + mu_c2, sigma_c2);
+}
+""" + _group_likelihood_block(
+    "nsubj_a", "hmetad_counts_a", "Mratio_a", "d1_a", "c1_a", "cS1_a", "cS2_a",
+) + _group_likelihood_block(
+    "nsubj_b", "hmetad_counts_b", "Mratio_b", "d1_b", "c1_b", "cS1_b", "cS2_b",
+)
+
+
 _STAN_TRANSFORMED_PARAMETERS = """\
 vector[nsubj] d1;
 vector[nsubj] c1;
@@ -404,172 +547,10 @@ def fit_full_metad_comparison(
     counts_a = _build_count_matrix(group_a, n_ratings)
     counts_b = _build_count_matrix(group_b, n_ratings)
 
-    # Stan code for two-group model — separate mu_logMratio per group + contrast
-    params_two_group = _STAN_PARAMETERS.replace(
-        "real mu_logMratio;",
-        "real mu_logMratio_a;\nreal mu_logMratio_b;",
-    ).replace(
-        "vector[nsubj] logMratio_z;",
-        "vector[nsubj_a] logMratio_z_a;\nvector[nsubj_b] logMratio_z_b;",
-    )
-
-    data_two_group = """\
-int<lower=1> nsubj_a;
-int<lower=1> nsubj_b;
-int<lower=1> nratings;
-array[nsubj_a, nratings * 4] int hmetad_counts_a;
-array[nsubj_b, nratings * 4] int hmetad_counts_b;
-real<lower=0> Tol;
-"""
-
-    tpar_two_group = """\
-vector[nsubj_a] d1_a;
-vector[nsubj_b] d1_b;
-vector[nsubj_a] c1_a;
-vector[nsubj_b] c1_b;
-vector[nsubj_a] Mratio_a;
-vector[nsubj_b] Mratio_b;
-vector[nsubj_a] meta_d_a;
-vector[nsubj_b] meta_d_b;
-real delta_logMratio;
-
-d1_a = mu_d1 + sigma_d1 * d1_z[1:nsubj_a];
-d1_b = mu_d1 + sigma_d1 * d1_z[(nsubj_a + 1):(nsubj_a + nsubj_b)];
-c1_a = mu_c1 + sigma_c1 * c1_z[1:nsubj_a];
-c1_b = mu_c1 + sigma_c1 * c1_z[(nsubj_a + 1):(nsubj_a + nsubj_b)];
-for (s in 1:nsubj_a) {
-    Mratio_a[s] = exp(mu_logMratio_a + sigma_logMratio * logMratio_z_a[s]);
-    meta_d_a[s] = Mratio_a[s] * d1_a[s];
-}
-for (s in 1:nsubj_b) {
-    Mratio_b[s] = exp(mu_logMratio_b + sigma_logMratio * logMratio_z_b[s]);
-    meta_d_b[s] = Mratio_b[s] * d1_b[s];
-}
-delta_logMratio = mu_logMratio_b - mu_logMratio_a;
-"""
-
-    def _group_likelihood_block(group: str, nsubj_var: str, counts_var: str,
-                                 mratio_var: str, d1_var: str, c1_var: str,
-                                 cs1_var: str, cs2_var: str) -> str:
-        """Generate the Stan model likelihood block for one group."""
-        return f"""\
-for (s in 1:{nsubj_var}) {{
-    real S1mu = -{mratio_var}[s] * {d1_var}[s] / 2.0;
-    real S2mu =  {mratio_var}[s] * {d1_var}[s] / 2.0;
-    real C_area_rS1 = fmax(Phi({c1_var}[s] - S1mu), Tol);
-    real I_area_rS1 = fmax(Phi({c1_var}[s] - S2mu), Tol);
-    real C_area_rS2 = fmax(1.0 - Phi({c1_var}[s] - S2mu), Tol);
-    real I_area_rS2 = fmax(1.0 - Phi({c1_var}[s] - S1mu), Tol);
-    vector[nratings] prCR;
-    vector[nratings] prFA;
-    vector[nratings] prM;
-    vector[nratings] prH;
-    prCR[1] = fmax(Phi({cs1_var}[s, 1] - S1mu) / C_area_rS1, Tol);
-    for (k in 1:(nratings - 2)) {{
-        prCR[k + 1] = fmax((Phi({cs1_var}[s, k + 1] - S1mu) - Phi({cs1_var}[s, k] - S1mu)) / C_area_rS1, Tol);
-    }}
-    prCR[nratings] = fmax((Phi({c1_var}[s] - S1mu) - Phi({cs1_var}[s, nratings - 1] - S1mu)) / C_area_rS1, Tol);
-    prFA[1] = fmax(((1.0 - Phi({c1_var}[s] - S1mu)) - (1.0 - Phi({cs2_var}[s, 1] - S1mu))) / I_area_rS2, Tol);
-    for (k in 1:(nratings - 2)) {{
-        prFA[k + 1] = fmax(((1.0 - Phi({cs2_var}[s, k] - S1mu)) - (1.0 - Phi({cs2_var}[s, k + 1] - S1mu))) / I_area_rS2, Tol);
-    }}
-    prFA[nratings] = fmax((1.0 - Phi({cs2_var}[s, nratings - 1] - S1mu)) / I_area_rS2, Tol);
-    prM[1] = fmax(Phi({cs1_var}[s, 1] - S2mu) / I_area_rS1, Tol);
-    for (k in 1:(nratings - 2)) {{
-        prM[k + 1] = fmax((Phi({cs1_var}[s, k + 1] - S2mu) - Phi({cs1_var}[s, k] - S2mu)) / I_area_rS1, Tol);
-    }}
-    prM[nratings] = fmax((Phi({c1_var}[s] - S2mu) - Phi({cs1_var}[s, nratings - 1] - S2mu)) / I_area_rS1, Tol);
-    prH[1] = fmax(((1.0 - Phi({c1_var}[s] - S2mu)) - (1.0 - Phi({cs2_var}[s, 1] - S2mu))) / C_area_rS2, Tol);
-    for (k in 1:(nratings - 2)) {{
-        prH[k + 1] = fmax(((1.0 - Phi({cs2_var}[s, k] - S2mu)) - (1.0 - Phi({cs2_var}[s, k + 1] - S2mu))) / C_area_rS2, Tol);
-    }}
-    prH[nratings] = fmax((1.0 - Phi({cs2_var}[s, nratings - 1] - S2mu)) / C_area_rS2, Tol);
-    target += multinomial_lpmf({counts_var}[s, 1:nratings] | prCR / sum(prCR));
-    target += multinomial_lpmf({counts_var}[s, (nratings + 1):(2 * nratings)] | prFA / sum(prFA));
-    target += multinomial_lpmf({counts_var}[s, (2 * nratings + 1):(3 * nratings)] | prM / sum(prM));
-    target += multinomial_lpmf({counts_var}[s, (3 * nratings + 1):(4 * nratings)] | prH / sum(prH));
-}}
-"""
-
-    params_cmp = f"""\
-real mu_d1;
-real<lower=0> sigma_d1;
-vector[{na + nb}] d1_z;
-real mu_c1;
-real<lower=0> sigma_c1;
-vector[{na + nb}] c1_z;
-real mu_logMratio_a;
-real mu_logMratio_b;
-real<lower=0> sigma_logMratio;
-vector[{na}] logMratio_z_a;
-vector[{nb}] logMratio_z_b;
-real<lower=0> mu_c2;
-real<lower=0> sigma_c2;
-array[{na}] ordered[nratings - 1] cS1_a;
-array[{na}] ordered[nratings - 1] cS2_a;
-array[{nb}] ordered[nratings - 1] cS1_b;
-array[{nb}] ordered[nratings - 1] cS2_b;
-"""
-
-    model_cmp = f"""\
-mu_d1 ~ normal(1, 2);
-sigma_d1 ~ exponential(1);
-d1_z ~ normal(0, 1);
-mu_c1 ~ normal(0, 1);
-sigma_c1 ~ exponential(1);
-c1_z ~ normal(0, 1);
-mu_logMratio_a ~ normal(0, 1);
-mu_logMratio_b ~ normal(0, 1);
-sigma_logMratio ~ exponential(1);
-logMratio_z_a ~ normal(0, 1);
-logMratio_z_b ~ normal(0, 1);
-mu_c2 ~ normal(1, 1);
-sigma_c2 ~ exponential(1);
-for (s in 1:{na}) {{
-    cS1_a[s] ~ normal(c1_a[s] - mu_c2, sigma_c2);
-    cS2_a[s] ~ normal(c1_a[s] + mu_c2, sigma_c2);
-}}
-for (s in 1:{nb}) {{
-    cS1_b[s] ~ normal(c1_b[s] - mu_c2, sigma_c2);
-    cS2_b[s] ~ normal(c1_b[s] + mu_c2, sigma_c2);
-}}
-""" + _group_likelihood_block(
-        "a", str(na), "hmetad_counts_a",
-        "Mratio_a", "d1_a", "c1_a", "cS1_a", "cS2_a",
-    ) + _group_likelihood_block(
-        "b", str(nb), "hmetad_counts_b",
-        "Mratio_b", "d1_b", "c1_b", "cS1_b", "cS2_b",
-    )
-
-    tpar_cmp = f"""\
-vector[{na}] d1_a;
-vector[{nb}] d1_b;
-vector[{na}] c1_a;
-vector[{nb}] c1_b;
-vector[{na}] Mratio_a;
-vector[{nb}] Mratio_b;
-vector[{na}] meta_d_a;
-vector[{nb}] meta_d_b;
-real delta_logMratio;
-d1_a = mu_d1 + sigma_d1 * d1_z[1:{na}];
-d1_b = mu_d1 + sigma_d1 * d1_z[{na + 1}:{na + nb}];
-c1_a = mu_c1 + sigma_c1 * c1_z[1:{na}];
-c1_b = mu_c1 + sigma_c1 * c1_z[{na + 1}:{na + nb}];
-for (s in 1:{na}) {{
-    Mratio_a[s] = exp(mu_logMratio_a + sigma_logMratio * logMratio_z_a[s]);
-    meta_d_a[s] = Mratio_a[s] * d1_a[s];
-}}
-for (s in 1:{nb}) {{
-    Mratio_b[s] = exp(mu_logMratio_b + sigma_logMratio * logMratio_z_b[s]);
-    meta_d_b[s] = Mratio_b[s] * d1_b[s];
-}}
-delta_logMratio = mu_logMratio_b - mu_logMratio_a;
-"""
-
-    sv_data   = brms.call("stanvar", scode=data_two_group, block="data")
-    sv_params = brms.call("stanvar", scode=params_cmp,     block="parameters")
-    sv_tpar   = brms.call("stanvar", scode=tpar_cmp,       block="tpar")
-    sv_model  = brms.call("stanvar", scode=model_cmp,      block="model")
+    sv_data   = brms.call("stanvar", scode=_STAN_DATA_TWO_GROUP,                      block="data")
+    sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS_TWO_GROUP,                block="parameters")
+    sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP,    block="tpar")
+    sv_model  = brms.call("stanvar", scode=_STAN_MODEL_TWO_GROUP,                     block="model")
 
     import pandas as pd
     dummy_df = pd.DataFrame({"dummy": [0]})

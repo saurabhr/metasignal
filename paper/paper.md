@@ -63,10 +63,6 @@ The `metasignal compute` command-line entry point accepts comma-separated stimul
 
 All functions return results as Python dictionaries or NumPy arrays, making them straightforward to use with pandas DataFrames, matplotlib, and standard scientific-Python workflows. The package ships with six tutorial Jupyter notebooks that walk through progressively advanced analyses: basic SDT computation, the full measure suite, statistical inference, difficulty-dependence testing, metacognitive bias, and split-half reliability.
 
-# Acknowledgements
-
-The meta-d' MLE algorithm was originally described by @maniscalco2012. The benchmark suite implemented in `metasignal` was established by Dobromir Rahnev and colleagues [@rahnev2025].
-
 # AI Usage Disclosure
 
 Claude (Anthropic) was used to assist in writing portions of this paper and in generating initial drafts of source code and documentation. All content was reviewed, verified, and edited by the author. The software logic, numerical methods, and validation against reference outputs are the intellectual contribution of the author.

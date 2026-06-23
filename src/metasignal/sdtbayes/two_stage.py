@@ -17,6 +17,7 @@ typical sample sizes in metacognition research (20–50 participants with
 
 from __future__ import annotations
 
+import warnings
 from typing import Any
 
 import numpy as np
@@ -46,7 +47,11 @@ def _compute_participant_estimates(
             da = float(mle["da"])
             m_ratio = float(mle["M_ratio"])
             log_m_ratio = float(np.log(m_ratio)) if m_ratio > 0 else np.nan
-        except Exception:
+        except (ValueError, RuntimeError) as exc:
+            warnings.warn(
+                f"Participant {pid}: MLE failed ({exc}). Setting estimates to NaN.",
+                stacklevel=2,
+            )
             meta_da = da = m_ratio = log_m_ratio = np.nan
 
         rows.append({
@@ -213,6 +218,16 @@ def fit_two_stage_comparison(
     mle_df["group"] = mle_df["group"].astype("category")
 
     valid = mle_df.dropna(subset=["log_m_ratio"])
+
+    for g, label in ((0, "A"), (1, "B")):
+        n_valid = int((valid["group"] == g).sum())
+        if n_valid < 3:
+            total = int((mle_df["group"] == g).sum())
+            msg = (
+                f"Group {label}: only {n_valid} of {total} participants have valid "
+                "MLE estimates — need at least 3."
+            )
+            raise ValueError(msg)
 
     formula = brms.bf("log_m_ratio ~ group")
     priors = [

@@ -10,8 +10,6 @@ from __future__ import annotations
 
 from typing import Any, Sequence
 
-import pandas as pd
-
 
 def posterior_summary(
     fit: Any,
@@ -46,6 +44,7 @@ def posterior_summary(
             "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
+    import pandas as pd  # noqa: F401  (az.summary returns a DataFrame; ensure pandas is present)
     return az.summary(fit.idata, var_names=var_names, hdi_prob=hdi_prob)
 
 
@@ -196,6 +195,7 @@ def convergence_diagnostics(fit: Any) -> pd.DataFrame:
             "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
         ) from e
 
+    import pandas as pd  # noqa: F401  (az.summary returns a DataFrame; ensure pandas is present)
     summary = az.summary(fit.idata)
     diag = summary[["r_hat", "ess_bulk", "ess_tail"]].copy()
     diag["converged"] = diag["r_hat"] <= 1.01
