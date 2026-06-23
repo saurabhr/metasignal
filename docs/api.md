@@ -1,16 +1,8 @@
 # API Reference
 
-## MetaSignal (MATLAB backend)
+## stdpy — Python measures
 
-The `MetaSignal` class delegates computation to the original MATLAB code and is available when a local MATLAB installation is present.
-
-::: metasignal.MetaSignal
-
----
-
-## stdpy — Pure Python measures
-
-The `stdpy` sub-module is a full NumPy/SciPy implementation of every measure. No MATLAB required.
+The `stdpy` sub-module is a full NumPy/SciPy implementation of every measure.
 
 ### Entry point
 

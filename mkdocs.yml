@@ -67,6 +67,5 @@ nav:
     - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
     - 6. Split-Half Reliability: tutorials/06_split_half_reliability.ipynb
   - API Reference: api.md
-  - MATLAB to Python Mapping: matlab_to_python_mapping.md
   - CLI Reference: cli.md
   - Changelog: changelog.md

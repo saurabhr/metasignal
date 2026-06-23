@@ -63,7 +63,7 @@ print("Computed array shape:", raw.shape)   # (20, 3, 20)
 
 ## 3-SD outlier removal
 
-The Rahnev (2025) MATLAB pipeline (`ana_taskPerformance.m`) removes per-measure, per-level outliers beyond 3 SD, then sets **all levels** to NaN for any subject flagged at any level. This prevents inflation of effects from extreme values.
+The Rahnev (2025) pipeline removes per-measure, per-level outliers beyond 3 SD, then sets **all levels** to NaN for any subject flagged at any level. This prevents inflation of effects from extreme values.
 
 ```python
 def remove_3sd_outliers(arr):

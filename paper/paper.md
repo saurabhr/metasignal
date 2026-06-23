@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 # Summary
 
-`metasignal` is a Python package that provides implementations of Signal Detection Theory (SDT) measures and metacognitive efficiency metrics. The package implements the comprehensive suite of methods evaluated in @rahnev2025, covering first-order perceptual sensitivity (d'), response bias (criterion *c*), and a range of second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The package offers two complementary interfaces: a MATLAB-backed wrapper that calls the original reference implementations, and a pure Python module (`stdpy`) that requires no MATLAB installation and can therefore be used in any Python environment including cloud-computing and automated analysis pipelines.
+`metasignal` is a Python package that provides implementations of Signal Detection Theory (SDT) measures and metacognitive efficiency metrics. The package implements the comprehensive suite of methods evaluated in @rahnev2025, covering first-order perceptual sensitivity (d'), response bias (criterion *c*), and a range of second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The package is implemented entirely in Python (`stdpy` submodule) and can be used in any Python environment including cloud-computing and automated analysis pipelines.
 
 # Statement of Need
 
@@ -30,23 +30,18 @@ Metacognition—the capacity to monitor and evaluate one's own cognitive perform
 `metasignal` addresses the need for a single, maintained Python package that:
 
 1. **Covers the full benchmark** — all seventeen measures from @rahnev2025 are available through a single `compute_all_measures` call.
-2. **Removes the MATLAB dependency** — the `stdpy` submodule is a pure NumPy/SciPy reimplementation suitable for automated pipelines and environments where MATLAB licensing is unavailable.
-3. **Preserves numerical fidelity** — the MATLAB-backed wrapper lets researchers verify outputs against the original published implementations for replication analyses.
-4. **Provides a command-line interface** — measures can be computed directly from count vectors without writing any Python code, facilitating integration with experiment-control software and shell-based batch analyses.
+2. **Pure Python implementation** — the `stdpy` submodule is a NumPy/SciPy reimplementation suitable for automated pipelines and environments of any kind, requiring no proprietary software.
+3. **Provides a command-line interface** — measures can be computed directly from count vectors without writing any Python code, facilitating integration with experiment-control software and shell-based batch analyses.
 
 # State of the Field
 
 Several existing tools overlap with `metasignal`. The canonical MATLAB implementation by @maniscalco2014 implements meta-d' MLE and has been widely used since 2012 but requires a MATLAB licence and does not cover the broader measure landscape benchmarked by @rahnev2025. `metadpy` [@legrand2021] is a Python library focused on meta-d' and its hierarchical Bayesian variant (HMeta-d), and `hmeta-d` [@fleming2017] provides the hierarchical model in MATLAB and R. Neither package implements the full set of seventeen measures from @rahnev2025, and neither provides a command-line interface or the meta-uncertainty and meta-noise estimators introduced in recent work.
 
-`metasignal` is therefore distinguished by (a) implementing the complete Rahnev benchmark suite in pure Python, (b) providing a dual back-end that allows direct comparison with MATLAB reference outputs, and (c) packaging these tools with a CLI, tutorial notebooks, and API documentation suitable for researchers who are not primarily Python programmers.
+`metasignal` is therefore distinguished by (a) implementing the complete Rahnev benchmark suite in pure Python with no proprietary software dependencies, (b) packaging these tools with a CLI, tutorial notebooks, and API documentation suitable for researchers who are not primarily Python programmers.
 
 # Software Design
 
-`metasignal` is structured around two interchangeable back-ends that share a common input convention (NumPy arrays of stimulus labels, responses, and confidence ratings):
-
-**`MetaSignal` (MATLAB back-end).** The `MetaSignal` class wraps the MATLAB Engine API for Python to call the reference MATLAB functions from @rahnev2025. This back-end is appropriate for replication analyses requiring numerical parity with the original published results.
-
-**`stdpy` (pure Python back-end).** The `stdpy` submodule re-implements the same methods using NumPy [@harris2020] and SciPy [@virtanen2020]. It is the default back-end for users without MATLAB. Core routines include:
+`metasignal` accepts a common input convention (NumPy arrays of stimulus labels, responses, and confidence ratings) and exposes all measures through the `stdpy` submodule, which re-implements the benchmark methods using NumPy [@harris2020] and SciPy [@virtanen2020]. Core routines include:
 
 - `compute_sdt_resp` — d' and criterion *c* from trial-level stimulus and response vectors.
 - `trials_to_counts` — conversion of trial-level data into Type 2 rating-scale count matrices.
@@ -56,7 +51,7 @@ Several existing tools overlap with `metasignal`. The canonical MATLAB implement
 - `compute_meta_noise` — meta-noise estimation via a lookup-table interpolation approach.
 - `compute_all_measures` — a convenience wrapper that computes the full benchmark suite in a single call.
 
-Both back-ends return results as Python dictionaries, making them straightforward to use with pandas DataFrames, matplotlib, and standard scientific-Python workflows. The package ships with six tutorial Jupyter notebooks that walk through progressively advanced analyses: basic SDT computation, the full measure suite, statistical inference, difficulty-dependence testing, metacognitive bias, and split-half reliability.
+All functions return results as Python dictionaries or NumPy arrays, making them straightforward to use with pandas DataFrames, matplotlib, and standard scientific-Python workflows. The package ships with six tutorial Jupyter notebooks that walk through progressively advanced analyses: basic SDT computation, the full measure suite, statistical inference, difficulty-dependence testing, metacognitive bias, and split-half reliability.
 
 # Research Impact Statement
 
@@ -68,6 +63,6 @@ Large language model tools (Claude, Anthropic) were used to assist in writing po
 
 # Acknowledgements
 
-The MATLAB reference implementations used by the `MetaSignal` wrapper were developed by Dobromir Rahnev and colleagues [@rahnev2025]. The meta-d' MLE algorithm was originally described by @maniscalco2012.
+The meta-d' MLE algorithm was originally described by @maniscalco2012. The benchmark suite implemented in `metasignal` was established by Dobromir Rahnev and colleagues [@rahnev2025].
 
 # References

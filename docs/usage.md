@@ -92,28 +92,6 @@ noise     = stdpy.compute_meta_noise(stim, resp, conf, n_ratings=2)
 uncert    = stdpy.compute_meta_uncertainty(stim, resp, conf, n_ratings=2)
 ```
 
-## MATLAB backend (`MetaSignal`)
-
-If you have a MATLAB installation and have installed `pip install ".[matlab]"`, you can delegate computation to the original MATLAB code:
-
-```python
-import numpy as np
-from metasignal import MetaSignal
-
-ms = MetaSignal()                           # starts the MATLAB engine
-
-stim = np.array([0, 1, 0, 1] * 20)
-resp = np.array([0, 1, 1, 0] * 20)
-conf = np.array([1, 2, 2, 1] * 20)
-
-results = ms.compute_all_measures(stim, resp, conf, n_ratings=2)
-print(results)
-
-ms.stop()                                   # shut down the engine when done
-```
-
-The first call starts the MATLAB engine (may take a few seconds). Use `ms.stop()` or let the object go out of scope to release it.
-
 ## Statistical inference (`analysis`)
 
 The `metasignal.analysis` sub-package provides tools for running inference over the point estimates:
@@ -173,12 +151,6 @@ For quick exploratory use without writing Python:
 
 ```bash
 metasignal compute --stim "0,1,0,1" --resp "0,1,1,0" --conf "1,2,2,1" --n-ratings 2
-```
-
-Test the MATLAB engine connection:
-
-```bash
-metasignal test-matlab
 ```
 
 See [CLI Reference](cli.md) for the full argument list.

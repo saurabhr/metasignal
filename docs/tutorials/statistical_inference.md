@@ -186,7 +186,7 @@ m_ratio_valid = m_ratio[~np.isnan(m_ratio)]
 
 t, p = stats.ttest_1samp(m_ratio_valid, popmean=1.0)
 n = len(m_ratio_valid)
-cohen_d = t / np.sqrt(n)   # Cohen's d, matching Rahnev (2025) MATLAB convention
+cohen_d = t / np.sqrt(n)   # Cohen's d, matching Rahnev (2025) convention
 
 print(f"M-Ratio: t({n-1}) = {t:.3f}, p = {p:.4f}, d = {cohen_d:.3f}")
 ```

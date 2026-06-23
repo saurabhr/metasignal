@@ -37,4 +37,4 @@ Plus the three Type-1 SDT basics returned for convenience: **d'**, **c** (criter
 
 ## Replication notebooks
 
-If you have the original datasets, the `notebooks/` directory contains a complete 10-step replication of Rahnev (2025), including pre-processing, figure generation, and validation against the MATLAB outputs. See [`notebooks/README.md`](https://github.com/saurabhr/metasignal/blob/main/notebooks/README.md) for the full run order.
+If you have the original datasets, the `notebooks/` directory contains a complete 10-step replication of Rahnev (2025), including pre-processing, figure generation, and validation against the reference outputs. See [`notebooks/README.md`](https://github.com/saurabhr/metasignal/blob/main/notebooks/README.md) for the full run order.

@@ -16,12 +16,6 @@ A single call to `compute_all_measures` returns 20 measures organised into four 
 | Noise & uncertainty | metaNoise, metaUncertainty |
 | Type-1 SDT | d', c, mean confidence |
 
-## Two backends
-
-**`MetaSignal`** (MATLAB backend) wraps the original MATLAB implementation for exact numerical parity with the reference study. Requires a local MATLAB installation with the [MATLAB Engine API for Python](https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html).
-
-**`stdpy`** (pure Python) is a NumPy/SciPy port of every measure. No MATLAB required — fully self-contained.
-
 ## Quick start
 
 ```python
