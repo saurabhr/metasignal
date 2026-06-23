@@ -29,19 +29,42 @@ def perform_ttest(data, test_description="", display=True):
     return pval, tstat, df, cohen_d, ci
 
 def icc(data, icc_type='C-k'):
+    """Intraclass Correlation Coefficient — port of ICC.m (Salarian 2008).
+
+    Args:
+        data: 2-D array of shape (n_targets, n_raters).
+        icc_type: ICC variant using the MATLAB naming convention:
+            ``'1-1'``, ``'1-k'``, ``'C-1'``, ``'C-k'``, ``'A-1'``, ``'A-k'``.
+            Default ``'C-k'`` (consistency, average of k raters — Cronbach's alpha).
+
+    Returns:
+        Single-row ``pandas.DataFrame`` from ``pingouin.intraclass_corr``
+        for the requested type, with columns ``Type``, ``ICC``, ``F``,
+        ``df1``, ``df2``, ``pval``, ``CI95%``.
+
+    Raises:
+        ImportError: If ``pingouin`` is not installed.
+        ValueError: If ``icc_type`` is not one of the six recognised codes.
     """
-    Intraclass Correlation proxy for ICC.m
-    Relies on standard pandas/pingouin logic for advanced cases.
-    We return a dictionary replicating the values.
-    """
-    import pingouin as pg
+    try:
+        import pingouin as pg
+    except ImportError as e:
+        raise ImportError(
+            "pingouin is not installed. Run:\n    pip install pingouin"
+        ) from e
     import pandas as pd
+
     n, k = data.shape
     df = pd.DataFrame(data)
     df = df.reset_index().melt(id_vars='index', var_name='rater', value_name='score')
     df.columns = ['target', 'rater', 'score']
     res = pg.intraclass_corr(data=df, targets='target', raters='rater', ratings='score')
 
-    # Map back to standard ICC types
-    # ICC(2, k) = A-k, ICC(3, k) = C-k, etc.
-    return res
+    pingouin_type = f"ICC({icc_type.replace('-', ',')})"
+    match = res.loc[res["Type"] == pingouin_type]
+    if match.empty:
+        raise ValueError(
+            f"icc_type '{icc_type}' ('{pingouin_type}') not found. "
+            f"Available: {res['Type'].tolist()}"
+        )
+    return match
