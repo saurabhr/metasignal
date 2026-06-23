@@ -54,6 +54,14 @@ nav:
   - User's Guide:
     - Installation: installation.md
     - Usage: usage.md
+  - Tutorials:
+    - Overview: tutorials/index.md
+    - 1. Getting Started: tutorials/getting_started.md
+    - 2. Computing All 20 Measures: tutorials/computing_measures.md
+    - 3. Statistical Inference: tutorials/statistical_inference.md
+    - 4. Difficulty Dependence: tutorials/difficulty_dependence.md
+    - 5. Metacognitive Bias: tutorials/metacognitive_bias.md
+    - 6. Split-Half Reliability: tutorials/split_half_reliability.md
   - API Reference: api.md
   - MATLAB to Python Mapping: matlab_to_python_mapping.md
   - CLI Reference: cli.md
