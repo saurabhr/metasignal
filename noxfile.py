@@ -36,7 +36,7 @@ VENV_DIR = ROOT_DIR / ".venv"
 
 DOCS_DIR = ROOT_DIR / "docs"
 DOCS_SOURCE_DIR = DOCS_DIR
-DOCS_BUILD_DIR = DOCS_DIR / "_build" / "html"
+DOCS_BUILD_DIR = ROOT_DIR / "site"
 
 PACKAGE_BUILD_DIR = ROOT_DIR / "build"
 PACKAGE_DIST_DIR = ROOT_DIR / "dist"
@@ -79,7 +79,7 @@ def cog(session: nox.Session) -> None:
     """Run cog."""
     session.install("cogapp", "PyYAML", ".")
 
-    cog_input_files = ["noxfile.py", "README.md", "docs/cli.md"]
+    cog_input_files = ["noxfile.py", "README.md"]
     for cog_input_file in cog_input_files:
         session.run("cog", *session.posargs, "-r", cog_input_file)
 
@@ -107,42 +107,18 @@ def tests(session: nox.Session) -> None:
 
 @nox.session(python=DOCS_PYTHON_VERSION)
 def docs(session: nox.Session) -> None:
-    """Builds and tests the docs."""
-    args = session.posargs or ["html", "doctest"]
+    """Build the docs with MkDocs."""
+    args = session.posargs or ["--strict"]
 
     session.install(".", "--group", "docs")
-
-    # create a temporary directory to store the doctrees
-    tmp_dir = session.create_tmp()
-
-    for builder in args:
-        session.run(
-            "python", "-Im", "sphinx",
-            "-T",  # display full traceback when an exception occurs
-            "-E",  # rebuild the environment
-            "-W", "--keep-going",  # turn warnings into errors, but continue to the end of the build
-            "-b", builder,  # selects a builder
-            "-d", str(Path(tmp_dir) / "doctrees"),  # directory to save doctree pickles
-            "-D", "language=en",  # set language
-            str(DOCS_SOURCE_DIR),  # source directory
-            str(DOCS_BUILD_DIR),  # output directory
-        )  # fmt: skip
+    session.run("mkdocs", "build", *args)
 
 
 @nox.session(name="docs-live", python=DOCS_PYTHON_VERSION)
 def docs_live(session: nox.Session) -> None:
-    """Builds and serves the docs with hot reloading on file changes."""
-    # fmt: off
-    args = session.posargs or [
-        "--open-browser",  # open the browser after building documentation
-        str(DOCS_SOURCE_DIR),  # source directory
-        str(DOCS_BUILD_DIR),  # output directory
-    ]
-    # fmt: on
-
-    session.install(".", "--group", "docs", "sphinx-autobuild")
-
-    session.run("sphinx-autobuild", *args)
+    """Serve the docs with live reload."""
+    session.install(".", "--group", "docs")
+    session.run("mkdocs", "serve", "--open", *session.posargs)
 
 
 @nox.session(name="clear-packages", python=False)

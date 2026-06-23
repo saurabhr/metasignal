@@ -35,6 +35,13 @@ dependencies = [
 
 [project.optional-dependencies]
 matlab = ["matlabengine"]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-include-markdown-plugin",
+    "mkdocs-click",
+]
 
 [dependency-groups]
 tests = [

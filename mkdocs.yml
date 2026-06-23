@@ -42,13 +42,19 @@ plugins:
             show_object_full_path: false
             docstring_section_style: google
   - include-markdown
-  - click
+
+markdown_extensions:
+  - mkdocs-click
+
+exclude_docs: |
+  conf.py
 
 nav:
   - Home: index.md
   - User's Guide:
     - Installation: installation.md
     - Usage: usage.md
+  - API Reference: api.md
   - MATLAB to Python Mapping: matlab_to_python_mapping.md
   - CLI Reference: cli.md
   - Changelog: changelog.md

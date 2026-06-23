@@ -80,7 +80,7 @@ def group_summary(
         - ``"median"`` — ``np.ndarray`` of shape ``(20,)``
         - ``"sem"`` — ``np.ndarray`` of shape ``(20,)``, standard error of the mean
         - ``"n_valid"`` — ``np.ndarray`` of shape ``(20,)`` int, participants with
-          non-NaN values per measure
+            non-NaN values per measure
         - ``"labels"`` — list of measure name strings (length 20)
     """
     n_participants = len(participants)

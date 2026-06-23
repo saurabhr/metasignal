@@ -1,3 +1,6 @@
-```{include} ../CHANGELOG.md
-:relative-docs: docs/
-```
+# Changelog
+
+{%
+   include-markdown "../CHANGELOG.md"
+   heading-offset=1
+%}
