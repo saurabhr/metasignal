@@ -1,5 +1,9 @@
 # metasignal
 
+[![Tests](https://github.com/saurabhr/metasignal/actions/workflows/test.yml/badge.svg)](https://github.com/saurabhr/metasignal/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/saurabhr/metasignal/blob/main/LICENSE)
+[![Docs](https://readthedocs.org/projects/metasignal/badge/?version=latest)](https://metasignal.readthedocs.io/en/latest/)
+
 <!-- start docs-include-index -->
 Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) *Nature Communications*, 16(1), 701.
 <!-- end docs-include-index -->
