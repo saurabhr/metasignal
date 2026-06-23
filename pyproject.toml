@@ -35,6 +35,11 @@ dependencies = [
 
 [project.optional-dependencies]
 matlab = ["matlabengine"]
+bayesian = [
+    "brmspy",
+    "arviz",
+    "pandas",
+]
 docs = [
     "mkdocs",
     "mkdocs-material",
