@@ -19,11 +19,16 @@ All computation functions expect three parallel arrays of the same length, one r
 import numpy as np
 from metasignal import stdpy
 
-stim = np.array([0, 1, 0, 1] * 25)
-resp = np.array([0, 1, 1, 0] * 25)
-conf = np.array([1, 2, 2, 1] * 25)
+rng = np.random.default_rng(42)
+n, n_ratings = 200, 4
 
-results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=2)
+stim = rng.choice([0, 1], n)
+resp = np.where(rng.random(n) < 0.78, stim, 1 - stim)   # 78% accuracy
+correct = stim == resp
+conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
+                         rng.integers(1, n_ratings, n))   # higher conf when correct
+
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)
 ```
 
@@ -64,13 +69,13 @@ print(f"d' = {dprime:.3f}, c = {c:.3f}")
 **Convert trials to response counts:**
 
 ```python
-nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=2)
+nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=n_ratings)
 ```
 
 **Fit meta-d' via MLE:**
 
 ```python
-nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=2)
+nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=n_ratings)
 result = stdpy.fit_meta_d_mle(nr_s1, nr_s2)
 print(f"meta-d' = {result['meta_da']:.3f}")
 print(f"M-ratio = {result['M_ratio']:.3f}")
@@ -88,8 +93,8 @@ dc        = stdpy.compute_delta_conf(nr_s1, nr_s2)
 **metaNoise and metaUncertainty:**
 
 ```python
-noise     = stdpy.compute_meta_noise(stim, resp, conf, n_ratings=2)
-uncert    = stdpy.compute_meta_uncertainty(stim, resp, conf, n_ratings=2)
+noise     = stdpy.compute_meta_noise(stim, resp, conf, n_ratings=n_ratings)
+uncert    = stdpy.compute_meta_uncertainty(stim, resp, conf, n_ratings=n_ratings)
 ```
 
 ## Statistical inference (`analysis`)
@@ -102,13 +107,17 @@ The `metasignal.analysis` sub-package provides tools for running inference over 
 import numpy as np
 from metasignal.analysis import bootstrap_measure
 
-stim = np.array([0, 1] * 50)
-resp = np.array([0, 1] * 50)
-conf = np.random.default_rng(0).integers(1, 3, 100)
+rng = np.random.default_rng(42)
+n, n_ratings = 200, 4
+stim = rng.choice([0, 1], n)
+resp = np.where(rng.random(n) < 0.78, stim, 1 - stim)
+correct = stim == resp
+conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
+                         rng.integers(1, n_ratings, n))
 
 lo, hi = bootstrap_measure(
     stim, resp, conf,
-    n_ratings=2,
+    n_ratings=n_ratings,
     measure_index=5,   # M-ratio (index 5)
     n_boot=2000,
     ci=0.95,
@@ -150,7 +159,11 @@ print(summary["labels"])  # list of 20 measure names
 For quick exploratory use without writing Python:
 
 ```bash
-metasignal compute --stim "0,1,0,1" --resp "0,1,1,0" --conf "1,2,2,1" --n-ratings 2
+metasignal compute \
+  --stim "0,1,0,1,1,0,1,0,0,1" \
+  --resp "0,1,1,1,1,0,0,0,0,1" \
+  --conf "2,3,1,4,4,3,2,1,3,4" \
+  --n-ratings 4
 ```
 
 See [CLI Reference](cli.md) for the full argument list.

@@ -36,9 +36,9 @@ nox -s dev
 import metasignal
 import numpy as np
 
-stim = np.array([0, 1, 0, 1] * 25)
-resp = np.array([0, 1, 1, 0] * 25)
-conf = np.array([1, 2, 2, 1] * 25)
+stim = np.array([0, 1] * 50)                    # 100 trials, equal S1/S2
+resp = np.array([0, 1] * 40 + [1, 0] * 10)     # 80% accuracy
+conf = np.array([2, 2] * 40 + [1, 1] * 10)     # high conf when correct
 
 results = metasignal.stdpy.compute_all_measures(stim, resp, conf, n_ratings=2)
 print(results.shape)  # (20,)

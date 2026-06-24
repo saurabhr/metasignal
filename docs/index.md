@@ -22,11 +22,15 @@ A single call to `compute_all_measures` returns 20 measures organised into four 
 import numpy as np
 from metasignal import stdpy
 
-stim = np.array([0, 1, 0, 1] * 25)
-resp = np.array([0, 1, 1, 0] * 25)
-conf = np.array([1, 2, 2, 1] * 25)
+rng = np.random.default_rng(42)
+n, n_ratings = 200, 4
+stim = rng.choice([0, 1], n)
+resp = np.where(rng.random(n) < 0.78, stim, 1 - stim)   # 78% accuracy
+correct = stim == resp
+conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
+                         rng.integers(1, n_ratings, n))   # higher conf when correct
 
-results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=2)
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)  # array of 20 float values
 ```
 

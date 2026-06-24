@@ -25,20 +25,23 @@ pip install .
 import numpy as np
 from metasignal import stdpy
 
-# Sample trial data
-stim = np.array([0, 1, 0, 1] * 25)
-resp = np.array([0, 1, 1, 0] * 25)
-conf = np.array([1, 2, 2, 1] * 25)
+rng = np.random.default_rng(42)
+n, n_ratings = 200, 4
+stim = rng.choice([0, 1], n)
+resp = np.where(rng.random(n) < 0.78, stim, 1 - stim)   # 78% accuracy
+correct = stim == resp
+conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
+                         rng.integers(1, n_ratings, n))   # higher conf when correct
 
 # Compute all 20 measures at once
-results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=2)
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)
 
 # Compute basic SDT
 dprime, c, _ = stdpy.compute_sdt_resp(stim, resp)
 
 # Fit meta-d' MLE
-nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=2)
+nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=n_ratings)
 meta = stdpy.fit_meta_d_mle(nr_s1, nr_s2)
 print(f"Meta-d' M-Ratio: {meta['M_ratio']}")
 ```
@@ -46,6 +49,10 @@ print(f"Meta-d' M-Ratio: {meta['M_ratio']}")
 ### CLI
 
 ```bash
-metasignal compute --stim "0,1,0,1" --resp "0,1,1,0" --conf "1,2,2,1" --n-ratings 2
+metasignal compute \
+  --stim "0,1,0,1,1,0,1,0,0,1" \
+  --resp "0,1,1,1,1,0,0,0,0,1" \
+  --conf "2,3,1,4,4,3,2,1,3,4" \
+  --n-ratings 4
 ```
 <!-- end docs-include-usage -->
