@@ -34,4 +34,6 @@ results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)  # array of 20 float values
 ```
 
-See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples.
+For group-level inference, `metasignal.analysis` provides bootstrap confidence intervals, permutation tests, and group summaries over those same 20 measures. For fully Bayesian modelling, `metasignal.sdtbayes` offers 11 hierarchical approaches ranging from fast two-stage estimation to robust, variational, and state-space models (optional install: `pip install metasignal[sdtbayes]`).
+
+See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples. For Bayesian modelling, see [Bayesian Analysis](sdtbayes.md).

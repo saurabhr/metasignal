@@ -24,17 +24,25 @@ from metasignal.sdtbayes import setup_runtime
 setup_runtime()
 ```
 
-## Four modelling approaches
+## Modelling approaches
 
-| Approach | Function | Description |
-|----------|----------|-------------|
-| **Ordered logistic** | `fit_hierarchical_metad` | Trial-level; confidence ratings as cumulative outcome. Fast and extensible. |
-| **Two-stage Bayesian** | `fit_two_stage_group` | MLE per participant → Bayesian on log M-ratio. Fast Stage 2; no Stage-1 uncertainty propagation. |
-| **Full HMeta-d** | `fit_full_metad` | Single-stage port of Fleming (2017) JAGS model to Stan via brms `stanvar()`. Identical SDT likelihood to MLE; most accurate. |
-| **Subject-level Bayesian** | `fit_subject_level` | Single-participant model. Matches `metadpy.hmetad(nR_S1, nR_S2)` API and prior structure; runs via brmspy/Stan. |
+| # | Approach | Primary function(s) | Description |
+|---|----------|---------------------|-------------|
+| 1 | **Ordered logistic** | `fit_hierarchical_metad` | Trial-level; confidence ratings as cumulative outcome. Fast and extensible. |
+| 2 | **Two-stage Bayesian** | `fit_two_stage_group` | MLE per participant → Bayesian on log M-ratio. Fast Stage 2; no Stage-1 uncertainty propagation. |
+| 3 | **Full HMeta-d** | `fit_full_metad` | Single-stage port of Fleming (2017) JAGS model to Stan via brms `stanvar()`. Identical SDT likelihood to MLE; most accurate. |
+| 4 | **Subject-level Bayesian** | `fit_subject_level` | Single-participant model. Matches `metadpy.hmetad(nR_S1, nR_S2)` API and prior structure; runs via brmspy/Stan. |
+| 5 | **Robust HMeta-d** | `fit_robust_metad` | Like Approach 3 but with a Student-t hyperprior on log M-ratio. Downweights outlier participants and estimates degrees of freedom. |
+| 6 | **Variational inference** | `fit_full_metad_vi`, `fit_robust_metad_vi` | Fast approximate posteriors for Approaches 3 and 5 via Pathfinder or ADVI. |
+| 7 | **Beta AUC** | `fit_beta_auc_group` | Non-parametric alternative to meta-d'. Models Type-2 AUC directly with a Beta likelihood; no Gaussian SDT assumption. |
+| 8 | **Gaussian mixture** | `fit_mixture_group` | Identifies latent metacognitive subpopulations via a K-component Gaussian mixture on log M-ratio. |
+| 9 | **Bivariate hierarchical** | `fit_multivariate_mratio` | Models log M-ratio and d' jointly, estimating their cross-participant correlation. |
+| 10 | **Meta-regression** | `fit_two_stage_regression`, `fit_full_metad_regression` | Regresses log M-ratio on participant-level covariates (age, scores, etc.) via either the two-stage or full hierarchical path. |
+| 11 | **State-space** | `fit_statespace_metad` | Models how group-level meta-d' evolves across repeated sessions via a random walk with free process noise. |
 
-Approaches 1–3 have matching two-group comparison counterparts:
-`fit_group_comparison`, `fit_two_stage_comparison`, `fit_full_metad_comparison`.
+Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
+`fit_group_comparison`, `fit_two_stage_comparison`, `fit_full_metad_comparison`,
+`fit_robust_metad_comparison`, `fit_beta_auc_comparison`, `fit_multivariate_mratio_comparison`.
 
 ## API Reference
 
@@ -59,6 +67,50 @@ Approaches 1–3 have matching two-group comparison counterparts:
 ### Approach 4 — Subject-Level Bayesian (metadpy API)
 
 ::: metasignal.sdtbayes.fit_subject_level
+
+### Approach 5 — Robust HMeta-d
+
+::: metasignal.sdtbayes.fit_robust_metad
+
+::: metasignal.sdtbayes.fit_robust_metad_comparison
+
+### Approach 6 — Variational Inference
+
+::: metasignal.sdtbayes.fit_full_metad_vi
+
+::: metasignal.sdtbayes.fit_robust_metad_vi
+
+### Approach 7 — Beta Regression on Type-2 AUC
+
+::: metasignal.sdtbayes.fit_beta_auc_group
+
+::: metasignal.sdtbayes.fit_beta_auc_comparison
+
+### Approach 8 — Gaussian Mixture on log M-ratio
+
+::: metasignal.sdtbayes.fit_mixture_group
+
+### Approach 9 — Bivariate Hierarchical Model
+
+::: metasignal.sdtbayes.fit_multivariate_mratio
+
+::: metasignal.sdtbayes.fit_multivariate_mratio_comparison
+
+### Approach 10 — Bayesian Meta-Regression
+
+::: metasignal.sdtbayes.fit_two_stage_regression
+
+::: metasignal.sdtbayes.fit_full_metad_regression
+
+### Approach 11 — State-Space Model
+
+::: metasignal.sdtbayes.fit_statespace_metad
+
+### Runtime and Result Types
+
+::: metasignal.sdtbayes.setup_runtime
+
+::: metasignal.sdtbayes.FitResult
 
 ### Diagnostics and Posteriors
 
