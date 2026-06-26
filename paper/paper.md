@@ -1,5 +1,5 @@
 ---
-title: 'metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for decision-making'
+title: 'metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for Decision-Making'
 tags:
   - Python
   - metacognition
@@ -41,7 +41,7 @@ Understanding how accurately people know what they know is among the most fundam
 
 # Statement of Need
 
-Metacognition shapes learning, clinical outcomes, and adaptive decision-making across virtually every domain of cognition [@flemingdolan2012]. A 26-researcher consensus initiative identified developing falsifiable computational models of visual metacognition as a primary long-term goal [@rahnev2022] — an agenda that depends critically on reliable, standardised implementations of the measures used to evaluate those models. Yet the measurement toolkit has remained fragmented and inaccessible. The gold-standard measure, meta-d' [@maniscalco2012], requires solving a constrained maximum-likelihood problem that has historically been available only as a MATLAB script [@maniscalco2014], placing it out of reach for the growing majority of researchers working in Python. The broader landscape of metacognitive measures lacked any systematic comparison until @rahnev2025 — and even then, no open Python implementation of the full benchmark followed.
+Metacognition shapes learning, clinical outcomes, and adaptive decision-making across virtually every domain of cognition [@flemingdolan2012] from perceptual [@yeungsummerfield2012] to economic decision-making [@lebreton2015]. A 26-researcher consensus initiative identified developing falsifiable computational models of visual metacognition as a primary long-term goal [@rahnev2022] — an agenda that depends critically on reliable, standardised implementations of the measures used to evaluate those models. Yet the measurement toolkit has remained fragmented and inaccessible. The gold-standard measure, meta-d' [@maniscalco2012], requires solving a constrained maximum-likelihood problem that has historically been available only as a MATLAB script [@maniscalco2014], placing it out of reach for the growing majority of researchers working in Python. The broader landscape of metacognitive measures lacked any systematic comparison until @rahnev2025 — and even then, no open Python implementation of the full benchmark followed.
 
 `metasignal` closes that gap with a single, maintained package that:
 
