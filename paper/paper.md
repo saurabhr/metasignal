@@ -1,17 +1,20 @@
 ---
-title: 'metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures'
+title: 'metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for decision-making'
 tags:
   - Python
   - metacognition
   - signal detection theory
   - meta-d prime
   - confidence ratings
-  - neuroscience
+  - decision-making
   - cognitive psychology
 authors:
   - name: Saurabh Ranjan
     orcid: 0000-0002-7868-7223
     affiliation: 1
+- name: Saurabh Ranjan
+orcid: 0000-0002-7868-7223
+affiliation: 1
 affiliations:
   - name: University of Florida, USA
     index: 1
