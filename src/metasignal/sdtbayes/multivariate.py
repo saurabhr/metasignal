@@ -55,7 +55,7 @@ def fit_multivariate_mratio(
         participants: List of ``(stim, resp, conf)`` tuples, one per participant.
         n_ratings: Number of confidence rating categories.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.
@@ -150,7 +150,7 @@ def fit_multivariate_mratio_comparison(
         group_b: Participants in group B.
         n_ratings: Number of confidence rating categories.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.

@@ -56,7 +56,7 @@ def fit_mixture_group(
         n_ratings: Number of confidence rating categories.
         n_components: Number of Gaussian mixture components (default 2).
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.

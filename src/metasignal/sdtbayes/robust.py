@@ -202,7 +202,7 @@ def fit_robust_metad(
         participants: List of ``(stim, resp, conf)`` tuples, one per participant.
         n_ratings: Number of confidence rating categories.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor for multinomial cells (default 1e-7).
@@ -291,7 +291,7 @@ def fit_robust_metad_comparison(
         group_b: Participants in group B.
         n_ratings: Number of confidence rating categories.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor (default 1e-7).

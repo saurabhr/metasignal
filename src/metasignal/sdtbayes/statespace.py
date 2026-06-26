@@ -183,7 +183,7 @@ def fit_statespace_metad(
             participants in the same order.
         n_ratings: Number of confidence rating categories.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.

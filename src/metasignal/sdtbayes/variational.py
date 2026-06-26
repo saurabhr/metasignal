@@ -64,7 +64,7 @@ def fit_full_metad_vi(
         n_ratings: Number of confidence rating categories.
         algorithm: VI algorithm — ``"pathfinder"`` (default), ``"meanfield"``,
             or ``"fullrank"``.
-        iter: VI iterations (default 1000).  For Pathfinder this is the number
+        n_iter: VI iterations (default 1000).  For Pathfinder this is the number
             of draws from the approximation; for ADVI it is gradient steps.
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm`` (e.g. ``tol=1e-7``).
@@ -125,7 +125,7 @@ def fit_robust_metad_vi(
         n_ratings: Number of confidence rating categories.
         algorithm: VI algorithm — ``"pathfinder"`` (default), ``"meanfield"``,
             or ``"fullrank"``.
-        iter: VI iterations (default 1000).
+        n_iter: VI iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.
 

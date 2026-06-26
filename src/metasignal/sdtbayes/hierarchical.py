@@ -111,7 +111,7 @@ def fit_hierarchical_metad(
             from 1 to ``n_ratings``.
         n_ratings: Number of confidence rating categories.
         chains: Number of MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup (burn-in) iterations per chain (default 1000).
         seed: Random seed for reproducibility (default 42).
         items: Optional list of item-ID arrays, one per participant (same
@@ -220,7 +220,7 @@ def fit_group_comparison(
         group_b: Participants in group B — list of ``(stim, resp, conf)`` tuples.
         n_ratings: Number of confidence rating categories.
         chains: Number of MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations per chain (default 1000).
         seed: Random seed (default 42).
         items_a: Optional item-ID arrays for group A (parallel to ``group_a``).

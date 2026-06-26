@@ -256,7 +256,7 @@ def fit_subject_level(  # pylint: disable=invalid-name
         nR_S2: Rating distribution for S2 (signal) trials, same format.
             Elements ``[0..nR-1]`` are misses; elements ``[nR..2*nR-1]`` are hits.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor for multinomial cells (default 1e-5,

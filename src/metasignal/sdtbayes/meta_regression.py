@@ -91,7 +91,7 @@ def fit_two_stage_regression(
         formula: brms formula string.  Default: ``"log_m_ratio ~ col1 + col2"``
             using all non-``participant`` columns in ``covariates``.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         **kwargs: Forwarded to ``brmspy.brms.brm``.
@@ -289,7 +289,7 @@ def fit_full_metad_regression(
             Must have the same length as ``participants``.  Covariates are
             mean-centred automatically.
         chains: MCMC chains (default 4).
-        iter: Total iterations per chain including warmup (default 2000).
+        n_iter: Total iterations per chain including warmup (default 2000).
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor for multinomial cells (default 1e-7).
