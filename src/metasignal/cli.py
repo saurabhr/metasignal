@@ -1,6 +1,7 @@
 """Main CLI for metasignal."""
 
 from importlib import metadata
+from typing import Optional
 
 import click
 import numpy as np
@@ -17,7 +18,7 @@ def cli() -> None:
     """Signal Detection Theory and metacognitive measures (pure Python)."""
 
 
-# ── compute ───────────────────────────────────────────────────────────────────
+# ── compute ───────────────────────────────────────────────────────────────
 
 @cli.command()
 @click.option(
@@ -58,7 +59,7 @@ def compute(stim: str, resp: str, conf: str, n_ratings: int) -> None:
         click.echo(f"{label:<20} {val_str:>10}")
 
 
-# ── bayes ─────────────────────────────────────────────────────────────────────
+# ── bayes ────────────────────────────────────────────────────────────────
 
 def _import_sdtbayes():
     """Lazy-import sdtbayes or surface a clear install hint."""
@@ -107,7 +108,7 @@ def _df_to_participants(
     ]
 
 
-def _show_summary(fit, sdt, var_names_str: str | None) -> None:
+def _show_summary(fit, sdt, var_names_str: Optional[str]) -> None:
     """Print convergence warning (if any) then the posterior summary table."""
     diag = sdt.convergence_diagnostics(fit)
     n_bad = int((~diag["converged"]).sum())
@@ -155,7 +156,7 @@ def bayes() -> None:
 def two_stage(
     csv_path: str, n_ratings: int,
     participant_col: str, stim_col: str, resp_col: str, conf_col: str,
-    chains: int, iter: int, seed: int, var_names: str | None,
+    chains: int, iter: int, seed: int, var_names: Optional[str],
 ) -> None:
     """Two-stage Bayesian group-level M-ratio from a CSV of trial data.
 
@@ -215,7 +216,7 @@ def two_stage(
 def compare(
     csv_path: str, n_ratings: int, group_col: str,
     participant_col: str, stim_col: str, resp_col: str, conf_col: str,
-    chains: int, iter: int, seed: int, var_names: str | None,
+    chains: int, iter: int, seed: int, var_names: Optional[str],
 ) -> None:
     """Two-stage Bayesian comparison of M-ratio between two groups.
 
@@ -225,7 +226,7 @@ def compare(
 
     \b
       b_group1  — posterior difference in log M-ratio (group B − group A)
-                  exp(b_group1) > 1 means group B has higher M-ratio
+                   exp(b_group1) > 1 means group B has higher M-ratio
 
     CSV must have one trial per row with columns for group, participant ID,
     stimulus (0/1), response (0/1), and confidence rating.

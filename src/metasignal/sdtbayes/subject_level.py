@@ -286,7 +286,7 @@ def fit_subject_level(
 
         fit = fit_subject_level(nR_S1, nR_S2)
         print(posterior_summary(fit, var_names=["sl_d1", "sl_c1", "sl_meta_d",
-                                                 "sl_cS1", "sl_cS2"]))
+                                               "sl_cS1", "sl_cS2"]))
 
         # Expected output (comparable to metadpy):
         #   sl_d1      mean ≈  1.53,  sd ≈ 0.14
