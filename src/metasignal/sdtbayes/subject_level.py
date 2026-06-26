@@ -186,7 +186,7 @@ sl_cS2_hn ~ normal(0, 0.7071);
 
 
 def _extract_type1(
-    nR_S1: np.ndarray, nR_S2: np.ndarray
+    nR_S1: np.ndarray, nR_S2: np.ndarray  # pylint: disable=invalid-name
 ) -> dict[str, int]:
     """Extract Type-1 summary statistics from nR arrays."""
     nR_S1 = np.asarray(nR_S1, dtype=int)
@@ -201,7 +201,7 @@ def _extract_type1(
 
 
 def _build_counts_vector(
-    nR_S1: np.ndarray, nR_S2: np.ndarray
+    nR_S1: np.ndarray, nR_S2: np.ndarray  # pylint: disable=invalid-name
 ) -> np.ndarray:
     """Build the flat [CR | FA | M | H] count vector for the Stan model.
 
@@ -222,11 +222,11 @@ def _build_counts_vector(
     ]).astype(int)
 
 
-def fit_subject_level(
+def fit_subject_level(  # pylint: disable=invalid-name
     nR_S1: np.ndarray,
     nR_S2: np.ndarray,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     tol: float = 1e-5,
@@ -335,7 +335,7 @@ def fit_subject_level(
         stanvars=[sv_data, sv_params, sv_tpar, sv_model],
         data2=extra_data,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

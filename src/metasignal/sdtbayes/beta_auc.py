@@ -54,7 +54,7 @@ def _compute_auc2_per_participant(
         try:
             nr_s1, nr_s2 = trials_to_counts(stim, resp, conf, n_ratings)
             auc2 = float(compute_type2_auc(nr_s1, nr_s2))
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, RuntimeError) as exc:  # noqa: BLE001
             warnings.warn(
                 f"Participant {pid}: AUC2 computation failed ({exc}). Setting to NaN.",
                 stacklevel=3,
@@ -79,7 +79,7 @@ def fit_beta_auc_group(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -150,7 +150,7 @@ def fit_beta_auc_group(
         family="beta",
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,
@@ -163,7 +163,7 @@ def fit_beta_auc_comparison(
     group_b: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -227,7 +227,7 @@ def fit_beta_auc_comparison(
         family="beta",
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

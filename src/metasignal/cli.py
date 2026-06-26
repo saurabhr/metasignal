@@ -44,7 +44,7 @@ def compute(stim: str, resp: str, conf: str, n_ratings: int) -> None:
             "Could not parse input — expected comma-separated numbers (e.g. 0,1,0,1).",
             param_hint="'--stim' / '--resp' / '--conf'",
         )
-    if not (len(stim_arr) == len(resp_arr) == len(conf_arr)):
+    if len(stim_arr) != len(resp_arr) or len(stim_arr) != len(conf_arr):
         raise click.UsageError(
             f"--stim ({len(stim_arr)}), --resp ({len(resp_arr)}), and --conf ({len(conf_arr)}) "
             "must all have the same number of values."
@@ -66,21 +66,21 @@ def _import_sdtbayes():
     try:
         import metasignal.sdtbayes as _mod
         return _mod
-    except ImportError:
+    except ImportError as exc:
         raise click.ClickException(
             "The sdtbayes extra is not installed. Run:\n"
             "    pip install metasignal[sdtbayes]"
-        )
+        ) from exc
 
 
 def _read_csv(csv_path: str, *required_cols: str) -> "pd.DataFrame":
     """Read a CSV and validate that every required column is present."""
     try:
         import pandas as pd
-    except ImportError:
+    except ImportError as exc:
         raise click.ClickException(
             "pandas is required. Run:\n    pip install metasignal[sdtbayes]"
-        )
+        ) from exc
     df = pd.read_csv(csv_path)
     missing = [c for c in required_cols if c not in df.columns]
     if missing:
@@ -148,7 +148,7 @@ def bayes() -> None:
               help="Column name for confidence ratings.")
 @click.option("--chains", default=4, show_default=True,
               help="Number of MCMC chains.")
-@click.option("--iter", default=2000, show_default=True,
+@click.option("--iter", "n_iter", default=2000, show_default=True,
               help="Total iterations per chain (including warmup).")
 @click.option("--seed", default=42, show_default=True, help="Random seed.")
 @click.option("--var-names", default=None,
@@ -156,7 +156,7 @@ def bayes() -> None:
 def two_stage(
     csv_path: str, n_ratings: int,
     participant_col: str, stim_col: str, resp_col: str, conf_col: str,
-    chains: int, iter: int, seed: int, var_names: Optional[str],
+    chains: int, n_iter: int, seed: int, var_names: Optional[str],
 ) -> None:
     """Two-stage Bayesian group-level M-ratio from a CSV of trial data.
 
@@ -179,7 +179,7 @@ def two_stage(
 
     fit, mle_df = sdt.fit_two_stage_group(
         participants, n_ratings=n_ratings,
-        chains=chains, iter=iter, seed=seed,
+        chains=chains, iter=n_iter, seed=seed,
     )
 
     click.echo("\nStage 1 — per-participant MLE estimates:")
@@ -208,7 +208,7 @@ def two_stage(
               help="Column name for confidence ratings.")
 @click.option("--chains", default=4, show_default=True,
               help="Number of MCMC chains.")
-@click.option("--iter", default=2000, show_default=True,
+@click.option("--iter", "n_iter", default=2000, show_default=True,
               help="Total iterations per chain (including warmup).")
 @click.option("--seed", default=42, show_default=True, help="Random seed.")
 @click.option("--var-names", default=None,
@@ -216,7 +216,7 @@ def two_stage(
 def compare(
     csv_path: str, n_ratings: int, group_col: str,
     participant_col: str, stim_col: str, resp_col: str, conf_col: str,
-    chains: int, iter: int, seed: int, var_names: Optional[str],
+    chains: int, n_iter: int, seed: int, var_names: Optional[str],
 ) -> None:
     """Two-stage Bayesian comparison of M-ratio between two groups.
 
@@ -257,7 +257,7 @@ def compare(
 
     fit, mle_df = sdt.fit_two_stage_comparison(
         group_a, group_b, n_ratings=n_ratings,
-        chains=chains, iter=iter, seed=seed,
+        chains=chains, iter=n_iter, seed=seed,
     )
 
     click.echo("\nStage 1 — per-participant MLE estimates:")

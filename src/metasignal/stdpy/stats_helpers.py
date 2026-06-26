@@ -1,5 +1,6 @@
+"""Statistical helper functions for SDT and metacognition analyses."""
 import numpy as np
-import scipy.stats as stats
+from scipy import stats
 
 def z2r(z):
     """Fisher's Z to R."""
@@ -24,7 +25,11 @@ def perform_ttest(data, test_description="", display=True):
     ci = m + ts * sem
 
     if display:
-        print(f"{test_description}: t({df}) = {tstat:.3f}, p = {pval:.3e}, Cohen's d = {cohen_d:.3f}, 95% CI = [{ci[0]:.3f}, {ci[1]:.3f}]")
+        msg = (
+            f"{test_description}: t({df}) = {tstat:.3f}, p = {pval:.3e}, "
+            f"Cohen's d = {cohen_d:.3f}, 95% CI = [{ci[0]:.3f}, {ci[1]:.3f}]"
+        )
+        print(msg)
 
     return pval, tstat, df, cohen_d, ci
 
@@ -54,7 +59,6 @@ def icc(data, icc_type='C-k'):
         ) from e
     import pandas as pd
 
-    n, k = data.shape
     df = pd.DataFrame(data)
     df = df.reset_index().melt(id_vars='index', var_name='rater', value_name='score')
     df.columns = ['target', 'rater', 'score']

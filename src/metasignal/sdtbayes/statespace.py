@@ -122,16 +122,16 @@ def _mle_matrix(
     from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
     from metasignal.stdpy.metad import fit_meta_d_mle
 
-    T = len(sessions)
-    N = len(sessions[0])
-    log_mr = np.zeros((N, T), dtype=float)
-    valid = np.zeros((N, T), dtype=float)
+    n_sess = len(sessions)
+    n_subj = len(sessions[0])
+    log_mr = np.zeros((n_subj, n_sess), dtype=float)
+    valid = np.zeros((n_subj, n_sess), dtype=float)
 
     for t, session in enumerate(sessions):
-        if len(session) != N:
+        if len(session) != n_subj:
             msg = (
                 f"Session {t} has {len(session)} participants but session 0 "
-                f"has {N}.  All sessions must have the same number of participants."
+                f"has {n_subj}.  All sessions must have the same number of participants."
             )
             raise ValueError(msg)
         for i, (stim, resp, conf) in enumerate(session):
@@ -147,7 +147,7 @@ def _mle_matrix(
                     raise ValueError("invalid M-ratio")
                 log_mr[i, t] = float(np.log(m_ratio))
                 valid[i, t] = 1.0
-            except Exception as exc:  # noqa: BLE001
+            except (ValueError, RuntimeError) as exc:
                 warnings.warn(
                     f"Participant {i}, session {t}: MLE failed ({exc}). "
                     "Treating as missing.",
@@ -165,7 +165,7 @@ def fit_statespace_metad(
     sessions: list[list[tuple[np.ndarray, np.ndarray, np.ndarray]]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -192,7 +192,7 @@ def fit_statespace_metad(
         ``FitResult``.  Key posterior parameters:
 
         - ``mu_logMr[t]`` — group-level log M-ratio at session ``t``.
-          Use ``exp(mu_logMr)`` for M-ratio trajectory.
+            Use ``exp(mu_logMr)`` for M-ratio trajectory.
         - ``group_mratio[t]`` — same on M-ratio scale (generated quantity).
         - ``sigma_process`` — session-to-session drift.
         - ``sigma_subj`` — stable between-subject SD.
@@ -235,18 +235,18 @@ def fit_statespace_metad(
     except ImportError as e:
         raise ImportError(_BRMSPY_MSG) from e
 
-    T = len(sessions)
-    if T < 2:
+    n_sess = len(sessions)
+    if n_sess < 2:
         msg = "Need at least 2 sessions for the state-space model."
         raise ValueError(msg)
 
-    N = len(sessions[0])
+    n_subj = len(sessions[0])
     log_mr, valid = _mle_matrix(sessions, n_ratings)
 
     n_valid_total = int(valid.sum())
-    if n_valid_total < N:
+    if n_valid_total < n_subj:
         warnings.warn(
-            f"Only {n_valid_total} of {N * T} (participant, session) cells "
+            f"Only {n_valid_total} of {n_subj * n_sess} (participant, session) cells "
             "have valid MLE estimates.  State-space estimates may be unstable.",
             stacklevel=2,
         )
@@ -259,8 +259,8 @@ def fit_statespace_metad(
 
     dummy_df = pd.DataFrame({"dummy": [0]})
     extra_data = {
-        "T":          T,
-        "N":          N,
+        "T":          n_sess,
+        "N":          n_subj,
         "log_mr_obs": log_mr.tolist(),
         "is_valid":   valid.tolist(),
     }
@@ -272,7 +272,7 @@ def fit_statespace_metad(
         stanvars=[sv_data, sv_par, sv_tpar, sv_model, sv_gen],
         data2=extra_data,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

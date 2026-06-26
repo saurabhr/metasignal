@@ -15,7 +15,9 @@ from metasignal.stdpy.metanoise import compute_meta_noise
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 
 
-def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int) -> np.ndarray:
+def compute_all_measures(
+    stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
+) -> np.ndarray:
     """Compute all 20 meta-signal measures mimicking the MATLAB output.
 
     Returns an array of 20 elements corresponding to:
@@ -40,7 +42,7 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
         return np.full(20, np.nan)
 
     # Make input 0/1
-    stim_min, stim_max = np.min(stim), np.max(stim)
+    stim_max = np.max(stim)
     resp_max = np.max(resp)
 
     stim_bin = np.zeros_like(stim, dtype=int)
@@ -74,7 +76,7 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
         meta_d = meta_d_res["meta_da"]
         m_ratio = meta_d_res["M_ratio"]
         m_diff = meta_d_res["M_diff"]
-    except Exception:
+    except (ValueError, RuntimeError):
         meta_d, m_ratio, m_diff = np.nan, np.nan, np.nan
 
     if dprime < 0.2:  # avoid dividing by a negative or very small d' (matches MATLAB)
@@ -113,13 +115,13 @@ def compute_all_measures(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n
     try:
         mn_res = compute_meta_noise(stim_bin, resp_bin, conf.astype(int), n_ratings)
         meta_noise = mn_res["meta_noise"]
-    except Exception:
+    except (ValueError, RuntimeError):
         meta_noise = np.nan
 
     # metaUncertainty
     try:
         meta_uncert = compute_meta_uncertainty(stim_bin, resp_bin, conf.astype(int), n_ratings)
-    except Exception:
+    except (ValueError, RuntimeError):
         meta_uncert = np.nan
 
     # Combine all

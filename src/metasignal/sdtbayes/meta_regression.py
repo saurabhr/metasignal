@@ -44,7 +44,6 @@ Full hierarchical:
 
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import numpy as np
@@ -52,7 +51,7 @@ import numpy as np
 from metasignal.sdtbayes.diagnostics import FitResult
 from metasignal.sdtbayes.full_metad import (
     _STAN_DATA,
-    _STAN_TRANSFORMED_PARAMETERS,
+
     _build_count_matrix,
     _group_likelihood_block,
 )
@@ -71,7 +70,7 @@ def fit_two_stage_regression(
     covariates: "pd.DataFrame",
     formula: str | None = None,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -162,7 +161,7 @@ def fit_two_stage_regression(
         family="student",
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,
@@ -174,13 +173,13 @@ def fit_two_stage_regression(
 # Path 2 — Full hierarchical with Stan design matrix
 # ---------------------------------------------------------------------------
 
-def _build_regression_stan_blocks(p_cov: int) -> tuple[str, str, str, str]:
+def _build_regression_stan_blocks() -> tuple[str, str, str, str]:
     """Return (data, parameters, tpar, model) Stan blocks for regression model.
 
     The design matrix ``X_cov`` (nsubj × p_cov, mean-centred) replaces the
     scalar ``mu_logMratio`` with ``alpha_logMratio + X_cov[s] * beta_logMratio``.
     """
-    stan_data = _STAN_DATA + f"""\
+    stan_data = _STAN_DATA + """\
 int<lower=1> p_cov;
 matrix[nsubj, p_cov] X_cov;   // covariate design matrix (mean-centred)
 """
@@ -261,7 +260,7 @@ def fit_full_metad_regression(
     n_ratings: int,
     covariates: "np.ndarray",
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     tol: float = 1e-7,
@@ -331,24 +330,24 @@ def fit_full_metad_regression(
     except ImportError as e:
         raise ImportError(_BRMSPY_MSG) from e
 
-    X = np.atleast_2d(np.asarray(covariates, dtype=float))
-    if X.shape[0] == 1 and X.shape[1] == len(participants):
-        X = X.T
-    if X.shape[0] != len(participants):
+    cov_mat = np.atleast_2d(np.asarray(covariates, dtype=float))
+    if cov_mat.shape[0] == 1 and cov_mat.shape[1] == len(participants):
+        cov_mat = cov_mat.T
+    if cov_mat.shape[0] != len(participants):
         msg = (
-            f"covariates has {X.shape[0]} rows but participants has "
+            f"covariates has {cov_mat.shape[0]} rows but participants has "
             f"{len(participants)} entries."
         )
         raise ValueError(msg)
 
     # Mean-centre covariates so alpha is interpretable at the covariate mean
-    X = X - X.mean(axis=0)
-    p_cov = X.shape[1]
+    cov_mat = cov_mat - cov_mat.mean(axis=0)
+    p_cov = cov_mat.shape[1]
 
     nsubj = len(participants)
     counts_mat = _build_count_matrix(participants, n_ratings)
     stan_data_str, stan_params_str, stan_tpar_str, stan_model_str = (
-        _build_regression_stan_blocks(p_cov)
+        _build_regression_stan_blocks()
     )
 
     sv_data   = brms.call("stanvar", scode=stan_data_str,   block="data")
@@ -363,7 +362,7 @@ def fit_full_metad_regression(
         "hmetad_counts": counts_mat.tolist(),
         "Tol":           tol,
         "p_cov":         p_cov,
-        "X_cov":         X.tolist(),
+        "X_cov":         cov_mat.tolist(),
     }
 
     _result = brms.brm(
@@ -373,7 +372,7 @@ def fit_full_metad_regression(
         stanvars=[sv_data, sv_params, sv_tpar, sv_model],
         data2=extra_data,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

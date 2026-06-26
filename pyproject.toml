@@ -124,3 +124,21 @@ lines-between-types = 0
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.pylint.messages_control]
+disable = [
+    "import-outside-toplevel",       # intentional: lazy imports for optional deps (brmspy, arviz, pandas)
+    "too-many-arguments",            # scientific functions legitimately need many parameters
+    "too-many-positional-arguments",
+    "too-many-locals",               # complex numerical algorithms use many variables
+    "too-many-statements",
+    "duplicate-code",                # similar structure across Bayesian fitting functions is intentional
+    "not-context-manager",           # false positive: brmspy not installed during lint
+    "unexpected-keyword-arg",        # false positive: arviz/brmspy not installed during lint
+]
+
+[tool.pylint.format]
+max-line-length = 110
+
+[tool.pylint.basic]
+good-names = ["T", "N", "X", "n", "k", "i", "j", "e", "f"]

@@ -15,7 +15,7 @@ _LOOKUP_TABLE: dict[str, Any] | None = None
 
 def _load_lookup_interpolator() -> RegularGridInterpolator:
     """Load the lookup table array and create an interpolator."""
-    global _LOOKUP_TABLE
+    global _LOOKUP_TABLE  # pylint: disable=global-statement
     if _LOOKUP_TABLE is not None:
         return _LOOKUP_TABLE["interpolator"]
 
@@ -55,7 +55,9 @@ def _evaluate_integral(mu_gauss: float, mu_lognormal: float, meta_noise: float) 
     return float(np.clip(val, 0.0, 1.0))
 
 
-def _compute_sdt_criteria(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int) -> tuple[float, np.ndarray]:
+def _compute_sdt_criteria(
+    stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
+) -> tuple[float, np.ndarray]:
     """Calculate d' and initial criteria similar to the MATLAB compute_SDTcriteria."""
     hr = np.zeros(2 * n_ratings - 1)
     far = np.zeros(2 * n_ratings - 1)
@@ -65,14 +67,28 @@ def _compute_sdt_criteria(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, 
 
     # Criteria on the left of decision criterion
     for roc_point in range(1, n_ratings):
-        hr[roc_point - 1] = np.sum((stim == max_stim) & ((resp == max_stim) | (conf <= n_ratings - roc_point))) / np.sum(stim == max_stim)
-        far[roc_point - 1] = np.sum((stim == min_stim) & ((resp == max_stim) | (conf <= n_ratings - roc_point))) / np.sum(stim == min_stim)
+        n_sig = np.sum(stim == max_stim)
+        hr[roc_point - 1] = (
+            np.sum((stim == max_stim) & ((resp == max_stim) | (conf <= n_ratings - roc_point)))
+            / n_sig
+        )
+        n_noi = np.sum(stim == min_stim)
+        far[roc_point - 1] = (
+            np.sum((stim == min_stim) & ((resp == max_stim) | (conf <= n_ratings - roc_point)))
+            / n_noi
+        )
 
     # Decision criterion and right confidence criteria
     for roc_point in range(n_ratings, 2 * n_ratings):
         idx = roc_point - 1
-        hr[idx] = np.sum((stim == max_stim) & (resp == max_stim) & (conf > roc_point - n_ratings)) / np.sum(stim == max_stim)
-        far[idx] = np.sum((stim == min_stim) & (resp == max_stim) & (conf > roc_point - n_ratings)) / np.sum(stim == min_stim)
+        hr[idx] = (
+            np.sum((stim == max_stim) & (resp == max_stim) & (conf > roc_point - n_ratings))
+            / np.sum(stim == max_stim)
+        )
+        far[idx] = (
+            np.sum((stim == min_stim) & (resp == max_stim) & (conf > roc_point - n_ratings))
+            / np.sum(stim == min_stim)
+        )
 
     eps = 1e-10
     hr = np.clip(hr, eps, 1 - eps)
@@ -85,7 +101,9 @@ def _compute_sdt_criteria(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, 
     return dprime, c
 
 
-def _logl_func_criteria(mu_conf: float, mus: tuple[float, float], meta_noise: float, data_counts_binary: np.ndarray) -> dict[str, Any]:
+def _logl_func_criteria(
+    mu_conf: float, mus: tuple[float, float], meta_noise: float, data_counts_binary: np.ndarray
+) -> dict[str, Any]:
     """Calculate log likelihood for a given confidence criterion."""
     p_hc_s1 = _evaluate_integral(mus[0], mu_conf, meta_noise)
     p_hc_s2 = _evaluate_integral(mus[1], mu_conf, meta_noise)
@@ -100,7 +118,9 @@ def _logl_func_criteria(mu_conf: float, mus: tuple[float, float], meta_noise: fl
     return {"logL": logl, "p_HC": np.array([p_hc_s1, p_hc_s2]), "x": mu_conf}
 
 
-def compute_meta_noise(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int) -> dict[str, Any]:
+def compute_meta_noise(
+    stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
+) -> dict[str, Any]:
     """Fit Lognormal Meta Noise model to data.
 
     Args:
@@ -199,8 +219,8 @@ def compute_meta_noise(stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_r
                     ]).T
 
                 # Internal optimization for criterion mu
-                def _crit_obj(mc: float) -> float:
-                    return _logl_func_criteria(mc, mus, test_mn, dc_bin)["logL"]
+                def _crit_obj(mc: float, _mus=mus, _mn=test_mn, _dc=dc_bin) -> float:
+                    return _logl_func_criteria(mc, _mus, _mn, _dc)["logL"]
 
                 # Constrain internal search roughly [-6, 6]
                 res_crit = minimize_scalar(_crit_obj, bounds=(-6.0, 6.0), method='bounded')

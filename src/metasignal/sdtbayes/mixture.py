@@ -26,7 +26,6 @@ with the smaller mean is the "low metacognition" group.
 
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import numpy as np
@@ -42,7 +41,7 @@ def fit_mixture_group(
     n_ratings: int,
     n_components: int = 2,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -133,7 +132,7 @@ def fit_mixture_group(
         family=mix_family,
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

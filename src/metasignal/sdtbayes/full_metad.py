@@ -163,6 +163,7 @@ def _group_likelihood_block(
     cs2_var: str,
 ) -> str:
     """Generate the Stan model likelihood block for one group."""
+    # pylint: disable=line-too-long
     return f"""\
 for (s in 1:{nsubj_var}) {{
     real S1mu = -{mratio_var}[s] * {d1_var}[s] / 2.0;
@@ -389,7 +390,7 @@ def fit_full_metad(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     tol: float = 1e-7,
@@ -482,7 +483,7 @@ def fit_full_metad(
         stanvars=[sv_data, sv_params, sv_tpar, sv_model],
         data2=extra_data,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,
@@ -495,7 +496,7 @@ def fit_full_metad_comparison(
     group_b: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     tol: float = 1e-7,
@@ -573,7 +574,7 @@ def fit_full_metad_comparison(
         stanvars=[sv_data, sv_params, sv_tpar, sv_model],
         data2=extra_data,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,

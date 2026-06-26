@@ -25,7 +25,6 @@ Key posterior parameters
 
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import numpy as np
@@ -40,7 +39,7 @@ def fit_multivariate_mratio(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -117,7 +116,7 @@ def fit_multivariate_mratio(
         rescor=True,
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,
@@ -130,7 +129,7 @@ def fit_multivariate_mratio_comparison(
     group_b: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
     chains: int = 4,
-    iter: int = 2000,
+    n_iter: int = 2000,
     warmup: int = 1000,
     seed: int = 42,
     **kwargs: Any,
@@ -202,7 +201,7 @@ def fit_multivariate_mratio_comparison(
         rescor=True,
         priors=priors,
         chains=chains,
-        iter=iter,
+        iter=n_iter,
         warmup=warmup,
         seed=seed,
         **kwargs,
