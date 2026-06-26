@@ -2387,12 +2387,12 @@ requires-dist = [
     { name = "click" },
     { name = "matlabengine", marker = "extra == 'matlab'" },
     { name = "matplotlib" },
-    { name = "mkdocs", marker = "extra == 'docs'" },
-    { name = "mkdocs-click", marker = "extra == 'docs'" },
-    { name = "mkdocs-include-markdown-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-jupyter", marker = "extra == 'docs'" },
-    { name = "mkdocs-material", marker = "extra == 'docs'" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.6,<2" },
+    { name = "mkdocs-click", marker = "extra == 'docs'", specifier = ">=0.8,<2" },
+    { name = "mkdocs-include-markdown-plugin", marker = "extra == 'docs'", specifier = ">=7,<9" },
+    { name = "mkdocs-jupyter", marker = "extra == 'docs'", specifier = ">=0.24,<2" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.5,<10" },
+    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.28,<2" },
     { name = "numpy" },
     { name = "pandas", marker = "extra == 'sdtbayes'" },
     { name = "scipy" },
@@ -2401,21 +2401,21 @@ provides-extras = ["matlab", "sdtbayes", "docs"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mkdocs" },
-    { name = "mkdocs-click" },
-    { name = "mkdocs-include-markdown-plugin" },
-    { name = "mkdocs-jupyter" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings", extras = ["python"] },
+    { name = "mkdocs", specifier = ">=1.6,<2" },
+    { name = "mkdocs-click", specifier = ">=0.8,<2" },
+    { name = "mkdocs-include-markdown-plugin", specifier = ">=7,<9" },
+    { name = "mkdocs-jupyter", specifier = ">=0.24,<2" },
+    { name = "mkdocs-material", specifier = ">=9.5,<10" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.28,<2" },
     { name = "pytest" },
 ]
 docs = [
-    { name = "mkdocs" },
-    { name = "mkdocs-click" },
-    { name = "mkdocs-include-markdown-plugin" },
-    { name = "mkdocs-jupyter" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings", extras = ["python"] },
+    { name = "mkdocs", specifier = ">=1.6,<2" },
+    { name = "mkdocs-click", specifier = ">=0.8,<2" },
+    { name = "mkdocs-include-markdown-plugin", specifier = ">=7,<9" },
+    { name = "mkdocs-jupyter", specifier = ">=0.24,<2" },
+    { name = "mkdocs-material", specifier = ">=9.5,<10" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.28,<2" },
 ]
 tests = [{ name = "pytest" }]
 
