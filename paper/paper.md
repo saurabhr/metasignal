@@ -12,13 +12,26 @@ authors:
   - name: Saurabh Ranjan
     orcid: 0000-0002-7868-7223
     affiliation: 1
-- name: Saurabh Ranjan
-orcid: 0000-0002-7868-7223
-affiliation: 1
+  - name: Mukesh Makwana
+    orcid: 0000-0003-2018-7768
+    affiliation: 2
+  - name: Konstantina Sokratous
+    orcid: 0000-0002-7868-7223
+    affiliation: 3
+  - name: Brian Odegaard
+    orcid: 0000-0002-5459-1884
+    affiliation: 1
+  - name: Ashish Aggarwal
+    orcid: 0000-0002-8365-3810
+    affiliation: 1
 affiliations:
   - name: University of Florida, USA
     index: 1
-date: 22 June 2026
+  - name: Brown University, USA
+    index: 2
+  - name: University of Missouri, USA
+    index: 3
+date: 25 June 2026
 bibliography: paper.bib
 ---
 
