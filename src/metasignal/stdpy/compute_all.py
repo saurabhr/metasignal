@@ -70,14 +70,21 @@ def compute_all_measures(
         nr_s1 = nr_s1 + pad
         nr_s2 = nr_s2 + pad
 
-    # meta-d', M-Ratio, M-Diff
+    # meta-d', M-Ratio, M-Diff, model fit stats
     try:
         meta_d_res = fit_meta_d_mle(nr_s1, nr_s2)
         meta_d = meta_d_res["meta_da"]
         m_ratio = meta_d_res["M_ratio"]
-        m_diff = meta_d_res["M_diff"]
+        m_diff  = meta_d_res["M_diff"]
+        logL    = meta_d_res["logL"]
+        aic     = meta_d_res["AIC"]
+        bic     = meta_d_res["BIC"]
+        aicc    = meta_d_res["AICc"]
+        k_fit   = meta_d_res["k"]
+        n_fit   = meta_d_res["n"]
     except (ValueError, RuntimeError):
         meta_d, m_ratio, m_diff = np.nan, np.nan, np.nan
+        logL, aic, bic, aicc, k_fit, n_fit = np.nan, np.nan, np.nan, np.nan, np.nan, np.nan
 
     if dprime < 0.2:  # avoid dividing by a negative or very small d' (matches MATLAB)
         m_ratio = np.nan
@@ -129,5 +136,6 @@ def compute_all_measures(
         meta_d, auc2, gamma, phi, delta_conf,
         m_ratio, auc2_ratio, gamma_ratio, phi_ratio, delta_conf_ratio,
         m_diff, auc2_diff, gamma_diff, phi_diff, delta_conf_diff,
-        meta_noise, meta_uncert, float(dprime), float(c), float(mean_conf)
+        meta_noise, meta_uncert, float(dprime), float(c), float(mean_conf),
+        logL, aic, bic, aicc, float(k_fit), float(n_fit),
     ])

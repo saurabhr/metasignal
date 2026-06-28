@@ -12,7 +12,14 @@ from metasignal.stdpy.type2 import (
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 from metasignal.stdpy.metanoise import compute_meta_noise
 from metasignal.stdpy.compute_all import compute_all_measures
-from metasignal.stdpy.group import metad
+from metasignal.stdpy.group import fit_group, MEASURE_COLS
+from metasignal.stdpy.plot import (
+    plot_confidence,
+    plot_type2roc,
+    plot_sanity_check,
+    plot_forest,
+    plot_measures,
+)
 from metasignal.stdpy.simulate import (
     type2_SDT_simuation,
     type2_SDT_simuation_bayes,
@@ -35,7 +42,13 @@ __all__ = [
     "compute_delta_conf",
     "compute_meta_noise",
     "compute_all_measures",
-    "metad",
+    "fit_group",
+    "MEASURE_COLS",
+    "plot_confidence",
+    "plot_type2roc",
+    "plot_sanity_check",
+    "plot_forest",
+    "plot_measures",
     "type2_SDT_simuation",
     "type2_SDT_simuation_bayes",
     "ratings2df",

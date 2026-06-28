@@ -147,12 +147,26 @@ def fit_meta_d_mle(
     da = scale * d1
     meta_da = scale * meta_d1_final
 
+    log_l = -res.fun
+    # Free parameters: 1 (meta_d1) + (2*n_ratings - 2) type-2 criteria
+    k = 2 * n_ratings - 1
+    n_obs = int(np.sum(nr_s1) + np.sum(nr_s2))
+    aic  = 2 * k - 2 * log_l
+    bic  = k * np.log(n_obs) - 2 * log_l
+    # AICc: small-sample correction
+    aicc = aic + (2 * k * (k + 1)) / max(n_obs - k - 1, 1)
+
     return {
         "da": da,
         "meta_da": meta_da,
         "M_ratio": meta_da / da if da != 0 else np.nan,
         "M_diff": meta_da - da,
         "s": s,
-        "logL": -res.fun,
+        "logL": log_l,
+        "k": k,
+        "n": n_obs,
+        "AIC": aic,
+        "BIC": bic,
+        "AICc": aicc,
         "success": res.success,
     }

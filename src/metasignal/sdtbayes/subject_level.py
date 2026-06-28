@@ -50,16 +50,6 @@ from metasignal.sdtbayes.diagnostics import FitResult
 # Stan code blocks — matching metadpy's subject_level_pymc.py exactly
 # ---------------------------------------------------------------------------
 
-_SL_DATA = """\
-int<lower=1> nratings;
-array[nratings * 4] int sl_counts;   // [CR | FA | M | H], nratings each
-int<lower=0> sl_H;    // total hits
-int<lower=0> sl_FA;   // total false alarms
-int<lower=0> sl_S;    // total signal trials
-int<lower=0> sl_N;    // total noise trials
-real<lower=0> sl_Tol;
-"""
-
 _SL_PARAMETERS = """\
 // --- Type-1 ---
 real sl_d1;
@@ -312,28 +302,41 @@ def fit_subject_level(  # pylint: disable=invalid-name
     n_ratings = len(nR_S1) // 2
     t1 = _extract_type1(nR_S1, nR_S2)
     counts = _build_counts_vector(nR_S1, nR_S2)
+    n_counts = int(len(counts))
 
-    sv_data   = brms.call("stanvar", scode=_SL_DATA,                   block="data")
+    # brms stanvar(block="data") requires x= (the R data object) per element;
+    # scode= overrides the auto-inferred Stan type declaration.
+    sv_nratings = brms.call("stanvar", x=int(n_ratings), name="nratings",
+                             scode="int<lower=1> nratings;")
+    sv_counts   = brms.call("stanvar",
+                             x=[int(c) for c in counts.tolist()], name="sl_counts",
+                             scode=f"array[{n_counts}] int sl_counts;")
+    sv_H        = brms.call("stanvar", x=int(t1["H"]),  name="sl_H",
+                             scode="int<lower=0> sl_H;")
+    sv_FA       = brms.call("stanvar", x=int(t1["FA"]), name="sl_FA",
+                             scode="int<lower=0> sl_FA;")
+    sv_S        = brms.call("stanvar", x=int(t1["S"]),  name="sl_S",
+                             scode="int<lower=0> sl_S;")
+    sv_N        = brms.call("stanvar", x=int(t1["N"]),  name="sl_N",
+                             scode="int<lower=0> sl_N;")
+    sv_Tol      = brms.call("stanvar", x=float(tol),    name="sl_Tol",
+                             scode="real<lower=0> sl_Tol;")
+
     sv_params = brms.call("stanvar", scode=_SL_PARAMETERS,             block="parameters")
     sv_tpar   = brms.call("stanvar", scode=_SL_TRANSFORMED_PARAMETERS, block="tpar")
     sv_model  = brms.call("stanvar", scode=_SL_MODEL,                  block="model")
 
-    extra_data = {
-        "nratings":   n_ratings,
-        "sl_counts":  counts.tolist(),
-        "sl_H":       t1["H"],
-        "sl_FA":      t1["FA"],
-        "sl_S":       t1["S"],
-        "sl_N":       t1["N"],
-        "sl_Tol":     tol,
-    }
-
+    # brms 2.23.0 removed empty(). Workaround: bernoulli family with
+    # sample_prior="only" → prior_only=1 → default likelihood skipped.
+    # Intercept is sampled from flat prior but is independent of our custom
+    # Stan parameters, so marginals are correct.
     _result = brms.brm(
-        formula=brms.bf("dummy ~ 1"),
-        data=pd.DataFrame({"dummy": [0]}),
-        family=brms.call("empty"),
-        stanvars=[sv_data, sv_params, sv_tpar, sv_model],
-        data2=extra_data,
+        formula=brms.bf("y ~ 1"),
+        data=pd.DataFrame({"y": [0]}),
+        family="bernoulli",
+        sample_prior="only",
+        stanvars=[sv_nratings, sv_counts, sv_H, sv_FA, sv_S, sv_N, sv_Tol,
+                  sv_params, sv_tpar, sv_model],
         chains=chains,
         iter=n_iter,
         warmup=warmup,

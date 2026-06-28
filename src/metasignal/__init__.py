@@ -11,4 +11,7 @@ def __getattr__(name: str) -> object:
     if name == "sdtbayes":
         import importlib
         return importlib.import_module("metasignal.sdtbayes")
+    if name == "itmc":
+        import importlib
+        return importlib.import_module("metasignal.itmc")
     raise AttributeError(f"module 'metasignal' has no attribute {name!r}")

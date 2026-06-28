@@ -251,26 +251,31 @@ def fit_statespace_metad(
             stacklevel=2,
         )
 
-    sv_data  = brms.call("stanvar", scode=_SS_DATA,                  block="data")
-    sv_par   = brms.call("stanvar", scode=_SS_PARAMETERS,            block="parameters")
-    sv_tpar  = brms.call("stanvar", scode=_SS_TRANSFORMED_PARAMETERS, block="tpar")
-    sv_model = brms.call("stanvar", scode=_SS_MODEL,                 block="model")
-    sv_gen   = brms.call("stanvar", scode=_SS_GENERATED,             block="genquant")
+    sv_T    = brms.call("stanvar", x=int(n_sess), name="T",
+                        scode="int<lower=1> T;")
+    sv_N    = brms.call("stanvar", x=int(n_subj), name="N",
+                        scode="int<lower=1> N;")
+    sv_logmr = brms.call("stanvar",
+                          x=[[float(v) for v in row] for row in log_mr.tolist()],
+                          name="log_mr_obs",
+                          scode="matrix[N, T] log_mr_obs;")
+    sv_valid = brms.call("stanvar",
+                          x=[[float(v) for v in row] for row in valid.tolist()],
+                          name="is_valid",
+                          scode="matrix[N, T] is_valid;")
 
-    dummy_df = pd.DataFrame({"dummy": [0]})
-    extra_data = {
-        "T":          n_sess,
-        "N":          n_subj,
-        "log_mr_obs": log_mr.tolist(),
-        "is_valid":   valid.tolist(),
-    }
+    sv_par   = brms.call("stanvar", scode=_SS_PARAMETERS,             block="parameters")
+    sv_tpar  = brms.call("stanvar", scode=_SS_TRANSFORMED_PARAMETERS, block="tpar")
+    sv_model = brms.call("stanvar", scode=_SS_MODEL,                  block="model")
+    sv_gen   = brms.call("stanvar", scode=_SS_GENERATED,              block="genquant")
+
 
     _result = brms.brm(
-        formula=brms.bf("dummy ~ 1"),
-        data=dummy_df,
-        family=brms.call("empty"),
-        stanvars=[sv_data, sv_par, sv_tpar, sv_model, sv_gen],
-        data2=extra_data,
+        formula=brms.bf("y ~ 1"),
+        data=pd.DataFrame({"y": [0]}),
+        family="bernoulli",
+        sample_prior="only",
+        stanvars=[sv_T, sv_N, sv_logmr, sv_valid, sv_par, sv_tpar, sv_model, sv_gen],
         chains=chains,
         iter=n_iter,
         warmup=warmup,

@@ -457,31 +457,34 @@ def fit_full_metad(
 
     nsubj = len(participants)
     counts_mat = _build_count_matrix(participants, n_ratings)
+    n_counts_cols = n_ratings * 4
 
-    # --- Inject custom Stan code blocks via stanvar() ---
-    sv_data   = brms.call("stanvar", scode=_STAN_DATA,                    block="data")
+    # brms stanvar(block="data") requires x= per element (brms 2.20+)
+    sv_nsubj   = brms.call("stanvar", x=int(nsubj),    name="nsubj",
+                            scode="int<lower=1> nsubj;")
+    sv_nratings = brms.call("stanvar", x=int(n_ratings), name="nratings",
+                             scode="int<lower=1> nratings;")
+    sv_counts  = brms.call("stanvar",
+                            x=[[int(v) for v in row] for row in counts_mat.tolist()],
+                            name="hmetad_counts",
+                            scode=f"array[nsubj, {n_counts_cols}] int hmetad_counts;")
+    sv_tol     = brms.call("stanvar", x=float(tol), name="Tol",
+                            scode="real<lower=0> Tol;")
+
     sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS,              block="parameters")
     sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS,  block="tpar")
     sv_model  = brms.call("stanvar", scode=_STAN_MODEL,                   block="model")
 
-    # Dummy single-row DataFrame — brm() needs a data argument even with
-    # the empty family; real data is passed via data2.
-    dummy_df = pd.DataFrame({"dummy": [0]})
-
-    # Additional data objects for the custom Stan data block
-    extra_data = {
-        "nsubj":          nsubj,
-        "nratings":       n_ratings,
-        "hmetad_counts":  counts_mat.tolist(),
-        "Tol":            tol,
-    }
+    # brms 2.23.0 removed empty(). Workaround: bernoulli + constant(0) intercept
+    # + sample_prior="only" → prior_only=1 → default likelihood skipped.
 
     _result = brms.brm(
-        formula=brms.bf("dummy ~ 1"),
-        data=dummy_df,
-        family=brms.call("empty"),
-        stanvars=[sv_data, sv_params, sv_tpar, sv_model],
-        data2=extra_data,
+        formula=brms.bf("y ~ 1"),
+        data=pd.DataFrame({"y": [0]}),
+        family="bernoulli",
+        sample_prior="only",
+        stanvars=[sv_nsubj, sv_nratings, sv_counts, sv_tol,
+                  sv_params, sv_tpar, sv_model],
         chains=chains,
         iter=n_iter,
         warmup=warmup,
@@ -550,29 +553,37 @@ def fit_full_metad_comparison(
     nb = len(group_b)
     counts_a = _build_count_matrix(group_a, n_ratings)
     counts_b = _build_count_matrix(group_b, n_ratings)
+    n_counts_cols = n_ratings * 4
 
-    sv_data   = brms.call("stanvar", scode=_STAN_DATA_TWO_GROUP,                      block="data")
-    sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS_TWO_GROUP,                block="parameters")
-    sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP,    block="tpar")
-    sv_model  = brms.call("stanvar", scode=_STAN_MODEL_TWO_GROUP,                     block="model")
+    sv_na      = brms.call("stanvar", x=int(na),       name="nsubj_a",
+                            scode="int<lower=1> nsubj_a;")
+    sv_nb      = brms.call("stanvar", x=int(nb),       name="nsubj_b",
+                            scode="int<lower=1> nsubj_b;")
+    sv_nratings = brms.call("stanvar", x=int(n_ratings), name="nratings",
+                             scode="int<lower=1> nratings;")
+    sv_ca      = brms.call("stanvar",
+                            x=[[int(v) for v in row] for row in counts_a.tolist()],
+                            name="hmetad_counts_a",
+                            scode=f"array[nsubj_a, {n_counts_cols}] int hmetad_counts_a;")
+    sv_cb      = brms.call("stanvar",
+                            x=[[int(v) for v in row] for row in counts_b.tolist()],
+                            name="hmetad_counts_b",
+                            scode=f"array[nsubj_b, {n_counts_cols}] int hmetad_counts_b;")
+    sv_tol     = brms.call("stanvar", x=float(tol),   name="Tol",
+                            scode="real<lower=0> Tol;")
 
-    import pandas as pd
-    dummy_df = pd.DataFrame({"dummy": [0]})
-    extra_data = {
-        "nsubj_a":           na,
-        "nsubj_b":           nb,
-        "nratings":          n_ratings,
-        "hmetad_counts_a":   counts_a.tolist(),
-        "hmetad_counts_b":   counts_b.tolist(),
-        "Tol":               tol,
-    }
+    sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS_TWO_GROUP,             block="parameters")
+    sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP, block="tpar")
+    sv_model  = brms.call("stanvar", scode=_STAN_MODEL_TWO_GROUP,                  block="model")
+
 
     _result = brms.brm(
-        formula=brms.bf("dummy ~ 1"),
-        data=dummy_df,
-        family=brms.call("empty"),
-        stanvars=[sv_data, sv_params, sv_tpar, sv_model],
-        data2=extra_data,
+        formula=brms.bf("y ~ 1"),
+        data=pd.DataFrame({"y": [0]}),
+        family="bernoulli",
+        sample_prior="only",
+        stanvars=[sv_na, sv_nb, sv_nratings, sv_ca, sv_cb, sv_tol,
+                  sv_params, sv_tpar, sv_model],
         chains=chains,
         iter=n_iter,
         warmup=warmup,

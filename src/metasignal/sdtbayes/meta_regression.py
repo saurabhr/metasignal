@@ -350,27 +350,36 @@ def fit_full_metad_regression(
         _build_regression_stan_blocks()
     )
 
-    sv_data   = brms.call("stanvar", scode=stan_data_str,   block="data")
+    n_counts_cols = n_ratings * 4
+    sv_nsubj    = brms.call("stanvar", x=int(nsubj),      name="nsubj",
+                             scode="int<lower=1> nsubj;")
+    sv_nratings = brms.call("stanvar", x=int(n_ratings),  name="nratings",
+                             scode="int<lower=1> nratings;")
+    sv_counts   = brms.call("stanvar",
+                             x=[[int(v) for v in row] for row in counts_mat.tolist()],
+                             name="hmetad_counts",
+                             scode=f"array[nsubj, {n_counts_cols}] int hmetad_counts;")
+    sv_tol      = brms.call("stanvar", x=float(tol),      name="Tol",
+                             scode="real<lower=0> Tol;")
+    sv_pcov     = brms.call("stanvar", x=int(p_cov),      name="p_cov",
+                             scode="int<lower=1> p_cov;")
+    sv_xcov     = brms.call("stanvar",
+                             x=[[float(v) for v in row] for row in cov_mat.tolist()],
+                             name="X_cov",
+                             scode="matrix[nsubj, p_cov] X_cov;")
+
     sv_params = brms.call("stanvar", scode=stan_params_str, block="parameters")
     sv_tpar   = brms.call("stanvar", scode=stan_tpar_str,   block="tpar")
     sv_model  = brms.call("stanvar", scode=stan_model_str,  block="model")
 
-    dummy_df = pd.DataFrame({"dummy": [0]})
-    extra_data = {
-        "nsubj":         nsubj,
-        "nratings":      n_ratings,
-        "hmetad_counts": counts_mat.tolist(),
-        "Tol":           tol,
-        "p_cov":         p_cov,
-        "X_cov":         cov_mat.tolist(),
-    }
 
     _result = brms.brm(
-        formula=brms.bf("dummy ~ 1"),
-        data=dummy_df,
-        family=brms.call("empty"),
-        stanvars=[sv_data, sv_params, sv_tpar, sv_model],
-        data2=extra_data,
+        formula=brms.bf("y ~ 1"),
+        data=pd.DataFrame({"y": [0]}),
+        family="bernoulli",
+        sample_prior="only",
+        stanvars=[sv_nsubj, sv_nratings, sv_counts, sv_tol, sv_pcov, sv_xcov,
+                  sv_params, sv_tpar, sv_model],
         chains=chains,
         iter=n_iter,
         warmup=warmup,
