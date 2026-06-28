@@ -321,3 +321,352 @@ def type2_SDT_simuation_bayes(
     nR_S2 = np.concatenate([nI_rS1, nC_rS2])
 
     return nR_S1, nR_S2
+
+
+# ---------------------------------------------------------------------------
+# ratings2df
+# ---------------------------------------------------------------------------
+
+def ratings2df(nR_S1: np.ndarray, nR_S2: np.ndarray) -> "pd.DataFrame":
+    """Convert nR_S1 / nR_S2 count arrays to a trial-level DataFrame.
+
+    Port of ``metadpy.utils.ratings2df``.
+
+    Parameters
+    ----------
+    nR_S1, nR_S2 :
+        Count vectors, length ``2 * nRatings``.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Columns: ``Stimuli`` (0/1), ``Responses`` (0/1), ``Accuracy`` (0/1),
+        ``Confidence`` (1..nRatings), ``nTrial``. Rows are shuffled.
+    """
+    import pandas as _pd
+    nR_S1 = np.asarray(nR_S1, dtype=int)
+    nR_S2 = np.asarray(nR_S2, dtype=int)
+    nRatings = len(nR_S1) // 2
+
+    rows: list = []
+    for i in range(nRatings):
+        conf = nRatings - i           # high confidence at low index
+        for _ in range(nR_S1[i]):
+            rows.append({"Stimuli": 0, "Responses": 0, "Accuracy": 1, "Confidence": conf})
+        for _ in range(nR_S2[i]):
+            rows.append({"Stimuli": 1, "Responses": 0, "Accuracy": 0, "Confidence": conf})
+        for _ in range(nR_S1[nRatings + i]):
+            rows.append({"Stimuli": 0, "Responses": 1, "Accuracy": 0, "Confidence": i + 1})
+        for _ in range(nR_S2[nRatings + i]):
+            rows.append({"Stimuli": 1, "Responses": 1, "Accuracy": 1, "Confidence": i + 1})
+
+    df = _pd.DataFrame(rows).sample(frac=1).reset_index(drop=True)
+    df["nTrial"] = np.arange(len(df))
+    return df
+
+
+# ---------------------------------------------------------------------------
+# trialSimulation
+# ---------------------------------------------------------------------------
+
+def trialSimulation(
+    d: float = 1.0,
+    metad: float = 2.0,
+    c: float = 0.0,
+    nRatings: int = 4,
+    nTrials: int = 500,
+    rng: "np.random.Generator | None" = None,
+) -> "pd.DataFrame":
+    """Simulate a single participant using closed-form SDT probabilities.
+
+    Computes exact multinomial probabilities from normal-CDF integrals and
+    draws counts — much faster than trial-by-trial noise simulation.
+    Port of ``metadpy.utils.trialSimulation``.
+
+    Parameters
+    ----------
+    d :
+        Type-1 d-prime.
+    metad :
+        Type-2 meta-d' in d-prime units.
+    c :
+        Type-1 decision criterion.
+    nRatings :
+        Number of confidence rating levels.
+    nTrials :
+        Number of trials.
+    rng :
+        Optional :class:`numpy.random.Generator` for reproducibility.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Columns: ``Stimuli``, ``Responses``, ``Accuracy``, ``Confidence``, ``nTrial``.
+    """
+    if rng is None:
+        rng = np.random.default_rng()
+
+    c1 = c + np.linspace(-1.5, -0.5, nRatings - 1)
+    c2 = c + np.linspace(0.5,  1.5,  nRatings - 1)
+
+    H  = round((1 - norm.cdf(c,  d / 2)) * (nTrials / 2))
+    FA = round((1 - norm.cdf(c, -d / 2)) * (nTrials / 2))
+    CR = round(norm.cdf(c, -d / 2)       * (nTrials / 2))
+    M  = round(norm.cdf(c,  d / 2)       * (nTrials / 2))
+
+    S1mu = -metad / 2
+    S2mu =  metad / 2
+
+    C_area_rS1 = norm.cdf(c, S1mu)
+    I_area_rS1 = norm.cdf(c, S2mu)
+    C_area_rS2 = 1 - norm.cdf(c, S2mu)
+    I_area_rS2 = 1 - norm.cdf(c, S1mu)
+
+    t2c1x = np.concatenate([[-np.inf], c1, [c], c2, [np.inf]])
+
+    prC_rS1, prI_rS1, prC_rS2, prI_rS2 = [], [], [], []
+    for i in range(nRatings):
+        prC_rS1.append((norm.cdf(t2c1x[i + 1], S1mu) - norm.cdf(t2c1x[i], S1mu)) / C_area_rS1)
+        prI_rS1.append((norm.cdf(t2c1x[i + 1], S2mu) - norm.cdf(t2c1x[i], S2mu)) / I_area_rS1)
+        prC_rS2.append(
+            ((1 - norm.cdf(t2c1x[nRatings + i],     S2mu))
+           - (1 - norm.cdf(t2c1x[nRatings + i + 1], S2mu))) / C_area_rS2
+        )
+        prI_rS2.append(
+            ((1 - norm.cdf(t2c1x[nRatings + i],     S1mu))
+           - (1 - norm.cdf(t2c1x[nRatings + i + 1], S1mu))) / I_area_rS2
+        )
+
+    def _norm(p: list) -> np.ndarray:
+        a = np.clip(np.array(p, dtype=float), 0, None)
+        return a / a.sum()
+
+    nC_rS1 = rng.multinomial(CR, _norm(prC_rS1))
+    nI_rS1 = rng.multinomial(M,  _norm(prI_rS1))
+    nC_rS2 = rng.multinomial(H,  _norm(prC_rS2))
+    nI_rS2 = rng.multinomial(FA, _norm(prI_rS2))
+
+    nr_s1 = np.concatenate([nC_rS1, nI_rS2])
+    nr_s2 = np.concatenate([nI_rS1, nC_rS2])
+
+    return ratings2df(nr_s1, nr_s2)
+
+
+# ---------------------------------------------------------------------------
+# responseSimulation
+# ---------------------------------------------------------------------------
+
+def responseSimulation(
+    d: float = 1.0,
+    metad: float = 2.0,
+    c: float = 0.0,
+    nRatings: int = 4,
+    nTrials: int = 500,
+    nSubjects: int = 1,
+    rng: "np.random.Generator | None" = None,
+) -> "pd.DataFrame":
+    """Simulate responses for one or more participants.
+
+    Calls :func:`trialSimulation` once per subject and stacks the results.
+    Port of ``metadpy.utils.responseSimulation``.
+
+    Parameters
+    ----------
+    d :
+        Type-1 d-prime (same for all subjects).
+    metad :
+        Meta-d' (same for all subjects).
+    c :
+        Type-1 criterion (same for all subjects).
+    nRatings :
+        Number of confidence rating levels.
+    nTrials :
+        Trials per subject.
+    nSubjects :
+        Number of subjects.
+    rng :
+        Optional :class:`numpy.random.Generator`.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Columns: ``Stimuli``, ``Responses``, ``Accuracy``, ``Confidence``,
+        ``nTrial``, ``Subject``.
+    """
+    import pandas as _pd
+    if rng is None:
+        rng = np.random.default_rng()
+
+    frames = []
+    for sub in range(nSubjects):
+        df = trialSimulation(d=d, metad=metad, c=c,
+                             nRatings=nRatings, nTrials=nTrials, rng=rng)
+        df["Subject"] = sub
+        frames.append(df)
+
+    return _pd.concat(frames, ignore_index=True)
+
+
+# ---------------------------------------------------------------------------
+# pairedResponseSimulation
+# ---------------------------------------------------------------------------
+
+def pairedResponseSimulation(
+    d: float = 1.0,
+    d_sigma: float = 0.1,
+    mRatio=None,
+    mRatio_sigma: float = 0.2,
+    mRatio_rho: float = 0.0,
+    c: float = 0.0,
+    c_sigma: float = 0.1,
+    nRatings: int = 4,
+    nTrials: int = 500,
+    nSubjects: int = 20,
+    rng: "np.random.Generator | None" = None,
+) -> "pd.DataFrame":
+    """Simulate a two-condition repeated-measures group design.
+
+    Draws correlated M-ratio pairs per subject from a bivariate normal
+    distribution, then simulates both conditions via :func:`trialSimulation`.
+    Port of ``metadpy.utils.pairedResponseSimulation``.
+
+    Parameters
+    ----------
+    d :
+        Group-mean type-1 d-prime.
+    d_sigma :
+        Between-subject SD for d-prime.
+    mRatio :
+        ``[mRatio_cond1, mRatio_cond2]``. Defaults to ``[1.0, 0.6]``.
+    mRatio_sigma :
+        SD of M-ratio across subjects (applied to both conditions).
+    mRatio_rho :
+        Correlation between the two per-subject M-ratios.
+    c :
+        Group-mean type-1 criterion.
+    c_sigma :
+        Between-subject SD for criterion.
+    nRatings :
+        Number of confidence rating levels.
+    nTrials :
+        Trials per subject per condition.
+    nSubjects :
+        Number of subjects.
+    rng :
+        Optional :class:`numpy.random.Generator`.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Columns: ``Stimuli``, ``Responses``, ``Accuracy``, ``Confidence``,
+        ``nTrial``, ``Subject``, ``Condition``.
+    """
+    import pandas as _pd
+    if mRatio is None:
+        mRatio = [1.0, 0.6]
+    if rng is None:
+        rng = np.random.default_rng()
+
+    cov = np.array([
+        [mRatio_sigma ** 2, mRatio_rho * mRatio_sigma ** 2],
+        [mRatio_rho * mRatio_sigma ** 2, mRatio_sigma ** 2],
+    ])
+
+    frames = []
+    for sub in range(nSubjects):
+        mr_pair = rng.multivariate_normal(mRatio, cov)
+        for cond in range(2):
+            d_sub     = float(rng.normal(d, d_sigma))
+            c_sub     = float(rng.normal(c, c_sigma))
+            metad_sub = float(mr_pair[cond] * d_sub)
+            df = trialSimulation(d=d_sub, metad=metad_sub, c=c_sub,
+                                 nRatings=nRatings, nTrials=nTrials, rng=rng)
+            df["Subject"]   = sub
+            df["Condition"] = cond
+            frames.append(df)
+
+    return _pd.concat(frames, ignore_index=True)
+
+
+# ---------------------------------------------------------------------------
+# discreteRatings
+# ---------------------------------------------------------------------------
+
+def discreteRatings(ratings, nbins: int = 4, verbose: bool = True,
+                    ignore_invalid: bool = False):
+    """Bin continuous confidence ratings into discrete levels via quantiles.
+
+    Handles floor/ceiling biases by treating extreme values as their own bin
+    after re-estimating inner quantile boundaries from the remaining data.
+    Port of ``metadpy.utils.discreteRatings``.
+
+    Parameters
+    ----------
+    ratings :
+        Continuous confidence ratings (any numeric scale).
+    nbins :
+        Target number of discrete bins.
+    verbose :
+        Print a message when bias correction is applied.
+    ignore_invalid :
+        If ``False``, raise ``ValueError`` when both floor and ceiling are
+        biased. Set ``True`` to proceed anyway.
+
+    Returns
+    -------
+    discrete : np.ndarray
+        Integer ratings from 1 to ``nbins``.
+    info : dict
+        ``'confBins'``, ``'rebin'`` (``[1]`` if corrected, else ``[0]``),
+        ``'binCount'`` (per-bin trial counts).
+    """
+    ratings = np.asarray(ratings, dtype=float)
+    info: dict = {}
+    masks: list = []
+
+    conf_bins    = np.quantile(ratings, np.linspace(0, 1, nbins + 1))
+    floor_bias   = conf_bins[0] == conf_bins[1]
+    ceiling_bias = conf_bins[nbins - 1] == conf_bins[nbins]
+
+    if floor_bias and ceiling_bias:
+        if not ignore_invalid:
+            raise ValueError(
+                "Rating scale has too many identical extreme values to discretise. "
+                "Pass ignore_invalid=True to proceed."
+            )
+
+    elif ceiling_bias:
+        if verbose:
+            print("Correcting for bias in high confidence ratings.")
+        hi = conf_bins[-1]
+        inner = np.quantile(ratings[ratings != hi], np.linspace(0, 1, nbins))
+        for b in range(len(inner) - 1):
+            masks.append((ratings >= inner[b]) & (ratings <= inner[b + 1]))
+        masks.append(ratings == hi)
+        info["confBins"] = [inner, hi]
+        info["rebin"]    = [1]
+
+    elif floor_bias:
+        if verbose:
+            print("Correcting for bias in low confidence ratings.")
+        lo = conf_bins[1]
+        masks.append(ratings == lo)
+        inner = np.quantile(ratings[ratings != lo], np.linspace(0, 1, nbins))
+        for b in range(1, len(inner)):
+            masks.append((ratings >= inner[b - 1]) & (ratings <= inner[b]))
+        info["confBins"] = [lo, inner]
+        info["rebin"]    = [1]
+
+    else:
+        for b in range(len(conf_bins) - 1):
+            masks.append((ratings >= conf_bins[b]) & (ratings <= conf_bins[b + 1]))
+        info["confBins"] = conf_bins
+        info["rebin"]    = [0]
+
+    discrete = np.zeros(len(ratings), dtype=int)
+    for b, mask in enumerate(masks):
+        discrete[mask] = b
+    discrete += 1  # 1-based
+
+    info["binCount"] = [int(m.sum()) for m in masks]
+    return discrete, info

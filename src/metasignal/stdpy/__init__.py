@@ -12,7 +12,16 @@ from metasignal.stdpy.type2 import (
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 from metasignal.stdpy.metanoise import compute_meta_noise
 from metasignal.stdpy.compute_all import compute_all_measures
-from metasignal.stdpy.simulate import type2_SDT_simuation, type2_SDT_simuation_bayes
+from metasignal.stdpy.group import metad
+from metasignal.stdpy.simulate import (
+    type2_SDT_simuation,
+    type2_SDT_simuation_bayes,
+    ratings2df,
+    trialSimulation,
+    responseSimulation,
+    pairedResponseSimulation,
+    discreteRatings,
+)
 
 __all__ = [
     "compute_sdt_resp",
@@ -26,6 +35,12 @@ __all__ = [
     "compute_delta_conf",
     "compute_meta_noise",
     "compute_all_measures",
+    "metad",
     "type2_SDT_simuation",
     "type2_SDT_simuation_bayes",
+    "ratings2df",
+    "trialSimulation",
+    "responseSimulation",
+    "pairedResponseSimulation",
+    "discreteRatings",
 ]
