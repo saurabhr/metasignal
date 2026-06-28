@@ -39,6 +39,7 @@ setup_runtime()
 | 9 | **Bivariate hierarchical** | `fit_multivariate_mratio` | Models log M-ratio and d' jointly, estimating their cross-participant correlation. |
 | 10 | **Meta-regression** | `fit_two_stage_regression`, `fit_full_metad_regression` | Regresses log M-ratio on participant-level covariates (age, scores, etc.) via either the two-stage or full hierarchical path. |
 | 11 | **State-space** | `fit_statespace_metad` | Models how group-level meta-d' evolves across repeated sessions via a random walk with free process noise. |
+| 12 | **Within-subject comparison** | `fit_within_subject_comparison` | Two-stage paired model for within-subject designs: same participants in two conditions; participant random intercepts absorb stable individual differences. |
 
 Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
 `fit_group_comparison`, `fit_two_stage_comparison`, `fit_full_metad_comparison`,
@@ -105,6 +106,10 @@ Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
 ### Approach 11 — State-Space Model
 
 ::: metasignal.sdtbayes.fit_statespace_metad
+
+### Approach 12 — Within-Subject Condition Comparison
+
+::: metasignal.sdtbayes.fit_within_subject_comparison
 
 ### Runtime and Result Types
 

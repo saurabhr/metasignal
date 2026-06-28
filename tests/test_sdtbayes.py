@@ -364,3 +364,283 @@ class TestFitSubjectLevelValidation:
         from metasignal.sdtbayes.subject_level import fit_subject_level
         with pytest.raises(ValueError, match="even"):
             fit_subject_level(np.array([1, 2, 3]), np.array([1, 2, 3]))
+
+
+# ---------------------------------------------------------------------------
+# beta_auc._compute_auc2_per_participant
+# ---------------------------------------------------------------------------
+
+class TestComputeAuc2PerParticipant:
+    @pytest.fixture(autouse=True)
+    def require_pandas(self):
+        pytest.importorskip("pandas")
+
+    def _compute(self, participants, n_ratings=2):
+        from metasignal.sdtbayes.beta_auc import _compute_auc2_per_participant
+        return _compute_auc2_per_participant(participants, n_ratings)
+
+    def test_columns_present(self, simple_participant):
+        df = self._compute([simple_participant])
+        assert "participant" in df.columns
+        assert "auc2" in df.columns
+
+    def test_row_count(self, two_participants):
+        df = self._compute(two_participants)
+        assert len(df) == 2
+
+    def test_auc2_in_unit_interval(self, simple_participant):
+        df = self._compute([simple_participant])
+        val = df["auc2"].iloc[0]
+        assert 0.0 <= val <= 1.0
+
+    def test_degenerate_participant_returns_nan(self):
+        stim = np.array([0, 0, 0, 0])
+        resp = np.array([0, 0, 0, 0])
+        conf = np.array([1, 1, 2, 2])
+        pytest.importorskip("pandas")
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            df = self._compute([(stim, resp, conf)])
+        assert df["auc2"].isna().all()
+
+
+# ---------------------------------------------------------------------------
+# beta_auc._clip_auc2
+# ---------------------------------------------------------------------------
+
+class TestClipAuc2:
+    @pytest.fixture(autouse=True)
+    def require_pandas(self):
+        pytest.importorskip("pandas")
+
+    def _clip(self, values, eps=1e-4):
+        import pandas as pd
+        from metasignal.sdtbayes.beta_auc import _clip_auc2
+        df = pd.DataFrame({"auc2": values})
+        return _clip_auc2(df, eps=eps)
+
+    def test_clips_zero(self):
+        df = self._clip([0.0, 0.5, 1.0])
+        assert df["auc2"].iloc[0] > 0.0
+
+    def test_clips_one(self):
+        df = self._clip([0.0, 0.5, 1.0])
+        assert df["auc2"].iloc[2] < 1.0
+
+    def test_does_not_alter_interior(self):
+        df = self._clip([0.3, 0.5, 0.7])
+        np.testing.assert_allclose(df["auc2"].values, [0.3, 0.5, 0.7])
+
+    def test_does_not_mutate_input(self):
+        import pandas as pd
+        original = pd.DataFrame({"auc2": [0.0, 0.5]})
+        from metasignal.sdtbayes.beta_auc import _clip_auc2
+        _clip_auc2(original)
+        assert original["auc2"].iloc[0] == 0.0
+
+    def test_respects_custom_eps(self):
+        df = self._clip([0.0, 1.0], eps=0.01)
+        assert df["auc2"].iloc[0] == pytest.approx(0.01)
+        assert df["auc2"].iloc[1] == pytest.approx(0.99)
+
+
+# ---------------------------------------------------------------------------
+# statespace._mle_matrix
+# ---------------------------------------------------------------------------
+
+class TestMleMatrix:
+    def _make_sessions(self, n_subj, n_sess, rng, n_trials=100):
+        sessions = []
+        for _ in range(n_sess):
+            sess = []
+            for _ in range(n_subj):
+                stim = rng.integers(0, 2, n_trials)
+                resp = stim.copy()
+                flip = rng.random(n_trials) < 0.1
+                resp[flip] = 1 - resp[flip]
+                conf = rng.integers(1, 3, n_trials)
+                sess.append((stim, resp, conf))
+            sessions.append(sess)
+        return sessions
+
+    def _mle(self, sessions, n_ratings=2):
+        from metasignal.sdtbayes.statespace import _mle_matrix
+        return _mle_matrix(sessions, n_ratings)
+
+    def test_output_shapes(self, rng):
+        sessions = self._make_sessions(3, 4, rng)
+        log_mr, valid = self._mle(sessions)
+        assert log_mr.shape == (3, 4)
+        assert valid.shape == (3, 4)
+
+    def test_valid_values_binary(self, rng):
+        sessions = self._make_sessions(3, 2, rng)
+        _, valid = self._mle(sessions)
+        assert set(valid.flatten().tolist()).issubset({0.0, 1.0})
+
+    def test_consistent_participant_count_required(self, rng):
+        sessions = self._make_sessions(3, 2, rng)
+        bad = sessions[0][:2]  # only 2 participants in session 1
+        with pytest.raises(ValueError, match="same number of participants"):
+            from metasignal.sdtbayes.statespace import _mle_matrix
+            _mle_matrix([sessions[0], bad], n_ratings=2)
+
+    def test_log_mr_zero_where_invalid(self, rng):
+        sessions = self._make_sessions(3, 2, rng)
+        log_mr, valid = self._mle(sessions)
+        invalid_mask = valid == 0.0
+        assert np.all(log_mr[invalid_mask] == 0.0)
+
+    def test_good_participants_mostly_valid(self, rng):
+        sessions = self._make_sessions(5, 3, rng, n_trials=200)
+        _, valid = self._mle(sessions)
+        # High-accuracy participants with many trials should mostly converge
+        assert valid.sum() >= 5
+
+
+# ---------------------------------------------------------------------------
+# meta_regression._build_regression_stan_blocks
+# ---------------------------------------------------------------------------
+
+class TestBuildRegressionStanBlocks:
+    def _build(self):
+        from metasignal.sdtbayes.meta_regression import _build_regression_stan_blocks
+        return _build_regression_stan_blocks()
+
+    def test_returns_four_strings(self):
+        result = self._build()
+        assert len(result) == 4
+        assert all(isinstance(s, str) for s in result)
+
+    def test_data_block_contains_covariate_matrix(self):
+        data_block, _, _, _ = self._build()
+        assert "X_cov" in data_block
+        assert "p_cov" in data_block
+
+    def test_parameters_block_contains_regression_slope(self):
+        _, params_block, _, _ = self._build()
+        assert "beta_logMratio" in params_block
+        assert "alpha_logMratio" in params_block
+
+    def test_tpar_block_contains_dot_product(self):
+        _, _, tpar_block, _ = self._build()
+        assert "dot_product" in tpar_block
+
+    def test_model_block_contains_priors(self):
+        _, _, _, model_block = self._build()
+        assert "alpha_logMratio" in model_block
+        assert "beta_logMratio" in model_block
+
+
+# ---------------------------------------------------------------------------
+# within_subject._compute_paired_estimates
+# ---------------------------------------------------------------------------
+
+class TestComputePairedEstimates:
+    @pytest.fixture(autouse=True)
+    def require_pandas(self):
+        pytest.importorskip("pandas")
+
+    def _compute(self, cond_a, cond_b, n_ratings=2):
+        from metasignal.sdtbayes.within_subject import _compute_paired_estimates
+        return _compute_paired_estimates(cond_a, cond_b, n_ratings)
+
+    def test_columns_present(self, simple_participant):
+        df = self._compute([simple_participant], [simple_participant])
+        for col in ("participant", "condition", "dprime", "c", "meta_da",
+                    "da", "m_ratio", "log_m_ratio"):
+            assert col in df.columns
+
+    def test_row_count_two_conditions(self, simple_participant):
+        df = self._compute([simple_participant], [simple_participant])
+        assert len(df) == 2  # 1 participant × 2 conditions
+
+    def test_row_count_multiple_participants(self, two_participants):
+        df = self._compute(two_participants, two_participants)
+        assert len(df) == 4  # 2 participants × 2 conditions
+
+    def test_condition_labels(self, simple_participant):
+        df = self._compute([simple_participant], [simple_participant])
+        assert set(df["condition"].unique().tolist()) == {0, 1}
+
+    def test_participant_ids_correct(self, two_participants):
+        df = self._compute(two_participants, two_participants)
+        assert sorted(df["participant"].unique().tolist()) == [0, 1]
+
+    def test_log_m_ratio_finite_for_good_data(self, simple_participant):
+        df = self._compute([simple_participant], [simple_participant])
+        assert df["log_m_ratio"].notna().any()
+
+
+# ---------------------------------------------------------------------------
+# within_subject.fit_within_subject_comparison — input validation
+# ---------------------------------------------------------------------------
+
+class TestFitWithinSubjectComparisonValidation:
+    def _make_group(self, n, rng, n_trials=100):
+        parts = []
+        for _ in range(n):
+            stim = rng.integers(0, 2, n_trials)
+            resp = stim.copy()
+            flip = rng.random(n_trials) < 0.15
+            resp[flip] = 1 - resp[flip]
+            conf = rng.integers(1, 3, n_trials)
+            parts.append((stim, resp, conf))
+        return parts
+
+    def test_raises_on_mismatched_lengths(self, rng):
+        pytest.importorskip("pandas")
+        from metasignal.sdtbayes.within_subject import fit_within_subject_comparison
+        from unittest.mock import MagicMock, patch
+        mock_brms = MagicMock()
+        with patch.dict("sys.modules", {"brmspy": mock_brms}):
+            cond_a = self._make_group(5, rng)
+            cond_b = self._make_group(3, rng)
+            with pytest.raises(ValueError, match="same"):
+                fit_within_subject_comparison(cond_a, cond_b, n_ratings=2)
+
+    def test_passes_with_equal_lengths(self, rng):
+        pytest.importorskip("pandas")
+        from metasignal.sdtbayes.within_subject import fit_within_subject_comparison
+        from unittest.mock import MagicMock, patch
+        mock_brmspy = MagicMock()
+        mock_brms = mock_brmspy.brms
+        with patch.dict("sys.modules", {"brmspy": mock_brmspy}):
+            cond_a = self._make_group(5, rng)
+            cond_b = self._make_group(5, rng)
+            fit_within_subject_comparison(cond_a, cond_b, n_ratings=2)
+        mock_brms.brm.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# mixture.fit_mixture_group — input validation (brmspy mocked)
+# ---------------------------------------------------------------------------
+
+class TestFitMixtureGroupValidation:
+    def _make_group(self, n, rng, n_trials=100):
+        parts = []
+        for _ in range(n):
+            stim = rng.integers(0, 2, n_trials)
+            resp = stim.copy()
+            flip = rng.random(n_trials) < 0.15
+            resp[flip] = 1 - resp[flip]
+            conf = rng.integers(1, 3, n_trials)
+            parts.append((stim, resp, conf))
+        return parts
+
+    def test_raises_when_too_few_participants(self, rng):
+        pytest.importorskip("pandas")
+        from metasignal.sdtbayes.mixture import fit_mixture_group
+        from unittest.mock import MagicMock, patch
+        mock_brmspy = MagicMock()
+        import warnings
+        with patch.dict("sys.modules", {"brmspy": mock_brmspy}):
+            # 2-component model needs at least 6 valid participants;
+            # use degenerate data so MLE returns NaN for all
+            degenerate = [(np.zeros(20, int), np.zeros(20, int),
+                           np.ones(20, int))] * 2
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                with pytest.raises(ValueError, match="valid estimates"):
+                    fit_mixture_group(degenerate, n_ratings=2, n_components=2)

@@ -56,6 +56,11 @@ Approach 11 — State-space model (``statespace``)
     Models how group-level meta-d' evolves across repeated sessions via a
     random walk with free process noise.
 
+Approach 12 — Within-subject condition comparison (``within_subject``)
+    Two-stage paired model for within-subject designs: same participants tested
+    in two conditions.  Participant random intercepts absorb stable between-
+    subject differences; ``b_condition1`` is the within-person condition effect.
+
 Public API
 ----------
 Runtime
@@ -94,6 +99,9 @@ Approach 10 — meta-regression
 Approach 11 — state-space
     ``fit_statespace_metad``
 
+Approach 12 — within-subject comparison
+    ``fit_within_subject_comparison``
+
 Diagnostics
     ``FitResult``, ``posterior_summary``, ``plot_trace``, ``plot_posterior``,
     ``plot_forest``, ``convergence_diagnostics``
@@ -116,6 +124,10 @@ from metasignal.sdtbayes.meta_regression import (
     fit_full_metad_regression,
 )
 from metasignal.sdtbayes.statespace import fit_statespace_metad
+from metasignal.sdtbayes.within_subject import (
+    fit_within_subject_comparison,
+)
+from metasignal.sdtbayes.formula import fit_meta_formula
 from metasignal.sdtbayes.diagnostics import (
     FitResult,
     posterior_summary,
@@ -159,6 +171,10 @@ __all__ = [
     "fit_full_metad_regression",
     # Approach 11 — state-space (group × sessions random walk)
     "fit_statespace_metad",
+    # Approach 12 — within-subject paired condition comparison
+    "fit_within_subject_comparison",
+    # Formula interface (Stan or brms backend)
+    "fit_meta_formula",
     # Diagnostics
     "posterior_summary",
     "plot_trace",
