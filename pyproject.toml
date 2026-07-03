@@ -6,12 +6,12 @@ build-backend = "uv_build"
 name = "metasignal"
 version = "2025.1.0"
 description = "Signal Detection Theory and metacognitive measures for Python."
-authors = [{name = "Saurabh Ranjan", email = ""}]
+authors = [{name = "Saurabh Ranjan", email = "ranjan.saurabh@outlook.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = []
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

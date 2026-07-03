@@ -34,6 +34,15 @@ data {
     vector[n_gh] gh_weights;
 }
 
+transformed data {
+    int CR_total = sum(counts[1:nratings]);
+    int FA_total = sum(counts[(nratings + 1):(2 * nratings)]);
+    int M_total  = sum(counts[(2 * nratings + 1):(3 * nratings)]);
+    int H_total  = sum(counts[(3 * nratings + 1):(4 * nratings)]);
+    int N_total  = CR_total + FA_total;
+    int S_total  = M_total + H_total;
+}
+
 parameters {
     real d1;
     real c1;
@@ -51,6 +60,9 @@ model {
     c1      ~ normal(0, inv_sqrt(2.0));
     log_phi ~ normal(0, 1);
     log_theta ~ normal(0, 1);
+
+    target += binomial_lpmf(H_total  | S_total, Phi(d1 / 2.0 - c1));
+    target += binomial_lpmf(FA_total | N_total, Phi(-d1 / 2.0 - c1));
 
     real sqrt2       = sqrt(2.0);
     real inv_sqrt_pi = inv_sqrt(pi());

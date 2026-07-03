@@ -25,26 +25,34 @@ data {
     real<lower=0> Tol;
 }
 
+transformed data {
+    int CR_total = sum(counts[1:nratings]);
+    int FA_total = sum(counts[(nratings + 1):(2 * nratings)]);
+    int M_total  = sum(counts[(2 * nratings + 1):(3 * nratings)]);
+    int H_total  = sum(counts[(3 * nratings + 1):(4 * nratings)]);
+    int N_total  = CR_total + FA_total;
+    int S_total  = M_total + H_total;
+}
+
 parameters {
     real d1;
     real c1;
     real log_sigma_meta;
 
-    vector<lower=0>[nratings - 1] cS1_offsets;
-    vector<lower=0>[nratings - 1] cS2_offsets;
+    // positive_ordered avoids label-switching (see meta_d_subject.stan)
+    positive_ordered[nratings - 1] cS1_offsets;
+    positive_ordered[nratings - 1] cS2_offsets;
 }
 
 transformed parameters {
     real sigma_meta = exp(log_sigma_meta);
     real meta_d     = d1 / sqrt(1.0 + square(sigma_meta));
 
-    vector[nratings - 1] cS1_sorted = sort_asc(cS1_offsets);
-    vector[nratings - 1] cS2_sorted = sort_asc(cS2_offsets);
     vector[nratings - 1] cS1;
     vector[nratings - 1] cS2;
     for (k in 1:(nratings - 1)) {
-        cS1[k] = c1 - cS1_sorted[nratings - k];
-        cS2[k] = c1 + cS2_sorted[k];
+        cS1[k] = c1 - cS1_offsets[nratings - k];
+        cS2[k] = c1 + cS2_offsets[k];
     }
 }
 
@@ -55,6 +63,9 @@ model {
 
     cS1_offsets ~ normal(0, inv_sqrt(2.0));
     cS2_offsets ~ normal(0, inv_sqrt(2.0));
+
+    target += binomial_lpmf(H_total  | S_total, Phi(d1 / 2.0 - c1));
+    target += binomial_lpmf(FA_total | N_total, Phi(-d1 / 2.0 - c1));
 
     real S1mu = -meta_d / 2.0;
     real S2mu =  meta_d / 2.0;

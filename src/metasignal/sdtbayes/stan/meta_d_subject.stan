@@ -27,6 +27,19 @@
  * Data format: 1-D array of length nratings * 4
  *   [CR_nR .. CR_1 | FA_1 .. FA_nR | M_nR .. M_1 | H_1 .. H_nR]
  *
+ * Type-1 binomial likelihood
+ * --------------------------
+ * metadpy additionally ties d1/c1 directly to the total hit and false-alarm
+ * counts via a Binomial likelihood (subject_level_pymc.py):
+ *
+ *   h = Phi(d1/2 - c1);   H  ~ Binomial(S, h)
+ *   f = Phi(-d1/2 - c1);  FA ~ Binomial(N, f)
+ *
+ * where S = total S2-stimulus trials, N = total S1-stimulus trials.  Without
+ * this term d1/c1 are only weakly constrained by the Type-2 multinomial
+ * (which is normalised per response type and so discards the total
+ * hit/FA-rate information) and posteriors come out far wider than metadpy's.
+ *
  * Key posterior quantities
  * ------------------------
  *   d1      : Type-1 sensitivity (d')
@@ -41,30 +54,41 @@ data {
     real<lower=0> Tol;
 }
 
+transformed data {
+    // Type-1 totals: counts layout is [CR | FA | M | H], each block nratings long.
+    int CR_total = sum(counts[1:nratings]);
+    int FA_total = sum(counts[(nratings + 1):(2 * nratings)]);
+    int M_total  = sum(counts[(2 * nratings + 1):(3 * nratings)]);
+    int H_total  = sum(counts[(3 * nratings + 1):(4 * nratings)]);
+    int N_total  = CR_total + FA_total;  // total S1-stimulus trials
+    int S_total  = M_total + H_total;    // total S2-stimulus trials
+}
+
 parameters {
     real d1;
     real c1;
     real meta_d;
 
     // Positive HalfNormal offsets from c1 — exact metadpy parameterisation.
-    // lower=0 + normal(0, sigma) prior = truncated half-normal.
-    vector<lower=0>[nratings - 1] cS1_offsets;
-    vector<lower=0>[nratings - 1] cS2_offsets;
+    // positive_ordered (not vector<lower=0> + runtime sort_asc) removes the
+    // permutation symmetry that would otherwise leave the raw components
+    // non-identified: any permutation of an unordered vector gives the same
+    // sorted result and hence identical likelihood, causing severe
+    // label-switching (r_hat blows up for the raw offsets even though every
+    // downstream quantity that depends only on the sorted values is fine).
+    positive_ordered[nratings - 1] cS1_offsets;
+    positive_ordered[nratings - 1] cS2_offsets;
 }
 
 transformed parameters {
-    // Sort offsets ascending then place around c1
-    vector[nratings - 1] cS1_sorted = sort_asc(cS1_offsets);  // [min..max]
-    vector[nratings - 1] cS2_sorted = sort_asc(cS2_offsets);  // [min..max]
-
     // Actual criterion positions (both ascending):
-    //   cS1[k] = c1 - cS1_sorted[nratings - k]  → [c1-max, .., c1-min]
-    //   cS2[k] = c1 + cS2_sorted[k]              → [c1+min, .., c1+max]
+    //   cS1[k] = c1 - cS1_offsets[nratings - k]  → [c1-max, .., c1-min]
+    //   cS2[k] = c1 + cS2_offsets[k]              → [c1+min, .., c1+max]
     vector[nratings - 1] cS1;
     vector[nratings - 1] cS2;
     for (k in 1:(nratings - 1)) {
-        cS1[k] = c1 - cS1_sorted[nratings - k];
-        cS2[k] = c1 + cS2_sorted[k];
+        cS1[k] = c1 - cS1_offsets[nratings - k];
+        cS2[k] = c1 + cS2_offsets[k];
     }
 }
 
@@ -78,6 +102,10 @@ model {
     // pm.HalfNormal("cS1", sigma=1/sqrt(2), shape=nratings-1)
     cS1_offsets ~ normal(0, inv_sqrt(2.0));
     cS2_offsets ~ normal(0, inv_sqrt(2.0));
+
+    // ── Type-1 binomial likelihood (ties d1, c1 to observed hit/FA totals) ─
+    target += binomial_lpmf(H_total  | S_total, Phi(d1 / 2.0 - c1));
+    target += binomial_lpmf(FA_total | N_total, Phi(-d1 / 2.0 - c1));
 
     // ── Multinomial SDT likelihood ────────────────────────────────────────
     real S1mu = -meta_d / 2.0;
@@ -136,5 +164,5 @@ model {
 }
 
 generated quantities {
-    real Mratio = (fabs(d1) > 1e-6) ? meta_d / d1 : 0.0;
+    real Mratio = (abs(d1) > 1e-6) ? meta_d / d1 : 0.0;
 }

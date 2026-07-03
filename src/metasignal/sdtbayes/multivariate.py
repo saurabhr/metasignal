@@ -69,8 +69,27 @@ def fit_multivariate_mratio(
         - ``rescor__logmratio__dprime`` — cross-participant correlation.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
         ValueError: If fewer than 5 participants have valid MLE estimates.
+
+    Notes:
+        This function's brmspy path is currently **non-functional**: brms's
+        ``rescor`` flag (needed to estimate the residual correlation between
+        the two multivariate responses) cannot be threaded through brmspy to
+        the R side in this version. Three approaches were tried, each
+        failing differently: (1) ``rescor=True`` passed to ``brm()`` reaches
+        the low-level cmdstanr sampling call, which rejects it as an unused
+        argument; (2) combining ``set_rescor(TRUE)`` into the formula via
+        ``+`` fails because brmspy's formula objects can't round-trip through
+        a generic ``brms.call()``; (3) passing ``rescor`` via ``formula_args``
+        (threaded into ``bf()``) makes brms misinterpret it as a fixed
+        distributional parameter name. No working channel was found.
+
+        There is currently no cmdstanpy-backed replacement for jointly
+        modelling d' and log M-ratio with an estimated cross-correlation.  If
+        you only need d', use :func:`~metasignal.sdtbayes.fit_full_metad`
+        (which reports per-subject ``d1``) — it just won't estimate the
+        correlation with metacognitive efficiency.
 
     Example::
 
@@ -90,11 +109,6 @@ def fit_multivariate_mratio(
         print(f"Correlation(log M-ratio, d'): {r.mean():.3f}  "
               f"[{np.percentile(r, 3):.3f}, {np.percentile(r, 97):.3f}]")
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
     mle_df = _compute_participant_estimates(participants, n_ratings)
     valid = mle_df.dropna(subset=["log_m_ratio", "dprime"])
 
@@ -102,26 +116,13 @@ def fit_multivariate_mratio(
         msg = f"Only {len(valid)} participants have valid estimates — need at least 5."
         raise ValueError(msg)
 
-    priors = [
-        brms.prior("normal(0, 1)", class_="Intercept", resp="logmratio"),
-        brms.prior("normal(0, 2)", class_="Intercept", resp="dprime"),
-        brms.prior("exponential(1)", class_="sigma", resp="logmratio"),
-        brms.prior("exponential(1)", class_="sigma", resp="dprime"),
-        brms.prior("lkj(2)", class_="rescor"),
-    ]
-
-    _result = brms.brm(
-        formula=brms.bf("mvbind(log_m_ratio, dprime) ~ 1"),
-        data=valid,
-        rescor=True,
-        priors=priors,
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_multivariate_mratio is currently unavailable: brms's rescor flag "
+        "(needed for the cross-response correlation) cannot be threaded through "
+        "brmspy to R in this version — three distinct approaches were tried and "
+        "each failed differently. Use fit_full_metad(...) instead if you only "
+        "need d' and log M-ratio separately (no correlation estimate)."
     )
-    return FitResult(idata=_result.idata, r=_result.r)
 
 
 def fit_multivariate_mratio_comparison(
@@ -159,7 +160,9 @@ def fit_multivariate_mratio_comparison(
         ``FitResult`` with bivariate group comparison posteriors.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see :func:`fit_multivariate_mratio` Notes for
+            why brms's ``rescor`` flag cannot currently be used through
+            brmspy.
 
     Example::
 
@@ -171,39 +174,10 @@ def fit_multivariate_mratio_comparison(
         print(f"P(log M-ratio lower in patients): {(d_mr < 0).mean():.3f}")
         print(f"P(d' lower in patients):          {(d_dp < 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
-    df_a = _compute_participant_estimates(group_a, n_ratings)
-    df_a["group"] = 0
-    df_b = _compute_participant_estimates(group_b, n_ratings)
-    df_b["group"] = 1
-    df = pd.concat([df_a, df_b], ignore_index=True)
-    df["group"] = df["group"].astype("category")
-    valid = df.dropna(subset=["log_m_ratio", "dprime"])
-
-    priors = [
-        brms.prior("normal(0, 1)", class_="Intercept", resp="logmratio"),
-        brms.prior("normal(0, 2)", class_="Intercept", resp="dprime"),
-        brms.prior("normal(0, 1)", class_="b", resp="logmratio"),
-        brms.prior("normal(0, 1)", class_="b", resp="dprime"),
-        brms.prior("exponential(1)", class_="sigma", resp="logmratio"),
-        brms.prior("exponential(1)", class_="sigma", resp="dprime"),
-        brms.prior("lkj(2)", class_="rescor"),
-    ]
-
-    _result = brms.brm(
-        formula=brms.bf("mvbind(log_m_ratio, dprime) ~ group"),
-        data=valid,
-        rescor=True,
-        priors=priors,
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_multivariate_mratio_comparison is currently unavailable: brms's "
+        "rescor flag (needed for the cross-response correlation) cannot be "
+        "threaded through brmspy to R in this version. Use "
+        "fit_full_metad_comparison(...) instead if you only need the group "
+        "difference in log M-ratio (no correlation-with-d' estimate)."
     )
-    return FitResult(idata=_result.idata, r=_result.r)

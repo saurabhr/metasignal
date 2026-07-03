@@ -200,9 +200,26 @@ def fit_statespace_metad(
         - ``subj_effect[i]`` — per-participant stable offset.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
         ValueError: If sessions are inconsistent in participant count, or
             fewer than 2 sessions are provided.
+
+    Notes:
+        This function's brmspy stanvar-injection path is currently
+        **non-functional**: the brmspy/rpy2 bridge cannot reliably convert a
+        list of multiple ``stanvar()`` objects into R.  A ``block="data"``
+        stanvar (carrying a real data value via ``x=``) round-trips to Python
+        as a ``dict``, while a ``block != "data"`` stanvar (code-only, e.g.
+        ``block="parameters"``) round-trips as a ``list`` — mixing the two
+        shapes in one Python list breaks rpy2's homogeneous-type dispatch, and
+        no combination method (``c()``, ``+``, dummy data values) was found
+        to fix this from calling code.  This is an upstream brmspy limitation.
+
+        Unlike :func:`~metasignal.sdtbayes.fit_full_metad` (whose functionality
+        has an equivalent cmdstanpy-backed implementation via
+        :func:`~metasignal.sdtbayes.fit_meta_formula`), the state-space
+        random-walk-over-sessions model has no cmdstanpy port yet — there is
+        currently no working replacement for this specific model.
 
     Example::
 
@@ -229,57 +246,18 @@ def fit_statespace_metad(
         print(f"Estimated drift (sigma_process): "
               f"{post['sigma_process'].values.mean():.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
     n_sess = len(sessions)
     if n_sess < 2:
         msg = "Need at least 2 sessions for the state-space model."
         raise ValueError(msg)
 
-    n_subj = len(sessions[0])
-    log_mr, valid = _mle_matrix(sessions, n_ratings)
-
-    n_valid_total = int(valid.sum())
-    if n_valid_total < n_subj:
-        warnings.warn(
-            f"Only {n_valid_total} of {n_subj * n_sess} (participant, session) cells "
-            "have valid MLE estimates.  State-space estimates may be unstable.",
-            stacklevel=2,
-        )
-
-    sv_T    = brms.call("stanvar", x=int(n_sess), name="T",
-                        scode="int<lower=1> T;")
-    sv_N    = brms.call("stanvar", x=int(n_subj), name="N",
-                        scode="int<lower=1> N;")
-    sv_logmr = brms.call("stanvar",
-                          x=[[float(v) for v in row] for row in log_mr.tolist()],
-                          name="log_mr_obs",
-                          scode="matrix[N, T] log_mr_obs;")
-    sv_valid = brms.call("stanvar",
-                          x=[[float(v) for v in row] for row in valid.tolist()],
-                          name="is_valid",
-                          scode="matrix[N, T] is_valid;")
-
-    sv_par   = brms.call("stanvar", scode=_SS_PARAMETERS,             block="parameters")
-    sv_tpar  = brms.call("stanvar", scode=_SS_TRANSFORMED_PARAMETERS, block="tpar")
-    sv_model = brms.call("stanvar", scode=_SS_MODEL,                  block="model")
-    sv_gen   = brms.call("stanvar", scode=_SS_GENERATED,              block="genquant")
-
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_T, sv_N, sv_logmr, sv_valid, sv_par, sv_tpar, sv_model, sv_gen],
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_statespace_metad is currently unavailable: its brmspy stanvar-injection "
+        "path is blocked by an upstream brmspy/rpy2 conversion limitation (a list "
+        "mixing data-carrying and code-only stanvar() objects cannot be converted "
+        "to R), and there is no cmdstanpy-backed equivalent for this state-space "
+        "model yet. If you need a time-varying trajectory of M-ratio, compute "
+        "per-session MLE estimates via metasignal.stdpy.fit_meta_d_mle and fit a "
+        "trend model directly, or use fit_full_metad(...) per session as an "
+        "approximation."
     )
-    return FitResult(idata=_result.idata, r=_result.r)

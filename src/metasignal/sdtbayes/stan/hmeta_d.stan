@@ -1,7 +1,7 @@
 /**
  * hmeta_d.stan  —  Hierarchical Bayesian meta-d' (HMeta-d)
  *
- * A faithful Stan port of the Fleming (2017) JAGS model:
+ * A Stan port of the Fleming (2017) JAGS model:
  *
  *   Fleming, S. M. (2017). HMeta-d: hierarchical Bayesian estimation of
  *   metacognitive efficiency from confidence ratings.
@@ -13,6 +13,22 @@
  * model (p_cov > 0).  Covariates should be mean-centred before passing so
  * that alpha_logMratio is interpretable as the group mean at the covariate
  * mean.
+ *
+ * Numerical stability
+ * -------------------
+ * The Type-2 multinomial likelihood is computed entirely in log space using
+ * normal_lcdf/normal_lccdf + log_diff_exp, then passed to
+ * multinomial_logit_lpmf (which normalises internally via a numerically
+ * stable softmax).  This avoids ever forming Phi() differences on the
+ * natural scale, which underflow to exactly 0 once meta_d grows large
+ * enough to push both endpoints near 0 or 1 — the underflow previously
+ * produced a flat-gradient region (via a Tol floor) that trapped the
+ * sampler and let d1[s]/c1[s] diverge to +-inf during warmup.
+ *
+ * Type-2 criteria are constructed as cumulative sums of positive offsets
+ * (metadpy/hmetad-style), which guarantees cS1[s] < c1[s] < cS2[s] by
+ * construction — no soft prior or truncation needed, so criteria can never
+ * cross c1[s] and produce an invalid (negative) log-probability bin.
  *
  * Count matrix format (hmetad_counts)
  * ------------------------------------
@@ -41,12 +57,33 @@ data {
     int<lower=1> nsubj;                             // number of participants
     int<lower=2> nratings;                          // number of confidence levels
     array[nsubj, nratings * 4] int hmetad_counts;  // count matrix
-    real<lower=0> Tol;                              // floor for multinomial probs (e.g. 1e-7)
+    real<lower=0> Tol;                              // unused; kept for API compatibility
 
     // Covariate design matrix (mean-centred).  Pass p_cov=0 and an empty
     // matrix when there are no covariates.
     int<lower=0> p_cov;
     matrix[nsubj, p_cov] X_cov;
+}
+
+transformed data {
+    // Per-subject Type-1 totals (counts layout: [CR | FA | M | H], each block
+    // nratings long).  Feeds the Type-1 binomial likelihood below, which ties
+    // d1/c1 directly to the observed hit/FA totals — without it, d1/c1 are
+    // only weakly constrained by the per-response-type Type-2 multinomial.
+    array[nsubj] int CR_total;
+    array[nsubj] int FA_total;
+    array[nsubj] int M_total;
+    array[nsubj] int H_total;
+    array[nsubj] int N_total;  // total S1-stimulus trials
+    array[nsubj] int S_total;  // total S2-stimulus trials
+    for (s in 1:nsubj) {
+        CR_total[s] = sum(hmetad_counts[s, 1:nratings]);
+        FA_total[s] = sum(hmetad_counts[s, (nratings + 1):(2 * nratings)]);
+        M_total[s]  = sum(hmetad_counts[s, (2 * nratings + 1):(3 * nratings)]);
+        H_total[s]  = sum(hmetad_counts[s, (3 * nratings + 1):(4 * nratings)]);
+        N_total[s]  = CR_total[s] + FA_total[s];
+        S_total[s]  = M_total[s] + H_total[s];
+    }
 }
 
 parameters {
@@ -69,11 +106,14 @@ parameters {
     real<lower=0> mu_c2;
     real<lower=0> sigma_c2;
 
-    // ── Per-subject Type-2 criteria ──────────────────────────────────────────
-    // cS1_raw[s]: nratings-1 ordered criteria BELOW c1[s]  (ascending)
-    // cS2_raw[s]: nratings-1 ordered criteria ABOVE c1[s]  (ascending)
-    array[nsubj] ordered[nratings - 1] cS1_raw;
-    array[nsubj] ordered[nratings - 1] cS2_raw;
+    // ── Per-subject Type-2 criteria offsets (guarantee cS1 < c1 < cS2) ──────
+    // positive_ordered removes the permutation symmetry that a plain
+    // vector<lower=0> + runtime sort_asc() would leave in the raw
+    // components (label-switching: any permutation gives the same sorted
+    // result and hence identical likelihood, so the unordered components
+    // are non-identified and r_hat blows up for them specifically).
+    array[nsubj] positive_ordered[nratings - 1] cS1_offsets;
+    array[nsubj] positive_ordered[nratings - 1] cS2_offsets;
 }
 
 transformed parameters {
@@ -114,81 +154,73 @@ model {
 
     // ── Per-subject likelihood ───────────────────────────────────────────────
     for (s in 1:nsubj) {
-        // Type-2 criteria priors (soft truncation around c1[s])
-        cS1_raw[s] ~ normal(c1[s] - mu_c2, sigma_c2);
-        cS2_raw[s] ~ normal(c1[s] + mu_c2, sigma_c2);
+        // Type-1 binomial likelihood: ties d1[s], c1[s] to observed hit/FA
+        // totals (mirrors metadpy's subject_level_pymc.py Binomial nodes).
+        target += binomial_lpmf(H_total[s]  | S_total[s], Phi(d1[s] / 2.0 - c1[s]));
+        target += binomial_lpmf(FA_total[s] | N_total[s], Phi(-d1[s] / 2.0 - c1[s]));
+
+        // Type-2 criteria offset priors (positive_ordered, so cS1/cS2 never
+        // cross c1 and the components are identified — no runtime sort needed)
+        cS1_offsets[s] ~ normal(mu_c2, sigma_c2);
+        cS2_offsets[s] ~ normal(mu_c2, sigma_c2);
+
+        // Place around c1[s]:
+        //   cS1[k] = c1 - cS1_offsets[nratings-k]  → ascending, all < c1
+        //   cS2[k] = c1 + cS2_offsets[k]            → ascending, all > c1
+        vector[nratings - 1] cS1;
+        vector[nratings - 1] cS2;
+        for (k in 1:(nratings - 1)) {
+            cS1[k] = c1[s] - cS1_offsets[s][nratings - k];
+            cS2[k] = c1[s] + cS2_offsets[s][k];
+        }
 
         // SDT signal means (equal-variance assumption)
         real S1mu = -meta_d[s] / 2.0;
         real S2mu =  meta_d[s] / 2.0;
 
-        // Normalising areas: probability mass on the correct side of c1
-        real C_area_rS1 = fmax(Phi(c1[s] - S1mu),        Tol);  // CR area
-        real I_area_rS1 = fmax(Phi(c1[s] - S2mu),        Tol);  // Miss area
-        real C_area_rS2 = fmax(1.0 - Phi(c1[s] - S2mu),  Tol);  // Hit area
-        real I_area_rS2 = fmax(1.0 - Phi(c1[s] - S1mu),  Tol);  // FA area
+        // ── Log-space bin probabilities (unnormalised; multinomial_logit_lpmf
+        //    normalises internally via a numerically stable softmax) ────────
+        vector[nratings] log_prCR;
+        vector[nratings] log_prFA;
+        vector[nratings] log_prM;
+        vector[nratings] log_prH;
 
-        vector[nratings] prCR;
-        vector[nratings] prFA;
-        vector[nratings] prM;
-        vector[nratings] prH;
+        // Correct rejections (S1 trial → S1 resp, cS1 ascending, high conf first)
+        log_prCR[1] = normal_lcdf(cS1[1] | S1mu, 1);
+        for (k in 1:(nratings - 2))
+            log_prCR[k + 1] = log_diff_exp(
+                normal_lcdf(cS1[k + 1] | S1mu, 1), normal_lcdf(cS1[k] | S1mu, 1));
+        log_prCR[nratings] = log_diff_exp(
+            normal_lcdf(c1[s] | S1mu, 1), normal_lcdf(cS1[nratings - 1] | S1mu, 1));
 
-        // Correct rejections  (S1 trial → S1 resp, sorted by cS1, high conf first)
-        prCR[1] = fmax(Phi(cS1_raw[s, 1] - S1mu) / C_area_rS1, Tol);
-        for (k in 1:(nratings - 2)) {
-            prCR[k + 1] = fmax(
-                (Phi(cS1_raw[s, k + 1] - S1mu) - Phi(cS1_raw[s, k] - S1mu))
-                / C_area_rS1, Tol);
-        }
-        prCR[nratings] = fmax(
-            (Phi(c1[s] - S1mu) - Phi(cS1_raw[s, nratings - 1] - S1mu))
-            / C_area_rS1, Tol);
+        // False alarms (S1 trial → S2 resp, cS2 ascending, low conf first)
+        log_prFA[1] = log_diff_exp(
+            normal_lccdf(c1[s] | S1mu, 1), normal_lccdf(cS2[1] | S1mu, 1));
+        for (k in 1:(nratings - 2))
+            log_prFA[k + 1] = log_diff_exp(
+                normal_lccdf(cS2[k] | S1mu, 1), normal_lccdf(cS2[k + 1] | S1mu, 1));
+        log_prFA[nratings] = normal_lccdf(cS2[nratings - 1] | S1mu, 1);
 
-        // False alarms  (S1 trial → S2 resp, sorted by cS2, low conf first)
-        prFA[1] = fmax(
-            ((1.0 - Phi(c1[s] - S1mu)) - (1.0 - Phi(cS2_raw[s, 1] - S1mu)))
-            / I_area_rS2, Tol);
-        for (k in 1:(nratings - 2)) {
-            prFA[k + 1] = fmax(
-                ((1.0 - Phi(cS2_raw[s, k] - S1mu)) - (1.0 - Phi(cS2_raw[s, k + 1] - S1mu)))
-                / I_area_rS2, Tol);
-        }
-        prFA[nratings] = fmax(
-            (1.0 - Phi(cS2_raw[s, nratings - 1] - S1mu)) / I_area_rS2, Tol);
+        // Misses (S2 trial → S1 resp, cS1 ascending, high conf first)
+        log_prM[1] = normal_lcdf(cS1[1] | S2mu, 1);
+        for (k in 1:(nratings - 2))
+            log_prM[k + 1] = log_diff_exp(
+                normal_lcdf(cS1[k + 1] | S2mu, 1), normal_lcdf(cS1[k] | S2mu, 1));
+        log_prM[nratings] = log_diff_exp(
+            normal_lcdf(c1[s] | S2mu, 1), normal_lcdf(cS1[nratings - 1] | S2mu, 1));
 
-        // Misses  (S2 trial → S1 resp, sorted by cS1, high conf first)
-        prM[1] = fmax(Phi(cS1_raw[s, 1] - S2mu) / I_area_rS1, Tol);
-        for (k in 1:(nratings - 2)) {
-            prM[k + 1] = fmax(
-                (Phi(cS1_raw[s, k + 1] - S2mu) - Phi(cS1_raw[s, k] - S2mu))
-                / I_area_rS1, Tol);
-        }
-        prM[nratings] = fmax(
-            (Phi(c1[s] - S2mu) - Phi(cS1_raw[s, nratings - 1] - S2mu))
-            / I_area_rS1, Tol);
+        // Hits (S2 trial → S2 resp, cS2 ascending, low conf first)
+        log_prH[1] = log_diff_exp(
+            normal_lccdf(c1[s] | S2mu, 1), normal_lccdf(cS2[1] | S2mu, 1));
+        for (k in 1:(nratings - 2))
+            log_prH[k + 1] = log_diff_exp(
+                normal_lccdf(cS2[k] | S2mu, 1), normal_lccdf(cS2[k + 1] | S2mu, 1));
+        log_prH[nratings] = normal_lccdf(cS2[nratings - 1] | S2mu, 1);
 
-        // Hits  (S2 trial → S2 resp, sorted by cS2, low conf first)
-        prH[1] = fmax(
-            ((1.0 - Phi(c1[s] - S2mu)) - (1.0 - Phi(cS2_raw[s, 1] - S2mu)))
-            / C_area_rS2, Tol);
-        for (k in 1:(nratings - 2)) {
-            prH[k + 1] = fmax(
-                ((1.0 - Phi(cS2_raw[s, k] - S2mu)) - (1.0 - Phi(cS2_raw[s, k + 1] - S2mu)))
-                / C_area_rS2, Tol);
-        }
-        prH[nratings] = fmax(
-            (1.0 - Phi(cS2_raw[s, nratings - 1] - S2mu)) / C_area_rS2, Tol);
-
-        // Multinomial likelihoods (re-normalised to exact simplex to absorb
-        // rounding errors from the Tol floor)
-        target += multinomial_lpmf(
-            hmetad_counts[s, 1:nratings]                   | prCR / sum(prCR));
-        target += multinomial_lpmf(
-            hmetad_counts[s, (nratings + 1):(2 * nratings)] | prFA / sum(prFA));
-        target += multinomial_lpmf(
-            hmetad_counts[s, (2 * nratings + 1):(3 * nratings)] | prM / sum(prM));
-        target += multinomial_lpmf(
-            hmetad_counts[s, (3 * nratings + 1):(4 * nratings)] | prH / sum(prH));
+        target += multinomial_logit_lpmf(hmetad_counts[s, 1:nratings]                       | log_prCR);
+        target += multinomial_logit_lpmf(hmetad_counts[s, (nratings + 1):(2 * nratings)]     | log_prFA);
+        target += multinomial_logit_lpmf(hmetad_counts[s, (2 * nratings + 1):(3 * nratings)] | log_prM);
+        target += multinomial_logit_lpmf(hmetad_counts[s, (3 * nratings + 1):(4 * nratings)] | log_prH);
     }
 }
 

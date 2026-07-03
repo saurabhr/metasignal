@@ -68,9 +68,27 @@ def fit_mixture_group(
         ``theta1`` (mixing weight for component 1).
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
         ValueError: If fewer than ``n_components × 3`` participants have valid
             MLE estimates.
+
+    Notes:
+        This function's brmspy path is currently **non-functional**: the
+        mixture family object returned by ``brms.call("mixture", ...)`` loses
+        its required R S3 class (``mixfamily``) when it round-trips through
+        Python back into ``brm(family=...)``, causing ``validate_family()``
+        to reject it with "Argument 'family' is invalid".  This is the same
+        category of upstream brmspy/rpy2 limitation documented in
+        :func:`~metasignal.sdtbayes.fit_full_metad` (there for ``stanvar()``
+        objects; here for the family object) — any special R object with a
+        non-trivial S3 class appears to lose that class across the Python
+        round-trip, and no workaround was found.
+
+        There is currently no cmdstanpy-backed replacement for Gaussian
+        mixture modelling of log M-ratio.  If you suspect distinct
+        metacognitive subpopulations, consider fitting
+        :func:`~metasignal.sdtbayes.fit_full_metad` separately to
+        data-driven subgroups instead.
 
     Example::
 
@@ -96,11 +114,6 @@ def fit_mixture_group(
         print(f"High-metacognition component M-ratio ≈ {np.exp(high):.2f}")
         print(f"Mixing weight theta1 ≈ {theta1:.2f}")
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
     mle_df = _compute_participant_estimates(participants, n_ratings)
     valid = mle_df.dropna(subset=["log_m_ratio"])
 
@@ -112,29 +125,12 @@ def fit_mixture_group(
         )
         raise ValueError(msg)
 
-    mix_family = brms.call("mixture", *["gaussian"] * n_components)
-
-    priors = []
-    for k in range(1, n_components + 1):
-        priors.append(
-            brms.prior("normal(0, 1)", class_="Intercept", dpar=f"mu{k}")
-        )
-    priors.append(
-        brms.prior(
-            f"dirichlet({', '.join(['1'] * n_components)})",
-            class_="theta",
-        )
-    )
-
-    _result = brms.brm(
-        formula=brms.bf("log_m_ratio ~ 1"),
-        data=valid,
-        family=mix_family,
-        priors=priors,
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_mixture_group is currently unavailable: the brms mixture family "
+        "object loses its required R S3 class when round-tripped through brmspy, "
+        "causing brm() to reject it with \"Argument 'family' is invalid\". This is "
+        "an upstream brmspy/rpy2 limitation with no known workaround. There is no "
+        "cmdstanpy-backed replacement for Gaussian mixture modelling of log "
+        "M-ratio currently."
     )
     return FitResult(idata=_result.idata, r=_result.r)

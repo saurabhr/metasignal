@@ -166,6 +166,19 @@ def _group_likelihood_block(
     # pylint: disable=line-too-long
     return f"""\
 for (s in 1:{nsubj_var}) {{
+    // Type-1 binomial likelihood: ties d1[s], c1[s] directly to the observed
+    // hit/FA totals.  Without this, d1/c1 are only weakly constrained by the
+    // per-response-type Type-2 multinomial below (which is normalised within
+    // each response type and so discards the total hit/FA-rate information).
+    {{
+        int CR_s = sum({counts_var}[s, 1:nratings]);
+        int FA_s = sum({counts_var}[s, (nratings + 1):(2 * nratings)]);
+        int M_s  = sum({counts_var}[s, (2 * nratings + 1):(3 * nratings)]);
+        int H_s  = sum({counts_var}[s, (3 * nratings + 1):(4 * nratings)]);
+        target += binomial_lpmf(H_s  | M_s + H_s,  Phi({d1_var}[s] / 2.0 - {c1_var}[s]));
+        target += binomial_lpmf(FA_s | CR_s + FA_s, Phi(-{d1_var}[s] / 2.0 - {c1_var}[s]));
+    }}
+
     real S1mu = -{mratio_var}[s] * {d1_var}[s] / 2.0;
     real S2mu =  {mratio_var}[s] * {d1_var}[s] / 2.0;
     real C_area_rS1 = fmax(Phi({c1_var}[s] - S1mu), Tol);
@@ -249,6 +262,9 @@ for (s in 1:nsubj) {
 
 # The model block implements the exact same multinomial probabilities as the
 # JAGS reference model (Fleming 2017, Supplementary) and our Python MLE code.
+# The per-subject Type-1 binomial + Type-2 multinomial likelihood is shared
+# with the two-group model via _group_likelihood_block, so both paths get
+# the same fixes (e.g. the Type-1 binomial term) automatically.
 _STAN_MODEL = """\
 // --- Group-level priors ---
 mu_d1         ~ normal(1, 2);
@@ -272,82 +288,10 @@ for (s in 1:nsubj) {
     // Soft truncation: prior centres are shifted by ±mu_c2 from c1.
     cS1_raw[s] ~ normal(c1[s] - mu_c2, sigma_c2);
     cS2_raw[s] ~ normal(c1[s] + mu_c2, sigma_c2);
-
-    // --- SDT signal means ---
-    real S1mu = -meta_d[s] / 2.0;
-    real S2mu =  meta_d[s] / 2.0;
-
-    // --- Normalising areas (probability mass on correct side of c1) ---
-    real C_area_rS1 = fmax(Phi(c1[s] - S1mu), Tol);
-    real I_area_rS1 = fmax(Phi(c1[s] - S2mu), Tol);
-    real C_area_rS2 = fmax(1.0 - Phi(c1[s] - S2mu), Tol);
-    real I_area_rS2 = fmax(1.0 - Phi(c1[s] - S1mu), Tol);
-
-    // --- Multinomial probability vectors ---
-    vector[nratings] prCR;   // correct rejections
-    vector[nratings] prFA;   // false alarms
-    vector[nratings] prM;    // misses
-    vector[nratings] prH;    // hits
-
-    // CR: S1 trial, S1 response — decision variable below c1, sorted by cS1
-    prCR[1] = fmax(Phi(cS1_raw[s, 1] - S1mu) / C_area_rS1, Tol);
-    for (k in 1:(nratings - 2)) {
-        prCR[k + 1] = fmax(
-            (Phi(cS1_raw[s, k + 1] - S1mu) - Phi(cS1_raw[s, k] - S1mu)) / C_area_rS1,
-            Tol);
-    }
-    prCR[nratings] = fmax(
-        (Phi(c1[s] - S1mu) - Phi(cS1_raw[s, nratings - 1] - S1mu)) / C_area_rS1,
-        Tol);
-
-    // FA: S1 trial, S2 response — decision variable above c1, sorted by cS2
-    prFA[1] = fmax(
-        ((1.0 - Phi(c1[s] - S1mu)) - (1.0 - Phi(cS2_raw[s, 1] - S1mu))) / I_area_rS2,
-        Tol);
-    for (k in 1:(nratings - 2)) {
-        prFA[k + 1] = fmax(
-            ((1.0 - Phi(cS2_raw[s, k] - S1mu)) - (1.0 - Phi(cS2_raw[s, k + 1] - S1mu))) / I_area_rS2,
-            Tol);
-    }
-    prFA[nratings] = fmax(
-        (1.0 - Phi(cS2_raw[s, nratings - 1] - S1mu)) / I_area_rS2,
-        Tol);
-
-    // M: S2 trial, S1 response — signal present but decision below c1
-    prM[1] = fmax(Phi(cS1_raw[s, 1] - S2mu) / I_area_rS1, Tol);
-    for (k in 1:(nratings - 2)) {
-        prM[k + 1] = fmax(
-            (Phi(cS1_raw[s, k + 1] - S2mu) - Phi(cS1_raw[s, k] - S2mu)) / I_area_rS1,
-            Tol);
-    }
-    prM[nratings] = fmax(
-        (Phi(c1[s] - S2mu) - Phi(cS1_raw[s, nratings - 1] - S2mu)) / I_area_rS1,
-        Tol);
-
-    // H: S2 trial, S2 response — signal present, decision above c1
-    prH[1] = fmax(
-        ((1.0 - Phi(c1[s] - S2mu)) - (1.0 - Phi(cS2_raw[s, 1] - S2mu))) / C_area_rS2,
-        Tol);
-    for (k in 1:(nratings - 2)) {
-        prH[k + 1] = fmax(
-            ((1.0 - Phi(cS2_raw[s, k] - S2mu)) - (1.0 - Phi(cS2_raw[s, k + 1] - S2mu))) / C_area_rS2,
-            Tol);
-    }
-    prH[nratings] = fmax(
-        (1.0 - Phi(cS2_raw[s, nratings - 1] - S2mu)) / C_area_rS2,
-        Tol);
-
-    // --- Multinomial likelihoods (re-normalised to exact simplex) ---
-    target += multinomial_lpmf(hmetad_counts[s, 1:nratings]
-                               | prCR / sum(prCR));
-    target += multinomial_lpmf(hmetad_counts[s, (nratings + 1):(2 * nratings)]
-                               | prFA / sum(prFA));
-    target += multinomial_lpmf(hmetad_counts[s, (2 * nratings + 1):(3 * nratings)]
-                               | prM / sum(prM));
-    target += multinomial_lpmf(hmetad_counts[s, (3 * nratings + 1):(4 * nratings)]
-                               | prH / sum(prH));
 }
-"""
+""" + _group_likelihood_block(
+    "nsubj", "hmetad_counts", "Mratio", "d1", "c1", "cS1_raw", "cS2_raw",
+)
 
 
 def _build_count_matrix(
@@ -396,20 +340,30 @@ def fit_full_metad(
     tol: float = 1e-7,
     **kwargs: Any,
 ) -> Any:
-    """Full hierarchical meta-d' (HMeta-d) via custom Stan injected through brmspy.
+    """Full hierarchical meta-d' (HMeta-d) — Fleming (2017) model.
 
-    Ports the Fleming (2017) JAGS model to Stan and fits it via
-    ``brmspy.brms.brm()`` using the ``empty`` family (no built-in brms
-    likelihood) with the SDT multinomial likelihood injected as custom
-    ``stanvar()`` blocks.
+    This delegates to :func:`metasignal.sdtbayes.fit_meta_formula` with
+    ``parameterization="mratio"`` and ``backend="stan"`` (cmdstanpy), which
+    implements the same Fleming (2017) HMeta-d model with a numerically
+    stable log-space likelihood, hard-by-construction ordered Type-2 criteria,
+    and a Type-1 binomial likelihood tying d'/c' directly to the observed
+    hit/false-alarm totals.
 
-    The group-level parameter of primary interest is **``mu_logMratio``**,
-    which represents the posterior mean log M-ratio.  ``exp(mu_logMratio)``
-    gives the group mean M-ratio (metacognitive efficiency).
+    This function previously injected custom Stan code into brms via
+    ``brmspy``; that path is no longer used because the brmspy/rpy2 bridge
+    cannot reliably convert a list of multiple ``stanvar()`` objects (a
+    ``block != "data"`` stanvar round-trips to Python as a differently-shaped
+    object than a data-carrying one, so a combined list fails rpy2's
+    homogeneous-type dispatch — this is an upstream brmspy limitation, not
+    fixable from calling code).
+
+    The group-level parameter of primary interest is **``alpha_logMratio``**
+    (aliased as ``mu_logMratio``), the posterior mean log M-ratio.
+    ``exp(alpha_logMratio)`` gives the group mean M-ratio.
 
     Key parameters in the posterior
     --------------------------------
-    - ``mu_logMratio`` — group mean log M-ratio
+    - ``alpha_logMratio`` / ``mu_logMratio`` — group mean log M-ratio
     - ``sigma_logMratio`` — between-subject SD on the log M-ratio scale
     - ``Mratio[s]`` — per-subject M-ratio (transformed parameter)
     - ``meta_d[s]`` — per-subject meta-d' (transformed parameter)
@@ -424,13 +378,13 @@ def fit_full_metad(
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor for multinomial cells (default 1e-7).
-        **kwargs: Forwarded to ``brmspy.brms.brm``.
+        **kwargs: Forwarded to :func:`fit_meta_formula` (e.g. ``cmdstan_path``).
 
     Returns:
-        ``FitResult`` with ``.idata`` (ArviZ InferenceData) and ``.r`` (R handle).
+        ``FitResult`` with ``.idata`` (ArviZ InferenceData).
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        ImportError: If ``cmdstanpy`` is not installed.
 
     Example::
 
@@ -447,51 +401,25 @@ def fit_full_metad(
         print(posterior_summary(fit, var_names=["mu_logMratio", "sigma_logMratio",
                                                  "mu_d1", "Mratio"]))
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    import pandas as pd
 
-    nsubj = len(participants)
-    counts_mat = _build_count_matrix(participants, n_ratings)
-    n_counts_cols = n_ratings * 4
+    from metasignal.sdtbayes.formula import fit_meta_formula
 
-    # brms stanvar(block="data") requires x= per element (brms 2.20+)
-    sv_nsubj   = brms.call("stanvar", x=int(nsubj),    name="nsubj",
-                            scode="int<lower=1> nsubj;")
-    sv_nratings = brms.call("stanvar", x=int(n_ratings), name="nratings",
-                             scode="int<lower=1> nratings;")
-    sv_counts  = brms.call("stanvar",
-                            x=[[int(v) for v in row] for row in counts_mat.tolist()],
-                            name="hmetad_counts",
-                            scode=f"array[nsubj, {n_counts_cols}] int hmetad_counts;")
-    sv_tol     = brms.call("stanvar", x=float(tol), name="Tol",
-                            scode="real<lower=0> Tol;")
-
-    sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS,              block="parameters")
-    sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS,  block="tpar")
-    sv_model  = brms.call("stanvar", scode=_STAN_MODEL,                   block="model")
-
-    # brms 2.23.0 removed empty(). Workaround: bernoulli + constant(0) intercept
-    # + sample_prior="only" → prior_only=1 → default likelihood skipped.
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_nsubj, sv_nratings, sv_counts, sv_tol,
-                  sv_params, sv_tpar, sv_model],
+    pred_df = pd.DataFrame({"participant": range(len(participants))})
+    return fit_meta_formula(
+        participants=participants,
+        n_ratings=n_ratings,
+        formula="~ 1",
+        data=pred_df,
+        parameterization="mratio",
+        backend="stan",
         chains=chains,
-        iter=n_iter,
+        n_iter=n_iter,
         warmup=warmup,
         seed=seed,
+        tol=tol,
         **kwargs,
     )
-    return FitResult(idata=_result.idata, r=_result.r)
 
 
 def fit_full_metad_comparison(
@@ -505,15 +433,17 @@ def fit_full_metad_comparison(
     tol: float = 1e-7,
     **kwargs: Any,
 ) -> Any:
-    """Full HMeta-d comparison between two groups via custom Stan in brmspy.
+    """Full HMeta-d comparison between two groups (Fleming 2017 model).
 
-    Extends the single-group model with separate ``mu_logMratio_a`` and
-    ``mu_logMratio_b`` hyperparameters and a derived contrast
-    ``delta_logMratio = mu_logMratio_b - mu_logMratio_a``.
+    Delegates to :func:`fit_meta_formula` with a binary ``group`` covariate
+    (0 = group A, 1 = group B) and ``parameterization="mratio"``.  See
+    :func:`fit_full_metad` for why this no longer uses the brmspy stanvar
+    injection path.
 
-    The posterior of ``delta_logMratio`` gives the full Bayesian answer to
-    "does group B have higher metacognitive efficiency than group A?" without
-    a null-hypothesis significance test.
+    Because the covariate is mean-centred internally (0/1 → -0.5/+0.5,
+    spanning exactly one unit), the fitted slope ``beta_logMratio[1]`` is
+    the full group B − group A difference in log M-ratio — the same
+    quantity the old ``delta_logMratio`` parameter represented.
 
     Args:
         group_a: Participants in group A.
@@ -524,70 +454,44 @@ def fit_full_metad_comparison(
         warmup: Warmup iterations (default 1000).
         seed: Random seed (default 42).
         tol: Minimum probability floor (default 1e-7).
-        **kwargs: Forwarded to ``brmspy.brms.brm``.
+        **kwargs: Forwarded to :func:`fit_meta_formula`.
 
     Returns:
-        ``FitResult``.  Key parameters: ``mu_logMratio_a``, ``mu_logMratio_b``,
-        ``delta_logMratio`` (b − a difference).
+        ``FitResult``.  Key parameters: ``alpha_logMratio`` (group A mean
+        log M-ratio, at the covariate mean), ``beta_logMratio`` (length-1
+        vector — group B − A difference).
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        ImportError: If ``cmdstanpy`` is not installed.
 
     Example::
 
         fit = fit_full_metad_comparison(healthy, patient, n_ratings=4)
 
         import arviz as az
-        delta = az.extract(fit.idata)["delta_logMratio"].values
+        delta = az.extract(fit.idata)["beta_logMratio"].values[:, 0]
         print(f"P(group B > group A): {(delta > 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    import pandas as pd
 
-    na = len(group_a)
-    nb = len(group_b)
-    counts_a = _build_count_matrix(group_a, n_ratings)
-    counts_b = _build_count_matrix(group_b, n_ratings)
-    n_counts_cols = n_ratings * 4
+    from metasignal.sdtbayes.formula import fit_meta_formula
 
-    sv_na      = brms.call("stanvar", x=int(na),       name="nsubj_a",
-                            scode="int<lower=1> nsubj_a;")
-    sv_nb      = brms.call("stanvar", x=int(nb),       name="nsubj_b",
-                            scode="int<lower=1> nsubj_b;")
-    sv_nratings = brms.call("stanvar", x=int(n_ratings), name="nratings",
-                             scode="int<lower=1> nratings;")
-    sv_ca      = brms.call("stanvar",
-                            x=[[int(v) for v in row] for row in counts_a.tolist()],
-                            name="hmetad_counts_a",
-                            scode=f"array[nsubj_a, {n_counts_cols}] int hmetad_counts_a;")
-    sv_cb      = brms.call("stanvar",
-                            x=[[int(v) for v in row] for row in counts_b.tolist()],
-                            name="hmetad_counts_b",
-                            scode=f"array[nsubj_b, {n_counts_cols}] int hmetad_counts_b;")
-    sv_tol     = brms.call("stanvar", x=float(tol),   name="Tol",
-                            scode="real<lower=0> Tol;")
-
-    sv_params = brms.call("stanvar", scode=_STAN_PARAMETERS_TWO_GROUP,             block="parameters")
-    sv_tpar   = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP, block="tpar")
-    sv_model  = brms.call("stanvar", scode=_STAN_MODEL_TWO_GROUP,                  block="model")
-
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_na, sv_nb, sv_nratings, sv_ca, sv_cb, sv_tol,
-                  sv_params, sv_tpar, sv_model],
+    participants = list(group_a) + list(group_b)
+    pred_df = pd.DataFrame({
+        "participant": range(len(participants)),
+        "group": [0] * len(group_a) + [1] * len(group_b),
+    })
+    return fit_meta_formula(
+        participants=participants,
+        n_ratings=n_ratings,
+        formula="~ group",
+        data=pred_df,
+        parameterization="mratio",
+        backend="stan",
         chains=chains,
-        iter=n_iter,
+        n_iter=n_iter,
         warmup=warmup,
         seed=seed,
+        tol=tol,
         **kwargs,
     )
-    return FitResult(idata=_result.idata, r=_result.r)

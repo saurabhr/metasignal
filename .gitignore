@@ -127,6 +127,22 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+env_metasignal/
+
+# macOS
+.DS_Store
+
+# Compiled CmdStan model binaries and build artifacts
+src/metasignal/sdtbayes/stan/hmeta_d
+src/metasignal/sdtbayes/stan/hmeta_noise
+src/metasignal/sdtbayes/stan/hmeta_noise_subject
+src/metasignal/sdtbayes/stan/hmeta_uncertainty
+src/metasignal/sdtbayes/stan/hmeta_uncertainty_subject
+src/metasignal/sdtbayes/stan/meta_d_subject
+src/metasignal/sdtbayes/stan/*.hpp
+src/metasignal/sdtbayes/stan/*.o
+src/metasignal/sdtbayes/stan/*.o.tmp
+pytest-cache-files-*/
 
 # Spyder project settings
 .spyderproject

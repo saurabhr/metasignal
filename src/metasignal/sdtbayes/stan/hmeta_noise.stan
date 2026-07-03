@@ -73,6 +73,24 @@ data {
     matrix[nsubj, p_cov] X_cov;   // mean-centred covariate design matrix
 }
 
+transformed data {
+    // Per-subject Type-1 totals; feeds the Type-1 binomial likelihood below.
+    array[nsubj] int CR_total;
+    array[nsubj] int FA_total;
+    array[nsubj] int M_total;
+    array[nsubj] int H_total;
+    array[nsubj] int N_total;
+    array[nsubj] int S_total;
+    for (s in 1:nsubj) {
+        CR_total[s] = sum(hmetad_counts[s, 1:nratings]);
+        FA_total[s] = sum(hmetad_counts[s, (nratings + 1):(2 * nratings)]);
+        M_total[s]  = sum(hmetad_counts[s, (2 * nratings + 1):(3 * nratings)]);
+        H_total[s]  = sum(hmetad_counts[s, (3 * nratings + 1):(4 * nratings)]);
+        N_total[s]  = CR_total[s] + FA_total[s];
+        S_total[s]  = M_total[s] + H_total[s];
+    }
+}
+
 parameters {
     // ── Type-1 hierarchical parameters ──────────────────────────────────────
     real mu_d1;
@@ -140,6 +158,9 @@ model {
     // ── Per-subject likelihood ───────────────────────────────────────────────
     // Identical to hmeta_d.stan: meta_d enters through S1mu/S2mu
     for (s in 1:nsubj) {
+        target += binomial_lpmf(H_total[s]  | S_total[s], Phi(d1[s] / 2.0 - c1[s]));
+        target += binomial_lpmf(FA_total[s] | N_total[s], Phi(-d1[s] / 2.0 - c1[s]));
+
         cS1_raw[s] ~ normal(c1[s] - mu_c2, sigma_c2);
         cS2_raw[s] ~ normal(c1[s] + mu_c2, sigma_c2);
 

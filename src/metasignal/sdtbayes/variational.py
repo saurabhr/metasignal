@@ -75,7 +75,20 @@ def fit_full_metad_vi(
         ``mu_logMratio``, ``sigma_logMratio``, ``Mratio``, ``meta_d``.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
+
+    Notes:
+        :func:`~metasignal.sdtbayes.fit_full_metad` now runs via **cmdstanpy**
+        (see its docstring for why the brmspy path was replaced).
+        ``cmdstanpy.CmdStanModel`` exposes VI through dedicated methods
+        (``.pathfinder()``, ``.variational()``), not through an ``algorithm=``
+        keyword on ``.sample()``, so this wrapper's approach of forwarding
+        ``algorithm=`` no longer applies and would silently be rejected or
+        misinterpreted by the sampling call.  Genuine cmdstanpy-backed VI
+        support has not been implemented.  Use
+        :func:`~metasignal.sdtbayes.fit_full_metad` (full MCMC) instead — with
+        the numerically stable log-space likelihood it now uses, typical
+        group models run in well under a minute.
 
     Example::
 
@@ -91,17 +104,12 @@ def fit_full_metad_vi(
         fit = fit_full_metad_vi(participants, n_ratings=4)
         print(fit.posterior_summary(var_names=["mu_logMratio", "sigma_logMratio"]))
     """
-    from metasignal.sdtbayes.full_metad import fit_full_metad
-
-    return fit_full_metad(
-        participants,
-        n_ratings,
-        chains=1,
-        iter=n_iter,
-        warmup=0,
-        seed=seed,
-        algorithm=algorithm,
-        **kwargs,
+    raise RuntimeError(
+        "fit_full_metad_vi is currently unavailable: fit_full_metad now runs via "
+        "cmdstanpy, which exposes variational inference through dedicated methods "
+        "(.pathfinder(), .variational()) rather than an algorithm= kwarg on "
+        ".sample(). Use fit_full_metad(...) for full MCMC instead — it is fast "
+        "enough for most use cases with the current numerically stable likelihood."
     )
 
 
@@ -134,7 +142,14 @@ def fit_robust_metad_vi(
         ``mu_logMratio``, ``sigma_logMratio``, ``nu_logMratio``.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
+
+    Notes:
+        Unavailable for two independent reasons: (1) the same cmdstanpy/VI
+        method mismatch documented in :func:`fit_full_metad_vi`, and (2) the
+        underlying :func:`~metasignal.sdtbayes.fit_robust_metad` itself is
+        blocked by an upstream brmspy stanvar-injection limitation (see its
+        docstring).
 
     Example::
 
@@ -143,15 +158,10 @@ def fit_robust_metad_vi(
         nu = az.extract(fit.idata)["nu_logMratio"].values
         print(f"nu_logMratio ≈ {nu.mean():.1f}")
     """
-    from metasignal.sdtbayes.robust import fit_robust_metad
-
-    return fit_robust_metad(
-        participants,
-        n_ratings,
-        chains=1,
-        iter=n_iter,
-        warmup=0,
-        seed=seed,
-        algorithm=algorithm,
-        **kwargs,
+    raise RuntimeError(
+        "fit_robust_metad_vi is currently unavailable: fit_robust_metad is blocked "
+        "by an upstream brmspy stanvar-injection limitation, and cmdstanpy VI "
+        "requires dedicated methods (.pathfinder(), .variational()) rather than an "
+        "algorithm= kwarg on .sample(). Use fit_full_metad(...) for the standard "
+        "(non-robust) model via full MCMC instead."
     )

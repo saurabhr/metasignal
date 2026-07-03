@@ -212,63 +212,32 @@ def fit_robust_metad(
         ``FitResult`` with ``.idata`` and ``.r``.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        RuntimeError: Always — see Notes.
 
-    Example::
+    Notes:
+        This function's brmspy stanvar-injection path is currently
+        **non-functional**: the brmspy/rpy2 bridge cannot reliably convert a
+        list of multiple ``stanvar()`` objects into R.  A ``block="data"``
+        stanvar (carrying a real data value via ``x=``) round-trips to Python
+        as a ``dict``, while a ``block != "data"`` stanvar (code-only, e.g.
+        ``block="parameters"``) round-trips as a ``list`` — mixing the two
+        shapes in one Python list breaks rpy2's homogeneous-type dispatch, and
+        no combination method (``c()``, ``+``, dummy data values) was found
+        to fix this from calling code.  This is an upstream brmspy limitation.
 
-        import numpy as np
-        from metasignal.sdtbayes import fit_robust_metad
-
-        rng = np.random.default_rng(0)
-        participants = [
-            (rng.integers(0, 2, 200), rng.integers(0, 2, 200), rng.integers(1, 5, 200))
-            for _ in range(20)
-        ]
-        fit = fit_robust_metad(participants, n_ratings=4)
-
-        # Check if outliers were influential
-        import arviz as az
-        nu = az.extract(fit.idata)["nu_logMratio"].values
-        print(f"nu_logMratio mean: {nu.mean():.1f}  (< 10 → heavy tails)")
+        If your use case doesn't need the Student-t robustness to outlier
+        participants, use :func:`~metasignal.sdtbayes.fit_full_metad` instead,
+        which delegates to the working cmdstanpy backend
+        (:func:`~metasignal.sdtbayes.fit_meta_formula`).
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
-    nsubj = len(participants)
-    counts_mat = _build_count_matrix(participants, n_ratings)
-    n_counts_cols = n_ratings * 4
-
-    sv_nsubj    = brms.call("stanvar", x=int(nsubj),      name="nsubj",
-                             scode="int<lower=1> nsubj;")
-    sv_nratings = brms.call("stanvar", x=int(n_ratings),  name="nratings",
-                             scode="int<lower=1> nratings;")
-    sv_counts   = brms.call("stanvar",
-                             x=[[int(v) for v in row] for row in counts_mat.tolist()],
-                             name="hmetad_counts",
-                             scode=f"array[nsubj, {n_counts_cols}] int hmetad_counts;")
-    sv_tol      = brms.call("stanvar", x=float(tol),      name="Tol",
-                             scode="real<lower=0> Tol;")
-    sv_params   = brms.call("stanvar", scode=_ROBUST_PARAMETERS,           block="parameters")
-    sv_tpar     = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS, block="tpar")
-    sv_model    = brms.call("stanvar", scode=_ROBUST_MODEL,                block="model")
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_nsubj, sv_nratings, sv_counts, sv_tol,
-                  sv_params, sv_tpar, sv_model],
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_robust_metad is currently unavailable: its brmspy stanvar-injection "
+        "path is blocked by an upstream brmspy/rpy2 conversion limitation (a list "
+        "mixing data-carrying and code-only stanvar() objects cannot be converted "
+        "to R). Use fit_full_metad(...) instead for the standard (non-robust, "
+        "Gaussian hyperprior) HMeta-d model, which runs via the working cmdstanpy "
+        "backend."
     )
-    return FitResult(idata=_result.idata, r=_result.r)
 
 
 def fit_robust_metad_comparison(
@@ -304,6 +273,16 @@ def fit_robust_metad_comparison(
         ``FitResult``.  Key parameters: ``mu_logMratio_a``, ``mu_logMratio_b``,
         ``delta_logMratio``, ``nu_logMratio``.
 
+    Raises:
+        RuntimeError: Always — see Notes.
+
+    Notes:
+        This function's brmspy stanvar-injection path is currently
+        **non-functional** for the same reason documented in
+        :func:`fit_robust_metad` — an upstream brmspy/rpy2 conversion
+        limitation.  Use :func:`~metasignal.sdtbayes.fit_full_metad_comparison`
+        instead for the standard (non-robust) between-groups comparison.
+
     Example::
 
         fit = fit_robust_metad_comparison(healthy, patient, n_ratings=4)
@@ -311,49 +290,11 @@ def fit_robust_metad_comparison(
         delta = az.extract(fit.idata)["delta_logMratio"].values
         print(f"P(patient < healthy): {(delta < 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
-
-    na = len(group_a)
-    nb = len(group_b)
-    counts_a = _build_count_matrix(group_a, n_ratings)
-    counts_b = _build_count_matrix(group_b, n_ratings)
-    n_counts_cols = n_ratings * 4
-
-    sv_na       = brms.call("stanvar", x=int(na),         name="nsubj_a",
-                             scode="int<lower=1> nsubj_a;")
-    sv_nb       = brms.call("stanvar", x=int(nb),         name="nsubj_b",
-                             scode="int<lower=1> nsubj_b;")
-    sv_nratings = brms.call("stanvar", x=int(n_ratings),  name="nratings",
-                             scode="int<lower=1> nratings;")
-    sv_ca       = brms.call("stanvar",
-                             x=[[int(v) for v in row] for row in counts_a.tolist()],
-                             name="hmetad_counts_a",
-                             scode=f"array[nsubj_a, {n_counts_cols}] int hmetad_counts_a;")
-    sv_cb       = brms.call("stanvar",
-                             x=[[int(v) for v in row] for row in counts_b.tolist()],
-                             name="hmetad_counts_b",
-                             scode=f"array[nsubj_b, {n_counts_cols}] int hmetad_counts_b;")
-    sv_tol      = brms.call("stanvar", x=float(tol),      name="Tol",
-                             scode="real<lower=0> Tol;")
-    sv_params   = brms.call("stanvar", scode=_ROBUST_PARAMETERS_TWO_GROUP,           block="parameters")
-    sv_tpar     = brms.call("stanvar", scode=_STAN_TRANSFORMED_PARAMETERS_TWO_GROUP, block="tpar")
-    sv_model    = brms.call("stanvar", scode=_ROBUST_MODEL_TWO_GROUP,                block="model")
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_na, sv_nb, sv_nratings, sv_ca, sv_cb, sv_tol,
-                  sv_params, sv_tpar, sv_model],
-        chains=chains,
-        iter=n_iter,
-        warmup=warmup,
-        seed=seed,
-        **kwargs,
+    raise RuntimeError(
+        "fit_robust_metad_comparison is currently unavailable: its brmspy "
+        "stanvar-injection path is blocked by an upstream brmspy/rpy2 conversion "
+        "limitation (a list mixing data-carrying and code-only stanvar() objects "
+        "cannot be converted to R). Use fit_full_metad_comparison(...) instead for "
+        "the standard (non-robust, Gaussian hyperprior) between-groups comparison, "
+        "which runs via the working cmdstanpy backend."
     )
-    return FitResult(idata=_result.idata, r=_result.r)

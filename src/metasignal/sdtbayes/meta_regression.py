@@ -304,7 +304,7 @@ def fit_full_metad_regression(
         - ``Mratio[s]``, ``meta_d[s]`` — covariate-adjusted per-subject estimates.
 
     Raises:
-        ImportError: If ``brmspy`` is not installed.
+        ImportError: If ``cmdstanpy`` is not installed.
         ValueError: If ``covariates`` length does not match ``participants``.
 
     Example::
@@ -323,12 +323,18 @@ def fit_full_metad_regression(
         fit = fit_full_metad_regression(participants, n_ratings=4, covariates=age)
         print(fit.posterior_summary(var_names=["alpha_logMratio", "beta_logMratio",
                                                 "sigma_logMratio"]))
+
+    Notes:
+        Delegates to :func:`metasignal.sdtbayes.fit_meta_formula`
+        (``parameterization="mratio"``, ``backend="stan"``) rather than
+        injecting custom Stan code into brms via ``brmspy`` — the brmspy/rpy2
+        bridge cannot reliably convert a list of multiple ``stanvar()``
+        objects into R (see :func:`metasignal.sdtbayes.fit_full_metad`
+        docstring for details).
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
+    import pandas as pd
+
+    from metasignal.sdtbayes.formula import fit_meta_formula
 
     cov_mat = np.atleast_2d(np.asarray(covariates, dtype=float))
     if cov_mat.shape[0] == 1 and cov_mat.shape[1] == len(participants):
@@ -340,50 +346,23 @@ def fit_full_metad_regression(
         )
         raise ValueError(msg)
 
-    # Mean-centre covariates so alpha is interpretable at the covariate mean
-    cov_mat = cov_mat - cov_mat.mean(axis=0)
     p_cov = cov_mat.shape[1]
+    col_names = [f"cov{i}" for i in range(p_cov)]
+    pred_df = pd.DataFrame(cov_mat, columns=col_names)
+    pred_df.insert(0, "participant", range(len(participants)))
+    formula = "~ " + " + ".join(col_names)
 
-    nsubj = len(participants)
-    counts_mat = _build_count_matrix(participants, n_ratings)
-    stan_data_str, stan_params_str, stan_tpar_str, stan_model_str = (
-        _build_regression_stan_blocks()
-    )
-
-    n_counts_cols = n_ratings * 4
-    sv_nsubj    = brms.call("stanvar", x=int(nsubj),      name="nsubj",
-                             scode="int<lower=1> nsubj;")
-    sv_nratings = brms.call("stanvar", x=int(n_ratings),  name="nratings",
-                             scode="int<lower=1> nratings;")
-    sv_counts   = brms.call("stanvar",
-                             x=[[int(v) for v in row] for row in counts_mat.tolist()],
-                             name="hmetad_counts",
-                             scode=f"array[nsubj, {n_counts_cols}] int hmetad_counts;")
-    sv_tol      = brms.call("stanvar", x=float(tol),      name="Tol",
-                             scode="real<lower=0> Tol;")
-    sv_pcov     = brms.call("stanvar", x=int(p_cov),      name="p_cov",
-                             scode="int<lower=1> p_cov;")
-    sv_xcov     = brms.call("stanvar",
-                             x=[[float(v) for v in row] for row in cov_mat.tolist()],
-                             name="X_cov",
-                             scode="matrix[nsubj, p_cov] X_cov;")
-
-    sv_params = brms.call("stanvar", scode=stan_params_str, block="parameters")
-    sv_tpar   = brms.call("stanvar", scode=stan_tpar_str,   block="tpar")
-    sv_model  = brms.call("stanvar", scode=stan_model_str,  block="model")
-
-
-    _result = brms.brm(
-        formula=brms.bf("y ~ 1"),
-        data=pd.DataFrame({"y": [0]}),
-        family="bernoulli",
-        sample_prior="only",
-        stanvars=[sv_nsubj, sv_nratings, sv_counts, sv_tol, sv_pcov, sv_xcov,
-                  sv_params, sv_tpar, sv_model],
+    return fit_meta_formula(
+        participants=participants,
+        n_ratings=n_ratings,
+        formula=formula,
+        data=pred_df,
+        parameterization="mratio",
+        backend="stan",
         chains=chains,
-        iter=n_iter,
+        n_iter=n_iter,
         warmup=warmup,
         seed=seed,
+        tol=tol,
         **kwargs,
     )
-    return FitResult(idata=_result.idata, r=_result.r)
