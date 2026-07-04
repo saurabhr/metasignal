@@ -7,7 +7,7 @@ Two further benchmarking criteria from Rahnev (2025):
 
 ## Split-half reliability
 
-The procedure splits each subject's trials into **odd** and **even** halves, computes the 20 measures on each half independently, correlates the two halves with Pearson *r*, then applies the **Spearman-Brown correction** to estimate the full-sample reliability:
+The procedure splits each subject's trials into **odd** and **even** halves, computes the 26 measures on each half independently, correlates the two halves with Pearson *r*, then applies the **Spearman-Brown correction** to estimate the full-sample reliability:
 
 $$r_{SB} = \frac{2r}{1 + r}$$
 
@@ -23,8 +23,9 @@ MEASURE_NAMES = [
     "M-Ratio","AUC2-Ratio","Gamma-Ratio","Phi-Ratio","DeltaConf-Ratio",
     "M-Diff","AUC2-Diff","Gamma-Diff","Phi-Diff","DeltaConf-Diff",
     "metaNoise","metaUncertainty","d'","c","mean_conf",
+    "logL","AIC","BIC","AICc","k","n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 
 def simulate_subject(seed, n_trials=400, n_ratings=4, accuracy=0.78):
     r = np.random.default_rng(seed)
@@ -58,7 +59,7 @@ for s_idx, (stim, resp, conf) in enumerate(dataset):
             stim[idx], resp[idx], conf[idx], n_ratings=n_ratings
         )
 
-print("Split array shape:", split.shape)   # (30, 2, 20)
+print("Split array shape:", split.shape)   # (30, 2, 26)
 ```
 
 ### Spearman-Brown corrected correlations
@@ -223,7 +224,7 @@ Measures that remain near zero across all corruption proportions are the most pr
 
 You have now covered the complete benchmarking pipeline from Rahnev (2025):
 
-1. Compute all 20 measures (`compute_all_measures`)
+1. Compute all 26 measures (`compute_all_measures`)
 2. Run group-level statistics (bootstrap, permutation, ANOVA)
 3. Test difficulty independence
 4. Test bias sensitivity (Xue recoding)

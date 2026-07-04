@@ -4,7 +4,7 @@ A key property required of a good metacognitive measure is **difficulty independ
 
 ## The question
 
-For each of 20 measures we ask: does the measure differ between easy (high contrast) and hard (low contrast) trial blocks? A significant effect means the measure conflates metacognitive efficiency with task difficulty — undesirable when comparing groups.
+For each of 26 measures we ask: does the measure differ between easy (high contrast) and hard (low contrast) trial blocks? A significant effect means the measure conflates metacognitive efficiency with task difficulty — undesirable when comparing groups.
 
 ## Setup
 
@@ -46,7 +46,7 @@ dataset = [simulate_subject(i, difficulty, n_ratings=n_ratings)
 ## Computing measures per difficulty level
 
 ```python
-N_MEAS      = 20
+N_MEAS      = 26
 n_levels    = len(difficulty)
 
 # raw[subject, level, measure]
@@ -58,7 +58,7 @@ for s_idx, subject_trials in enumerate(dataset):
             stim, resp, conf, n_ratings=n_ratings
         )
 
-print("Computed array shape:", raw.shape)   # (20, 3, 20)
+print("Computed array shape:", raw.shape)   # (20, 3, 26)
 ```
 
 ## 3-SD outlier removal
@@ -97,6 +97,7 @@ MEASURE_NAMES = [
     "M-Ratio","AUC2-Ratio","Gamma-Ratio","Phi-Ratio","DeltaConf-Ratio",
     "M-Diff","AUC2-Diff","Gamma-Diff","Phi-Diff","DeltaConf-Diff",
     "metaNoise","metaUncertainty","d'","c","mean_conf",
+    "logL","AIC","BIC","AICc","k","n",
 ]
 
 # Compare hardest (level 0) vs easiest (level 2)
@@ -176,7 +177,7 @@ for m, (name, ax) in enumerate(zip(MEASURE_NAMES, axes)):
     ax.set_xticklabels(["Hard", "Med", "Easy"], fontsize=7, rotation=30)
     ax.axhline(0, color="k", linewidth=0.5, linestyle="--")
 
-plt.suptitle("Effect of Difficulty on 20 Metacognitive Measures", fontsize=13)
+plt.suptitle("Effect of Difficulty on 26 Metacognitive Measures", fontsize=13)
 plt.tight_layout()
 plt.savefig("difficulty_dependence.png", dpi=120, bbox_inches="tight")
 plt.show()

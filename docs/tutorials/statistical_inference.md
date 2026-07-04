@@ -1,6 +1,6 @@
 # Tutorial 3 — Statistical Inference
 
-This tutorial shows how to run non-parametric statistical tests over the 20 measures using `metasignal.analysis`.
+This tutorial shows how to run non-parametric statistical tests over the 26 measures using `metasignal.analysis`.
 
 ## Setup — simulate a multi-participant experiment
 
@@ -46,12 +46,12 @@ The returned dict has these keys:
 
 | Key | Shape | Description |
 | --- | --- | --- |
-| `"individual"` | `(n_participants, 20)` | Per-participant measure values |
-| `"mean"` | `(20,)` | nanmean across participants |
-| `"median"` | `(20,)` | nanmedian |
-| `"sem"` | `(20,)` | standard error of the mean |
-| `"n_valid"` | `(20,)` | participants with non-NaN value per measure |
-| `"labels"` | list of 20 str | measure names in index order |
+| `"individual"` | `(n_participants, 26)` | Per-participant measure values |
+| `"mean"` | `(26,)` | nanmean across participants |
+| `"median"` | `(26,)` | nanmedian |
+| `"sem"` | `(26,)` | standard error of the mean |
+| `"n_valid"` | `(26,)` | participants with non-NaN value per measure |
+| `"labels"` | list of 26 str | measure names in index order |
 
 ```python
 import numpy as np
@@ -84,7 +84,7 @@ lo, hi = bootstrap_measure(
 print(f"M-Ratio 95% CI: [{lo:.3f}, {hi:.3f}]")
 ```
 
-**`measure_index`** is the integer index into the 20-element output (see [Tutorial 2](computing_measures.md) for the full index→name mapping).
+**`measure_index`** is the integer index into the 26-element output (see [Tutorial 2](computing_measures.md) for the full index→name mapping).
 
 Bootstrap CIs for several measures at once:
 
@@ -143,7 +143,7 @@ print(f"Two-sided p-value:                {p_val:.4f}")
 
 The function pools all trials, randomly shuffles the condition assignment `n_perm` times, and counts how often the shuffled difference exceeds the observed one in absolute value.
 
-Scan all 20 measures for significant condition differences:
+Scan all 26 measures for significant condition differences:
 
 ```python
 from metasignal.analysis import permutation_test
@@ -156,6 +156,7 @@ MEASURE_NAMES = [
     "M-Ratio","AUC2-Ratio","Gamma-Ratio","Phi-Ratio","DeltaConf-Ratio",
     "M-Diff","AUC2-Diff","Gamma-Diff","Phi-Diff","DeltaConf-Diff",
     "metaNoise","metaUncertainty","d'","c","mean_conf",
+    "logL","AIC","BIC","AICc","k","n",
 ]
 
 for idx, name in enumerate(MEASURE_NAMES):
@@ -178,7 +179,7 @@ For group-level analyses (e.g. testing whether M-Ratio is significantly above 1.
 ```python
 from scipy import stats
 
-individual = summary["individual"]   # (n_participants, 20)
+individual = summary["individual"]   # (n_participants, 26)
 
 # Test M-Ratio against 1.0 (efficiency ≠ perfect)
 m_ratio = individual[:, 5]

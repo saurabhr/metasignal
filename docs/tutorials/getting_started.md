@@ -18,10 +18,10 @@ resp = np.where(rng.random(200) < 0.75, stim, 1 - stim)  # 75% accuracy
 conf = rng.integers(1, 5, 200)                             # ratings 1–4
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=4)
-print("Output shape:", meas.shape)   # (20,)
+print("Output shape:", meas.shape)   # (26,)
 ```
 
-If you see `(20,)` you are good to go.
+If you see `(26,)` you are good to go.
 
 ## 2. Input format
 
@@ -68,7 +68,7 @@ print(f"Mean confidence: {conf.mean():.2f}")
 
 ## 4. Compute Type-1 SDT parameters
 
-Before running the full 20-measure battery, compute the basic SDT summary:
+Before running the full 26-measure battery, compute the basic SDT summary:
 
 ```python
 dprime, c, ln_beta = stdpy.compute_sdt_resp(stim, resp)
@@ -97,7 +97,7 @@ Each array has `2 * n_ratings` elements:
 - `nr_s1[n_ratings:]` — S2-response counts for S1 trials (from lowest to highest confidence)
 - `nr_s2` — same layout for S2 trials
 
-## 6. Inspect the 20-element output
+## 6. Inspect the 26-element output
 
 ```python
 from metasignal import stdpy
@@ -123,6 +123,12 @@ MEASURE_NAMES = [
     "d'",              # 17
     "c",               # 18
     "mean_conf",       # 19
+    "logL",            # 20
+    "AIC",             # 21
+    "BIC",             # 22
+    "AICc",            # 23
+    "k",               # 24
+    "n",               # 25
 ]
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
@@ -137,5 +143,5 @@ for i, (name, val) in enumerate(zip(MEASURE_NAMES, meas)):
 
 ## Next steps
 
-- **[Tutorial 2](computing_measures.md)** — computing and interpreting all 20 measures in detail
+- **[Tutorial 2](computing_measures.md)** — computing and interpreting all 26 measures in detail
 - **[Tutorial 3](statistical_inference.md)** — bootstrap confidence intervals and permutation tests

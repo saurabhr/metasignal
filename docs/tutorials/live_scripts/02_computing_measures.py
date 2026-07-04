@@ -1,7 +1,7 @@
 # %% [markdown]
-# # Tutorial 2 — Computing All 20 Measures
+# # Tutorial 2 — Computing All 26 Measures
 #
-# A detailed walkthrough of each block of the 20-measure array, plus how
+# A detailed walkthrough of each block of the 26-measure array, plus how
 # to call individual measures directly.
 
 # %% [markdown]
@@ -16,8 +16,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 
 rng = np.random.default_rng(0)
 n_trials, n_ratings = 400, 4
@@ -92,7 +93,7 @@ print(f"metaNoise       = {noise_res['meta_noise']:.4f}")
 print(f"metaUncertainty = {uncert:.4f}")
 
 # %% [markdown]
-# ## Full 20-measure summary
+# ## Full 26-measure summary
 
 # %%
 print(f"{'Index':<6} {'Measure':<20} {'Value':>10}")

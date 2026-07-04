@@ -9,7 +9,7 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 | # | Tutorial | What you'll learn |
 | --- | --- | --- |
 | 1 | [Getting Started](getting_started.md) | Install check, input format, smoke test |
-| 2 | [Computing All 20 Measures](computing_measures.md) | `compute_all_measures`, index→measure mapping, NaN handling |
+| 2 | [Computing All 26 Measures](computing_measures.md) | `compute_all_measures`, index→measure mapping, NaN handling |
 | 3 | [Statistical Inference](statistical_inference.md) | Bootstrap CIs, permutation tests, group summaries |
 | 4 | [Difficulty Dependence](difficulty_dependence.md) | Per-difficulty computation, 3-SD outlier removal, ANOVA |
 | 5 | [Metacognitive Bias](metacognitive_bias.md) | Xue recoding, bias sensitivity testing |
@@ -17,7 +17,7 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 
 ## Background
 
-The 20 measures fall into four conceptual groups:
+The 26 measures fall into five conceptual groups (the original 20, plus 6 model-fit diagnostics from the meta-d' MLE):
 
 ```
 Absolute sensitivity   meta-d', AUC2, Gamma, Phi, DeltaConf
@@ -31,6 +31,9 @@ Efficiency differences M-diff, AUC2-diff, Gamma-diff, Phi-diff, DeltaConf-diff
 
 Noise & uncertainty    metaNoise, metaUncertainty
                        (dispersion in the confidence-generating process)
+
+Model-fit diagnostics  logL, AIC, BIC, AICc, k, n
+                       (from the meta-d' MLE fit)
 ```
 
 Plus the three Type-1 SDT basics returned for convenience: **d'**, **c** (criterion), **mean confidence**.

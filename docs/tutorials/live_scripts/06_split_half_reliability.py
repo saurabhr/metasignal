@@ -184,7 +184,7 @@ plt.show()
 # You have now covered the complete benchmarking pipeline from Rahnev (2025):
 #
 # 1. **Tutorial 1** — Install check and input format
-# 2. **Tutorial 2** — All 20 measures (absolute, efficiency, noise/uncertainty)
+# 2. **Tutorial 2** — All 26 measures (absolute, efficiency, noise/uncertainty)
 # 3. **Tutorial 3** — Bootstrap CIs, permutation tests, group summaries
 # 4. **Tutorial 4** — Difficulty dependence + 3-SD outlier removal + ANOVA
 # 5. **Tutorial 5** — Metacognitive bias via Xue recoding

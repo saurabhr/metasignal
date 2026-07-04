@@ -19,8 +19,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 n_ratings = 4
 
 def simulate_subject(seed, n_trials=300, accuracy=0.78):

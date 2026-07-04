@@ -1,10 +1,10 @@
-# Tutorial 2 — Computing All 20 Measures
+# Tutorial 2 — Computing All 26 Measures
 
-This tutorial covers the full 20-measure battery in detail: what each measure captures, how to call it individually, and how to interpret the output.
+This tutorial covers the full 26-measure battery in detail: what each measure captures, how to call it individually, and how to interpret the output.
 
-## The 20-measure array
+## The 26-measure array
 
-`stdpy.compute_all_measures` returns a single NumPy array with 20 elements organised into four conceptual blocks:
+`stdpy.compute_all_measures` returns a single NumPy array with 26 elements organised into five conceptual blocks:
 
 ```
 Index   Measure              Block
@@ -32,6 +32,13 @@ Index   Measure              Block
 17      d'                   Type-1 SDT sensitivity
 18      c                    Type-1 SDT criterion
 19      mean confidence      Mean raw confidence rating
+
+20      logL                 Model-fit diagnostic (meta-d' MLE)
+21      AIC                  Model-fit diagnostic
+22      BIC                  Model-fit diagnostic
+23      AICc                 Model-fit diagnostic
+24      k                    Model-fit diagnostic (free parameters)
+25      n                    Model-fit diagnostic (trials used in fit)
 ```
 
 ## Setup
@@ -174,7 +181,7 @@ with Pool() as pool:
     results = pool.map(_compute_one, participants)
 
 import numpy as np
-all_measures = np.array(results)   # shape (n_participants, 20)
+all_measures = np.array(results)   # shape (n_participants, 26)
 ```
 
 ## Next steps

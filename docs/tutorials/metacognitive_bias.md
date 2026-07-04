@@ -27,8 +27,9 @@ MEASURE_NAMES = [
     "M-Ratio","AUC2-Ratio","Gamma-Ratio","Phi-Ratio","DeltaConf-Ratio",
     "M-Diff","AUC2-Diff","Gamma-Diff","Phi-Diff","DeltaConf-Diff",
     "metaNoise","metaUncertainty","d'","c","mean_conf",
+    "logL","AIC","BIC","AICc","k","n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 
 def simulate_subject(seed, n_trials=300, n_ratings=4, accuracy=0.78):
     r = np.random.default_rng(seed)
@@ -96,7 +97,7 @@ for s_idx, (stim, resp, conf) in enumerate(dataset):
             n_ratings=n_ratings_recoded,
         )
 
-print("Bias array shape:", bias.shape)   # (25, 2, 20)
+print("Bias array shape:", bias.shape)   # (25, 2, 26)
 ```
 
 ## Testing recode2 − recode1

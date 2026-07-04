@@ -14,9 +14,9 @@ without writing any Python code. The optional `bayes` sub-group requires
 
 ---
 
-## `compute` — all 20 measures
+## `compute` — all 26 measures
 
-Compute all 20 SDT and metacognitive measures from a single participant's
+Compute all 26 SDT and metacognitive measures from a single participant's
 trial-level data.
 
 ```bash

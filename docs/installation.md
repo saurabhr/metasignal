@@ -13,7 +13,7 @@ Install the latest release from the project source:
 pip install .
 ```
 
-This gives you the `stdpy` module — a complete pure-Python implementation of all 20 measures — and the CLI.
+This gives you the `stdpy` module — a complete pure-Python implementation of all 26 measures — and the CLI.
 
 ## Development install
 
@@ -41,7 +41,7 @@ resp = np.array([0, 1] * 40 + [1, 0] * 10)     # 80% accuracy
 conf = np.array([2, 2] * 40 + [1, 1] * 10)     # high conf when correct
 
 results = metasignal.stdpy.compute_all_measures(stim, resp, conf, n_ratings=2)
-print(results.shape)  # (20,)
+print(results.shape)  # (26,)
 ```
 
-If you see `(20,)` printed, the installation is working correctly.
+If you see `(26,)` printed, the installation is working correctly.

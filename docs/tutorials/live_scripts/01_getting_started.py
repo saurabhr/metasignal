@@ -20,7 +20,7 @@ resp = np.where(rng.random(200) < 0.75, stim, 1 - stim)
 conf = rng.integers(1, 5, 200)
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=4)
-print("Output shape:", meas.shape)   # (20,)
+print("Output shape:", meas.shape)   # (26,)
 
 # %% [markdown]
 # ## 2. Input format
@@ -70,7 +70,7 @@ print("nr_s1:", nr_s1)
 print("nr_s2:", nr_s2)
 
 # %% [markdown]
-# ## 6. Inspect the full 20-element output
+# ## 6. Inspect the full 26-element output
 
 # %%
 MEASURE_NAMES = [
@@ -78,6 +78,7 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)

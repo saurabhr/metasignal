@@ -13,7 +13,7 @@ All computation functions expect three parallel arrays of the same length, one r
 
 ## Pure Python API (`stdpy`)
 
-### Compute all 20 measures at once
+### Compute all 26 measures at once
 
 ```python
 import numpy as np
@@ -32,7 +32,7 @@ results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)
 ```
 
-The returned array has 20 elements, indexed as follows:
+The returned array has 26 elements, indexed as follows:
 
 | Index | Measure |
 | --- | --- |
@@ -56,6 +56,12 @@ The returned array has 20 elements, indexed as follows:
 | 17 | d' |
 | 18 | c |
 | 19 | mean confidence |
+| 20 | logL (meta-d' MLE log-likelihood) |
+| 21 | AIC |
+| 22 | BIC |
+| 23 | AICc |
+| 24 | k (free parameters in the meta-d' fit) |
+| 25 | n (trials used in the meta-d' fit) |
 
 ### Compute individual measures
 
@@ -149,9 +155,9 @@ from metasignal.analysis import group_summary
 participants = [(stim_p1, resp_p1, conf_p1), ...]
 
 summary = group_summary(participants, n_ratings=2)
-print(summary["mean"])    # (20,) array of group means
-print(summary["sem"])     # (20,) array of standard errors
-print(summary["labels"])  # list of 20 measure names
+print(summary["mean"])    # (26,) array of group means
+print(summary["sem"])     # (26,) array of standard errors
+print(summary["labels"])  # list of 26 measure names
 ```
 
 ## CLI

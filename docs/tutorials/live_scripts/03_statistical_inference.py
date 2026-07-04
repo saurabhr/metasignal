@@ -64,13 +64,13 @@ for name, m, s in zip(FAST_LABELS, mean, sem):
     print(f"{name:<8} {m:8.3f} {s:8.3f}")
 
 # %%
-# metasignal.analysis.group_summary wraps this for all 20 measures.
+# metasignal.analysis.group_summary wraps this for all 26 measures.
 # Production usage (slower due to MLE fits):
 #
 #   from metasignal.analysis import group_summary
 #   summary = group_summary(participants, n_ratings=n_ratings)
-#   print(summary["mean"])    # shape (20,)
-#   print(summary["labels"])  # 20 measure names
+#   print(summary["mean"])    # shape (26,)
+#   print(summary["labels"])  # 26 measure names
 print("See docstring: metasignal.analysis.group_summary")
 
 # %% [markdown]
@@ -185,7 +185,7 @@ print(f"AUC2 vs chance (0.5): t({n_ok-1}) = {t:.3f}, p = {p:.4f}, Cohen's d = {d
 # %% [markdown]
 # ## Production API
 #
-# For full 20-measure results (including meta-d', metaNoise, metaUncertainty),
+# For full 26-measure results (including meta-d', metaNoise, metaUncertainty),
 # use the convenience wrappers in `metasignal.analysis`. They are ideal for
 # offline scripts with parallelism but will be slow in a notebook:
 #

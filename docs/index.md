@@ -6,7 +6,7 @@ Python library for Signal Detection Theory (SDT) and metacognitive measures, imp
 
 Metacognition — the ability to reflect on one's own cognitive processes — is measured across cognitive neuroscience, psychology, and clinical research using many different methods. **metasignal** provides a unified Python interface to compute all major metacognitive measures from the same trial-level data, making it straightforward to compare measures and replicate the Rahnev (2025) benchmarking study.
 
-A single call to `compute_all_measures` returns 20 measures organised into four categories:
+A single call to `compute_all_measures` returns 26 measures organised into four categories:
 
 | Category | Measures |
 | --- | --- |
@@ -31,9 +31,9 @@ conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
                          rng.integers(1, n_ratings, n))   # higher conf when correct
 
 results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
-print(results)  # array of 20 float values
+print(results)  # array of 26 float values
 ```
 
-For group-level inference, `metasignal.analysis` provides bootstrap confidence intervals, permutation tests, and group summaries over those same 20 measures. For fully Bayesian modelling, `metasignal.sdtbayes` offers 11 hierarchical approaches ranging from fast two-stage estimation to robust, variational, and state-space models (optional install: `pip install metasignal[sdtbayes]`).
+For group-level inference, `metasignal.analysis` provides bootstrap confidence intervals, permutation tests, and group summaries over those same 26 measures. For fully Bayesian modelling, `metasignal.sdtbayes` offers 11 hierarchical approaches ranging from fast two-stage estimation to robust, variational, and state-space models (optional install: `pip install metasignal[sdtbayes]`).
 
 See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples. For Bayesian modelling, see [Bayesian Analysis](sdtbayes.md).

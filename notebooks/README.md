@@ -32,7 +32,7 @@ jupyter notebook notebooks/
 |----------|---------|---------|
 | `00_setup.ipynb` | Check environment, explain layout | < 1 min |
 | `01_preprocessing.ipynb` | Load CSVs → filter subjects → save `.npz` | 1–2 min |
-| `02_compute_measures.ipynb` | Compute all 20 measures per dataset | **2–4 hours** (see below) |
+| `02_compute_measures.ipynb` | Compute all 26 measures per dataset | **2–4 hours** (see below) |
 | `03_statistical_tables.ipynb` | Reproduce Supp Tables 3–9 | < 1 min (loads from disk) |
 | `04_figures.ipynb` | Reproduce Supp Figures 1–4 | < 1 min (loads from disk) |
 

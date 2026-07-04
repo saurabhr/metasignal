@@ -18,8 +18,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 n_ratings = 4
 difficulty = (0.65, 0.75, 0.85)   # hard, medium, easy
 
@@ -124,6 +125,6 @@ for m, (name, ax) in enumerate(zip(MEASURE_NAMES, axes)):
     ax.set_xticklabels(level_labels, fontsize=7)
     ax.axhline(0, color="k", linewidth=0.5, linestyle="--")
 
-plt.suptitle("Effect of Difficulty on 20 Metacognitive Measures", fontsize=12)
+plt.suptitle("Effect of Difficulty on 26 Metacognitive Measures", fontsize=12)
 plt.tight_layout()
 plt.show()

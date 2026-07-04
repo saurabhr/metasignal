@@ -28,7 +28,7 @@ resp = np.where(rng.random(200) < 0.75, stim, 1 - stim)
 conf = rng.integers(1, 5, 200)
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=4)
-print("Output shape:", meas.shape)   # (20,)
+print("Output shape:", meas.shape)   # (26,)
 """),
 
     md("""## 2. Input format
@@ -74,13 +74,14 @@ print("nr_s1:", nr_s1)
 print("nr_s2:", nr_s2)
 """),
 
-    md("## 6. Inspect the full 20-element output"),
+    md("## 6. Inspect the full 26-element output"),
     code("""\
 MEASURE_NAMES = [
     "meta-d'", "AUC2", "Gamma", "Phi", "DeltaConf",
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
 
 meas = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
@@ -92,12 +93,12 @@ for i, (name, val) in enumerate(zip(MEASURE_NAMES, meas)):
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Tutorial 2 — Computing All 20 Measures
+# Tutorial 2 — Computing All 26 Measures
 # ─────────────────────────────────────────────────────────────────────────────
 TUTORIALS["02_computing_measures"] = [
-    md("""# Tutorial 2 — Computing All 20 Measures
+    md("""# Tutorial 2 — Computing All 26 Measures
 
-A detailed walkthrough of each block of the 20-measure array, plus how
+A detailed walkthrough of each block of the 26-measure array, plus how
 to call individual measures directly."""),
 
     md("## Setup"),
@@ -110,8 +111,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 
 rng = np.random.default_rng(0)
 n_trials, n_ratings = 400, 4
@@ -182,7 +184,7 @@ print(f"metaNoise       = {noise_res['meta_noise']:.4f}")
 print(f"metaUncertainty = {uncert:.4f}")
 """),
 
-    md("## Full 20-measure summary"),
+    md("## Full 26-measure summary"),
     code("""\
 print(f"{'Index':<6} {'Measure':<20} {'Value':>10}")
 print("-" * 40)
@@ -212,6 +214,7 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
 
 n_ratings = 4
@@ -340,8 +343,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 n_ratings = 4
 difficulty = (0.65, 0.75, 0.85)   # hard, medium, easy
 
@@ -470,8 +474,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 n_ratings = 4
 
 def simulate_subject(seed, n_trials=300, accuracy=0.78):
@@ -605,8 +610,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "metaNoise", "metaUncertainty", "d'", "c", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEAS = 20
+N_MEAS = 26
 n_ratings = 4
 
 def simulate_subject(seed, n_trials=400, accuracy=0.78):

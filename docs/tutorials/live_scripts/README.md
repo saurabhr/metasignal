@@ -9,7 +9,7 @@ Each `# %%` delimiter creates a runnable cell, and `# %% [markdown]` cells conta
 |------|----------|------------|
 | `00_run_all.py` | — | Runs all scripts in sequence |
 | `01_getting_started.py` | Tutorial 1 | Install check, input format, SDT basics |
-| `02_computing_measures.py` | Tutorial 2 | All 20 measures, individual APIs |
+| `02_computing_measures.py` | Tutorial 2 | All 26 measures, individual APIs |
 | `03_statistical_inference.py` | Tutorial 3 | Bootstrap CI, permutation test, t-test |
 | `04_difficulty_dependence.py` | Tutorial 4 | Difficulty split, outlier removal, plot |
 | `05_metacognitive_bias.py` | Tutorial 5 | Xue recoding, bias dependence, plot |
