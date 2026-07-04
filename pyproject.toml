@@ -2,6 +2,21 @@
 requires = ["uv-build"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+source-exclude = [".DS_Store", "**/.DS_Store"]
+wheel-exclude = [
+    ".DS_Store",
+    "**/.DS_Store",
+    "**/__pycache__",
+    "**/*.pyc",
+    "**/sdtbayes/stan/hmeta_d",
+    "**/sdtbayes/stan/hmeta_noise",
+    "**/sdtbayes/stan/hmeta_noise_subject",
+    "**/sdtbayes/stan/hmeta_uncertainty",
+    "**/sdtbayes/stan/hmeta_uncertainty_subject",
+    "**/sdtbayes/stan/meta_d_subject",
+]
+
 [project]
 name = "metasignal"
 version = "2025.1.0"
@@ -30,6 +45,7 @@ dependencies = [
     "numpy",
     "scipy",
     "matplotlib",
+    "pandas",
 ]
 
 [project.optional-dependencies]
@@ -38,7 +54,6 @@ sdtbayes = [
     "cmdstanpy",
     "brmspy",
     "arviz",
-    "pandas",
 ]
 docs = [
     "mkdocs>=1.6,<2",
