@@ -5,7 +5,7 @@ analyses posteriors with [ArviZ](https://python.arviz.org).  Two backends are
 in use, depending on the approach:
 
 - **cmdstanpy** (recommended, no R required) — the primary backend, used by
-  [`fit_meta_formula`](#formula-interface-and-runtime) and the approaches
+  [`fit_meta_formula`](#formula-interface) and the approaches
   redirected to it below.
 - **brms via [brmspy](https://github.com/kaitumisuuringute-keskus/brmspy)**
   (requires R) — used by the plain-regression approaches below.
@@ -128,6 +128,10 @@ Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
 ### Approach 12 — Within-Subject Condition Comparison
 
 ::: metasignal.sdtbayes.fit_within_subject_comparison
+
+### Formula Interface
+
+::: metasignal.sdtbayes.fit_meta_formula
 
 ### Runtime and Result Types
 

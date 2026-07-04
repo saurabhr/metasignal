@@ -43,6 +43,15 @@ plugins:
             docstring_section_style: google
   - include-markdown
   - mkdocs-jupyter:
+      # mkdocs-jupyter sniffs every *.md file with jupytext.read() to check
+      # for notebook frontmatter, which runs a MyST/markdown-it parser over
+      # the content. That parser treats mkdocstrings' "::: module.func"
+      # autodoc syntax as an unclosed MyST colon-fence div (MyST also uses
+      # ":::" to open/close container blocks), spamming spurious "Div ...
+      # unclosed ... closing implicitly" warnings on every mkdocstrings page.
+      # None of our notebooks are stored in .md format, so excluding *.md
+      # here avoids the sniff entirely with no loss of functionality.
+      ignore: ["*.md"]
       execute: false
       include_source: true
       ignore_h1_titles: true

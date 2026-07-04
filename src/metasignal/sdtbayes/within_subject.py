@@ -154,9 +154,9 @@ def fit_within_subject_comparison(
         Tuple of ``(FitResult, mle_df)``.
 
         - ``FitResult.idata`` — ArviZ InferenceData.  Key parameter:
-          ``b_condition1`` = condition B − condition A difference.
+            ``b_condition1`` = condition B − condition A difference.
         - ``mle_df`` — long-format ``pd.DataFrame`` with Stage-1 MLE estimates
-          for all participants × conditions.
+            for all participants × conditions.
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
