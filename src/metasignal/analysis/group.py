@@ -21,8 +21,8 @@ Usage example::
     ]
 
     summary = group_summary(participants, n_ratings=2)
-    print(summary["mean"])    # shape (20,)
-    print(summary["sem"])     # shape (20,)
+    print(summary["mean"])    # shape (26,)
+    print(summary["sem"])     # shape (26,)
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ import numpy as np
 
 from metasignal.stdpy.compute_all import compute_all_measures
 
-# Friendly names for the 20-element output array (index → label)
+# Friendly names for the 26-element output array (index → label)
 MEASURE_LABELS: list[str] = [
     "meta_d",          # 0
     "AUC2",            # 1
@@ -55,14 +55,21 @@ MEASURE_LABELS: list[str] = [
     "dprime",          # 17
     "c",               # 18
     "mean_conf",       # 19
+    "logL",            # 20
+    "AIC",             # 21
+    "BIC",             # 22
+    "AICc",            # 23
+    "k",               # 24
+    "n",               # 25
 ]
+N_MEASURES = len(MEASURE_LABELS)
 
 
 def group_summary(
     participants: list[tuple[np.ndarray, np.ndarray, np.ndarray]],
     n_ratings: int,
 ) -> dict[str, Any]:
-    """Compute group-level descriptive statistics over the 20-measure array.
+    """Compute group-level descriptive statistics over the 26-measure array.
 
     Runs ``compute_all_measures`` for each participant and aggregates across
     the group, ignoring NaN values (participants where a measure could not
@@ -75,16 +82,16 @@ def group_summary(
     Returns:
         Dictionary with keys:
 
-        - ``"individual"`` — ``np.ndarray`` of shape ``(n_participants, 20)``
-        - ``"mean"`` — ``np.ndarray`` of shape ``(20,)``, nanmean across participants
-        - ``"median"`` — ``np.ndarray`` of shape ``(20,)``
-        - ``"sem"`` — ``np.ndarray`` of shape ``(20,)``, standard error of the mean
-        - ``"n_valid"`` — ``np.ndarray`` of shape ``(20,)`` int, participants with
+        - ``"individual"`` — ``np.ndarray`` of shape ``(n_participants, 26)``
+        - ``"mean"`` — ``np.ndarray`` of shape ``(26,)``, nanmean across participants
+        - ``"median"`` — ``np.ndarray`` of shape ``(26,)``
+        - ``"sem"`` — ``np.ndarray`` of shape ``(26,)``, standard error of the mean
+        - ``"n_valid"`` — ``np.ndarray`` of shape ``(26,)`` int, participants with
             non-NaN values per measure
-        - ``"labels"`` — list of measure name strings (length 20)
+        - ``"labels"`` — list of measure name strings (length 26)
     """
     n_participants = len(participants)
-    individual = np.full((n_participants, 20), np.nan)
+    individual = np.full((n_participants, N_MEASURES), np.nan)
 
     for i, (stim, resp, conf) in enumerate(participants):
         individual[i] = compute_all_measures(

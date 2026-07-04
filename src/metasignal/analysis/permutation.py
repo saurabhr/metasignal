@@ -60,7 +60,7 @@ def permutation_test(
         resp_b: Response array for condition B.
         conf_b: Confidence array for condition B.
         n_ratings: Number of confidence rating categories (shared across conditions).
-        measure_index: Index into the 20-element output of ``compute_all_measures``.
+        measure_index: Index into the 26-element output of ``compute_all_measures``.
         n_perm: Number of permutations. Default 5000.
         rng: Optional ``numpy.random.Generator`` for reproducibility.
 
@@ -69,10 +69,10 @@ def permutation_test(
         ``measure(A) - measure(B)``.
 
     Raises:
-        ValueError: If ``measure_index`` is outside [0, 19].
+        ValueError: If ``measure_index`` is outside [0, 25].
     """
-    if not 0 <= measure_index <= 19:
-        msg = f"measure_index must be in [0, 19], got {measure_index}"
+    if not 0 <= measure_index <= 25:
+        msg = f"measure_index must be in [0, 25], got {measure_index}"
         raise ValueError(msg)
 
     if rng is None:

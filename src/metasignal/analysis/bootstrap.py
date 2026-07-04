@@ -12,7 +12,7 @@ Usage example::
 
     ci_low, ci_high = bootstrap_measure(
         stim, resp, conf, n_ratings=2,
-        measure_index=0,   # meta_d (index 0 of the 20-element array)
+        measure_index=0,   # meta_d (index 0 of the 26-element array)
         n_boot=2000,
         ci=0.95,
     )
@@ -35,7 +35,7 @@ def bootstrap_measure(
     ci: float = 0.95,
     rng: np.random.Generator | None = None,
 ) -> tuple[float, float]:
-    """Return a bootstrap confidence interval for one element of the 20-measure array.
+    """Return a bootstrap confidence interval for one element of the 26-measure array.
 
     Resamples trials with replacement ``n_boot`` times and computes the
     requested measure on each resample. The interval is percentile-based.
@@ -45,7 +45,7 @@ def bootstrap_measure(
         resp: Response array (binary).
         conf: Confidence rating array (1 to n_ratings).
         n_ratings: Number of confidence rating categories.
-        measure_index: Index into the 20-element output of ``compute_all_measures``.
+        measure_index: Index into the 26-element output of ``compute_all_measures``.
             See that function's docstring for the index→measure mapping.
         n_boot: Number of bootstrap resamples. Default 2000.
         ci: Coverage of the interval, e.g. 0.95 for a 95% CI. Default 0.95.
@@ -55,10 +55,10 @@ def bootstrap_measure(
         Tuple ``(lower, upper)`` confidence bounds.
 
     Raises:
-        ValueError: If ``measure_index`` is outside [0, 19].
+        ValueError: If ``measure_index`` is outside [0, 25].
     """
-    if not 0 <= measure_index <= 19:
-        msg = f"measure_index must be in [0, 19], got {measure_index}"
+    if not 0 <= measure_index <= 25:
+        msg = f"measure_index must be in [0, 25], got {measure_index}"
         raise ValueError(msg)
 
     if rng is None:

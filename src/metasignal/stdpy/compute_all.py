@@ -1,4 +1,4 @@
-"""Unified script to run all meta-measures and output the comprehensive 20-variable array."""
+"""Unified script to run all meta-measures and output the comprehensive 26-variable array."""
 
 import numpy as np
 
@@ -18,14 +18,15 @@ from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 def compute_all_measures(
     stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
 ) -> np.ndarray:
-    """Compute all 20 meta-signal measures mimicking the MATLAB output.
+    """Compute all 26 meta-signal measures mimicking the MATLAB output.
 
-    Returns an array of 20 elements corresponding to:
+    Returns an array of 26 elements corresponding to:
     [
       1: meta_d, 2: AUC2, 3: gamma, 4: phi, 5: deltaConf,
       6: M_ratio, 7: AUC2_ratio, 8: gamma_ratio, 9: phi_ratio, 10: deltaConf_ratio,
       11: M_diff, 12: AUC2_diff, 13: gamma_diff, 14: phi_diff, 15: deltaConf_diff,
-      16: metaNoise, 17: metaUncertainty, 18: dprime, 19: c, 20: mean_conf
+      16: metaNoise, 17: metaUncertainty, 18: dprime, 19: c, 20: mean_conf,
+      21: logL, 22: AIC, 23: BIC, 24: AICc, 25: k, 26: n
     ]
     """
     stim = np.asarray(stim, dtype=float)
@@ -39,7 +40,7 @@ def compute_all_measures(
     conf = conf[valid]
 
     if len(stim) == 0:
-        return np.full(20, np.nan)
+        return np.full(26, np.nan)
 
     # Make input 0/1
     stim_max = np.max(stim)
@@ -56,7 +57,7 @@ def compute_all_measures(
     mean_conf = np.mean(conf)
 
     if np.array_equal(stim_bin, resp_bin) or dprime == 0 or len(np.unique(conf)) == 1:
-        return np.full(20, np.nan)
+        return np.full(26, np.nan)
 
     # Convert to counts
     nr_s1, nr_s2 = trials_to_counts(stim_bin, resp_bin, conf.astype(int), n_ratings)

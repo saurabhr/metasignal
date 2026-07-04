@@ -65,7 +65,7 @@ def test_bootstrap_ci_contains_dprime(obs_a):
 def test_bootstrap_invalid_index_raises(obs_a):
     stim, resp, conf = obs_a
     with pytest.raises(ValueError):
-        bootstrap_measure(stim, resp, conf, n_ratings=2, measure_index=20, n_boot=10)
+        bootstrap_measure(stim, resp, conf, n_ratings=2, measure_index=26, n_boot=10)
 
 
 def test_bootstrap_reproducible(obs_a):
@@ -124,7 +124,7 @@ def test_permutation_invalid_index_raises(obs_a, obs_b):
         permutation_test(
             stim_a, resp_a, conf_a,
             stim_b, resp_b, conf_b,
-            n_ratings=2, measure_index=25, n_perm=10,
+            n_ratings=2, measure_index=26, n_perm=10,
         )
 
 
@@ -145,18 +145,18 @@ def test_group_summary_keys(group):
 
 def test_group_summary_individual_shape(group):
     result = group_summary(group, n_ratings=2)
-    assert result["individual"].shape == (8, 20)
+    assert result["individual"].shape == (8, 26)
 
 
 def test_group_summary_mean_shape(group):
     result = group_summary(group, n_ratings=2)
-    assert result["mean"].shape == (20,)
+    assert result["mean"].shape == (26,)
 
 
 def test_group_summary_labels(group):
     result = group_summary(group, n_ratings=2)
     assert result["labels"] == MEASURE_LABELS
-    assert len(result["labels"]) == 20
+    assert len(result["labels"]) == 26
 
 
 def test_group_summary_n_valid_bounded(group):

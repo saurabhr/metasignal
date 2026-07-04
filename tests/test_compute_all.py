@@ -30,7 +30,7 @@ def standard_data():
 def test_output_length(standard_data):
     stim, resp, conf = standard_data
     result = compute_all_measures(stim, resp, conf, n_ratings=2)
-    assert result.shape == (20,)
+    assert result.shape == (26,)
 
 
 def test_output_not_all_nan(standard_data):

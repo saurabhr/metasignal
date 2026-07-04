@@ -230,7 +230,13 @@ class TestTwoStageComparisonGuard:
             resp = stim.copy()
             flip = rng.random(n_trials) < 0.15
             resp[flip] = 1 - resp[flip]
-            conf = rng.integers(1, 3, n_trials)
+            # Correlate confidence with accuracy so meta-d' is reliably
+            # positive; fully random confidence yields near-chance,
+            # sign-flipping meta-d' estimates that make this guard-logic
+            # test flaky.
+            correct = stim == resp
+            p_high = np.where(correct, 0.8, 0.2)
+            conf = np.where(rng.random(n_trials) < p_high, 2, 1)
             parts.append((stim, resp, conf))
         return parts
 
@@ -585,7 +591,13 @@ class TestFitWithinSubjectComparisonValidation:
             resp = stim.copy()
             flip = rng.random(n_trials) < 0.15
             resp[flip] = 1 - resp[flip]
-            conf = rng.integers(1, 3, n_trials)
+            # Correlate confidence with accuracy so meta-d' is reliably
+            # positive; fully random confidence yields near-chance,
+            # sign-flipping meta-d' estimates that make this guard-logic
+            # test flaky.
+            correct = stim == resp
+            p_high = np.where(correct, 0.8, 0.2)
+            conf = np.where(rng.random(n_trials) < p_high, 2, 1)
             parts.append((stim, resp, conf))
         return parts
 
@@ -625,7 +637,13 @@ class TestFitMixtureGroupValidation:
             resp = stim.copy()
             flip = rng.random(n_trials) < 0.15
             resp[flip] = 1 - resp[flip]
-            conf = rng.integers(1, 3, n_trials)
+            # Correlate confidence with accuracy so meta-d' is reliably
+            # positive; fully random confidence yields near-chance,
+            # sign-flipping meta-d' estimates that make this guard-logic
+            # test flaky.
+            correct = stim == resp
+            p_high = np.where(correct, 0.8, 0.2)
+            conf = np.where(rng.random(n_trials) < p_high, 2, 1)
             parts.append((stim, resp, conf))
         return parts
 

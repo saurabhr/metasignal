@@ -30,6 +30,9 @@ def fit_meta_d_mle(
     if len(nr_s1) != len(nr_s2):
         val_err = "input arrays must have the same number of elements"
         raise ValueError(val_err)
+    if np.sum(nr_s1) == 0 or np.sum(nr_s2) == 0:
+        val_err = "nr_s1 and nr_s2 must each contain at least one trial"
+        raise ValueError(val_err)
 
     n_ratings = len(nr_s1) // 2
     n_criteria = 2 * n_ratings - 1
