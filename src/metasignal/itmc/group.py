@@ -130,6 +130,9 @@ def fit_group(
         row = _fit_cell(data, stimuli, responses, confidence, **kw)
         return pd.DataFrame([{k: v for k, v in row.items() if k in keep_cols}])
 
+    if backend == "statconfr":
+        _warn_if_confidence_scale_varies(data, confidence, group_cols)
+
     rows = []
     for keys, grp in data.groupby(group_cols, sort=True):
         if not isinstance(keys, tuple):
@@ -139,6 +142,36 @@ def fit_group(
         rows.append({**group_meta, **{k: v for k, v in cell.items() if k in keep_cols}})
 
     return pd.DataFrame(rows).reset_index(drop=True)
+
+
+def _warn_if_confidence_scale_varies(
+    data: pd.DataFrame, confidence: str, group_cols: List[str]
+) -> None:
+    """Warn if cells infer different n_ratings from their observed max rating.
+
+    ``_build_contingency_table`` infers ``n_ratings`` per cell as
+    ``int(rating.max())``. If one cell never uses the top confidence value
+    on the shared scale, its table gets fewer columns than other cells,
+    silently making analytic bounds (I_min/I_max) incomparable across cells.
+    """
+    import warnings
+
+    global_max = int(data[confidence].max())
+    offenders = []
+    for keys, grp in data.groupby(group_cols, sort=True):
+        cell_max = int(grp[confidence].max())
+        if cell_max != global_max:
+            offenders.append((keys, cell_max))
+    if offenders:
+        warnings.warn(
+            f"fit_group: confidence scale (max rating) is {global_max} overall, but "
+            f"{len(offenders)} cell(s) never used the top rating (e.g. {offenders[0]}). "
+            "'statconfr' backend infers n_ratings per cell from its own observed max, "
+            "so these cells' analytic bounds are not comparable to the rest of the "
+            "group. Pass rows with the full rating scale represented per cell, or use "
+            "backend='simple' which does not have this per-cell scale dependency.",
+            stacklevel=2,
+        )
 
 
 # ---------------------------------------------------------------------------

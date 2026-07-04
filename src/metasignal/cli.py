@@ -10,6 +10,28 @@ from metasignal.analysis.group import MEASURE_LABELS
 from metasignal.stdpy.compute_all import compute_all_measures
 
 
+def _parse_numeric_csv(name: str, raw: str) -> np.ndarray:
+    """Parse a comma-separated string of numbers, rejecting malformed tokens.
+
+    Unlike ``np.fromstring(..., sep=",")``, this rejects the input outright
+    on the first unparseable token instead of silently truncating.
+    """
+    tokens = [t.strip() for t in raw.split(",")]
+    try:
+        values = [float(t) for t in tokens]
+    except ValueError as exc:
+        raise click.BadParameter(
+            f"could not parse as comma-separated numbers (e.g. 0,1,0,1): {exc}",
+            param_hint=f"'--{name}'",
+        ) from exc
+    if not values:
+        raise click.BadParameter(
+            "must not be empty — expected comma-separated numbers (e.g. 0,1,0,1).",
+            param_hint=f"'--{name}'",
+        )
+    return np.array(values)
+
+
 @click.group(
     context_settings={"help_option_names": ["-h", "--help"], "show_default": True}
 )
@@ -34,16 +56,16 @@ def cli() -> None:
     "--n-ratings", type=int, required=True, help="Number of confidence rating categories."
 )
 def compute(stim: str, resp: str, conf: str, n_ratings: int) -> None:
-    """Compute all 20 SDT and metacognitive measures from trial-level data."""
-    stim_arr = np.fromstring(stim, sep=",")
-    resp_arr = np.fromstring(resp, sep=",")
-    conf_arr = np.fromstring(conf, sep=",")
-
-    if len(stim_arr) == 0 or len(resp_arr) == 0 or len(conf_arr) == 0:
+    """Compute all 26 SDT and metacognitive measures from trial-level data."""
+    if n_ratings < 1:
         raise click.BadParameter(
-            "Could not parse input — expected comma-separated numbers (e.g. 0,1,0,1).",
-            param_hint="'--stim' / '--resp' / '--conf'",
+            f"must be a positive integer, got {n_ratings}.", param_hint="'--n-ratings'"
         )
+
+    stim_arr = _parse_numeric_csv("stim", stim)
+    resp_arr = _parse_numeric_csv("resp", resp)
+    conf_arr = _parse_numeric_csv("conf", conf)
+
     if len(stim_arr) != len(resp_arr) or len(stim_arr) != len(conf_arr):
         raise click.UsageError(
             f"--stim ({len(stim_arr)}), --resp ({len(resp_arr)}), and --conf ({len(conf_arr)}) "
@@ -91,6 +113,18 @@ def _read_csv(csv_path: str, *required_cols: str) -> "pd.DataFrame":
     return df
 
 
+def _to_int_column(df: "pd.DataFrame", col: str) -> "np.ndarray":
+    """Cast a CSV column to int, rejecting non-integer values instead of truncating."""
+    values = df[col].to_numpy(dtype=float)
+    if not np.all(values == np.round(values)):
+        bad = values[values != np.round(values)][:5]
+        raise click.UsageError(
+            f"Column '{col}' contains non-integer value(s) (e.g. {bad.tolist()}), "
+            "but stimulus/response/confidence codes must be whole numbers."
+        )
+    return values.astype(int)
+
+
 def _df_to_participants(
     df: "pd.DataFrame",
     participant_col: str,
@@ -100,9 +134,9 @@ def _df_to_participants(
 ) -> list:
     return [
         (
-            g[stim_col].to_numpy(dtype=int),
-            g[resp_col].to_numpy(dtype=int),
-            g[conf_col].to_numpy(dtype=int),
+            _to_int_column(g, stim_col),
+            _to_int_column(g, resp_col),
+            _to_int_column(g, conf_col),
         )
         for _, g in df.groupby(participant_col, sort=False)
     ]
@@ -170,6 +204,10 @@ def two_stage(
     CSV must have one trial per row with columns for participant ID,
     stimulus (0/1), response (0/1), and confidence rating.
     """
+    if n_ratings < 1:
+        raise click.BadParameter(
+            f"must be a positive integer, got {n_ratings}.", param_hint="'--n-ratings'"
+        )
     sdt = _import_sdtbayes()
     df = _read_csv(csv_path, participant_col, stim_col, resp_col, conf_col)
     participants = _df_to_participants(df, participant_col, stim_col, resp_col, conf_col)
@@ -231,6 +269,10 @@ def compare(
     CSV must have one trial per row with columns for group, participant ID,
     stimulus (0/1), response (0/1), and confidence rating.
     """
+    if n_ratings < 1:
+        raise click.BadParameter(
+            f"must be a positive integer, got {n_ratings}.", param_hint="'--n-ratings'"
+        )
     sdt = _import_sdtbayes()
     df = _read_csv(csv_path, group_col, participant_col, stim_col, resp_col, conf_col)
 

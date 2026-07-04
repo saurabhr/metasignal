@@ -236,7 +236,8 @@ def fit_group_comparison(
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
-        ValueError: If ``items_a`` / ``items_b`` lengths do not match groups.
+        ValueError: If ``items_a`` / ``items_b`` lengths do not match groups,
+            or if either group has fewer than 3 participants.
 
     Example::
 
@@ -259,6 +260,13 @@ def fit_group_comparison(
     if items_b is not None and len(items_b) != len(group_b):
         msg = f"'items_b' has {len(items_b)} entries but 'group_b' has {len(group_b)}."
         raise ValueError(msg)
+    for participants, label in ((group_a, "A"), (group_b, "B")):
+        if len(participants) < 3:
+            msg = (
+                f"Group {label}: only {len(participants)} participants — need at "
+                "least 3 to fit a hierarchical group comparison."
+            )
+            raise ValueError(msg)
 
     import pandas as pd
     df_a = _trials_to_dataframe(group_a, n_ratings, group_label=0, pid_prefix="A", items=items_a)

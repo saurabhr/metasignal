@@ -77,7 +77,11 @@ class FitResult:
         az = _require_arviz()
         summary = az.summary(self.idata)
         diag = summary[["r_hat", "ess_bulk", "ess_tail"]].copy()
-        diag["converged"] = diag["r_hat"] <= 1.01
+        diag["converged"] = (
+            (diag["r_hat"] <= 1.01)
+            & (diag["ess_bulk"] >= 400)
+            & (diag["ess_tail"] >= 400)
+        )
         return diag
 
     def plot_trace(

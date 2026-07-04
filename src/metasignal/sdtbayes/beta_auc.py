@@ -193,6 +193,8 @@ def fit_beta_auc_comparison(
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
+        ValueError: If either group has fewer than 3 participants with valid
+            AUC2 estimates.
 
     Example::
 
@@ -214,6 +216,16 @@ def fit_beta_auc_comparison(
     df = pd.concat([df_a, df_b], ignore_index=True)
     df["group"] = df["group"].astype("category")
     valid = _clip_auc2(df.dropna(subset=["auc2"]))
+
+    for g, label in ((0, "A"), (1, "B")):
+        n_valid = int((valid["group"] == g).sum())
+        if n_valid < 3:
+            total = int((df["group"] == g).sum())
+            msg = (
+                f"Group {label}: only {n_valid} of {total} participants have valid "
+                "AUC2 estimates — need at least 3."
+            )
+            raise ValueError(msg)
 
     priors = [
         brms.prior("normal(0, 2)", class_="Intercept"),

@@ -116,8 +116,11 @@ def _mle_matrix(
 ) -> tuple[np.ndarray, np.ndarray]:
     """Return (log_mr_obs, is_valid) arrays of shape (N, T).
 
-    Invalid sessions (MLE failed or log M-ratio undefined) are marked with
-    is_valid=0 and a placeholder value of 0.0 in log_mr_obs.
+    Invalid sessions are marked with is_valid=0 and a placeholder value of
+    0.0 in log_mr_obs.  A session is invalid if the MLE fit fails, if the
+    resulting M-ratio is non-positive/NaN, or if d' < 0.2 (M-ratio is
+    numerically unstable at near-chance type-1 sensitivity, matching the
+    MATLAB toolbox convention).
     """
     from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
     from metasignal.stdpy.metad import fit_meta_d_mle
@@ -143,14 +146,18 @@ def _mle_matrix(
                 nr_s1, nr_s2 = trials_to_counts(stim, resp, conf, n_ratings)
                 res = fit_meta_d_mle(nr_s1, nr_s2)
                 m_ratio = res["M_ratio"]
-                if np.isnan(m_ratio) or m_ratio <= 0 or dp < 0.2:
-                    raise ValueError("invalid M-ratio")
+                if dp < 0.2:
+                    raise ValueError(
+                        f"d'={dp:.3g} < 0.2; M-ratio is unstable/undefined at "
+                        "near-chance type-1 sensitivity (not an MLE failure)"
+                    )
+                if np.isnan(m_ratio) or m_ratio <= 0:
+                    raise ValueError(f"invalid M-ratio ({m_ratio!r})")
                 log_mr[i, t] = float(np.log(m_ratio))
                 valid[i, t] = 1.0
             except (ValueError, RuntimeError) as exc:
                 warnings.warn(
-                    f"Participant {i}, session {t}: MLE failed ({exc}). "
-                    "Treating as missing.",
+                    f"Participant {i}, session {t}: {exc}. Treating as missing.",
                     stacklevel=3,
                 )
 

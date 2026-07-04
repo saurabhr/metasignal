@@ -140,6 +140,17 @@ def _manual_design_matrix(formula_rhs: str, data: "pd.DataFrame") -> np.ndarray:
             main_arrs = [_encode_column(data, p) for p in parts]
             for arr in main_arrs:
                 cols.append(arr)
+            n_multi_col_sides = sum(arr.shape[1] > 1 for arr in main_arrs)
+            if n_multi_col_sides > 1:
+                msg = (
+                    f"formula term {term!r} is an interaction between two or more "
+                    "categorical variables with >2 levels. The manual (patsy-free) "
+                    "fallback only supports elementwise multiplication, which is "
+                    "not the correct encoding for this case (it would silently "
+                    "produce wrong or shape-mismatched columns). Install patsy for "
+                    "full formula support: pip install patsy"
+                )
+                raise ValueError(msg)
             interaction = main_arrs[0]
             for arr in main_arrs[1:]:
                 interaction = interaction * arr
@@ -203,6 +214,16 @@ def _fit_stan(
     subject_level = (nsubj == 1)
 
     if subject_level:
+        rhs = formula_rhs.strip()
+        if rhs not in ("1", ""):
+            msg = (
+                f"formula_rhs={formula_rhs!r} requests covariates, but only 1 "
+                "participant was provided. The single-subject Stan model has no "
+                "covariate design matrix and would silently ignore the formula. "
+                "Provide at least 2 participants to fit a covariate regression, "
+                "or use formula_rhs='1' for a single-subject fit."
+            )
+            raise ValueError(msg)
         # Single-subject model: flat priors, 1-D count array
         stan_data: dict[str, Any] = {
             "nratings": n_ratings,

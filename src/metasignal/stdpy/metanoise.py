@@ -138,6 +138,10 @@ def compute_meta_noise(
 
     min_stim = int(np.min(stim))
     max_stim = int(np.max(stim))
+    if min_stim == max_stim:
+        raise ValueError(
+            "stim must contain both classes; found only one class in input."
+        )
 
     nr_stim_s1 = np.zeros(2 * n_ratings)
     nr_stim_s2 = np.zeros(2 * n_ratings)

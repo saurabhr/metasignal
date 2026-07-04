@@ -15,6 +15,13 @@ def perform_ttest(data, test_description="", display=True):
     data = np.asarray(data)
     valid_data = data[~np.isnan(data)]
 
+    if len(valid_data) < 2:
+        msg = (
+            f"perform_ttest requires at least 2 non-NaN observations, got "
+            f"{len(valid_data)}."
+        )
+        raise ValueError(msg)
+
     df = len(valid_data) - 1
     tstat, pval = stats.ttest_1samp(valid_data, 0, nan_policy='omit')
     cohen_d = tstat / np.sqrt(df + 1)

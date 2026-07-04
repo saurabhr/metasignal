@@ -20,6 +20,8 @@ Usage example::
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 
 from metasignal.stdpy.compute_all import compute_all_measures
@@ -78,7 +80,21 @@ def bootstrap_measure(
             boot_vals.append(float(val))
 
     if len(boot_vals) == 0:
+        warnings.warn(
+            f"bootstrap_measure: all {n_boot} resamples produced NaN for "
+            f"measure_index={measure_index}; returning (nan, nan).",
+            stacklevel=2,
+        )
         return (float("nan"), float("nan"))
+
+    if len(boot_vals) < 0.5 * n_boot:
+        warnings.warn(
+            f"bootstrap_measure: only {len(boot_vals)} of {n_boot} requested "
+            f"resamples produced a finite value for measure_index={measure_index} "
+            "(the rest were NaN, e.g. due to MLE non-convergence); the returned "
+            "CI is based on this smaller effective sample.",
+            stacklevel=2,
+        )
 
     alpha = 1.0 - ci
     lo = float(np.percentile(boot_vals, 100 * alpha / 2))

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 from scipy.stats import norm
 
@@ -76,6 +78,14 @@ def trials_to_counts(
         & (rating >= 1)
         & (rating <= n_ratings)
     )
+    n_dropped = int(np.sum(~f))
+    if n_dropped > 0:
+        warnings.warn(
+            f"trials_to_counts: dropped {n_dropped} of {len(stim_id)} trials with "
+            f"stim/response outside {{0, 1}} or rating outside [1, {n_ratings}] "
+            "(check that n_ratings matches the actual confidence scale).",
+            stacklevel=2,
+        )
     stim_id_f = stim_id[f]
     response_f = response[f]
     rating_f = rating[f]

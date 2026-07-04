@@ -133,4 +133,3 @@ def fit_mixture_group(
         "cmdstanpy-backed replacement for Gaussian mixture modelling of log "
         "M-ratio currently."
     )
-    return FitResult(idata=_result.idata, r=_result.r)

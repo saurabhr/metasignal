@@ -29,6 +29,8 @@ Usage example::
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 
 from metasignal.stdpy.compute_all import compute_all_measures
@@ -106,7 +108,21 @@ def permutation_test(
             null_diffs.append(diff)
 
     if len(null_diffs) == 0:
+        warnings.warn(
+            f"permutation_test: all {n_perm} permutations produced NaN for "
+            f"measure_index={measure_index}; returning (nan, observed_difference).",
+            stacklevel=2,
+        )
         return (float("nan"), obs_diff)
+
+    if len(null_diffs) < 0.5 * n_perm:
+        warnings.warn(
+            f"permutation_test: only {len(null_diffs)} of {n_perm} requested "
+            f"permutations produced a finite value for measure_index={measure_index} "
+            "(the rest were NaN); the returned p-value is based on this smaller "
+            "effective null distribution.",
+            stacklevel=2,
+        )
 
     null = np.array(null_diffs)
     p_value = float(np.mean(np.abs(null) >= abs(obs_diff)))

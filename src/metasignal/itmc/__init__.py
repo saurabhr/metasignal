@@ -29,5 +29,5 @@ __all__ = [
     "meta_Ir1_acc",
     "meta_Ir2",
     "RMI",
-    "test_meta_I",
+    "permtest_meta_I",
 ]

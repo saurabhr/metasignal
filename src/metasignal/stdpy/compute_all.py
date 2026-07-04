@@ -42,6 +42,13 @@ def compute_all_measures(
     if len(stim) == 0:
         return np.full(26, np.nan)
 
+    if len(np.unique(stim)) > 2:
+        msg = f"stim must be binary (2 classes); found {len(np.unique(stim))} distinct values"
+        raise ValueError(msg)
+    if len(np.unique(resp)) > 2:
+        msg = f"resp must be binary (2 classes); found {len(np.unique(resp))} distinct values"
+        raise ValueError(msg)
+
     # Make input 0/1
     stim_max = np.max(stim)
     resp_max = np.max(resp)
@@ -59,21 +66,26 @@ def compute_all_measures(
     if np.array_equal(stim_bin, resp_bin) or dprime == 0 or len(np.unique(conf)) == 1:
         return np.full(26, np.nan)
 
-    # Convert to counts
+    # Convert to counts (raw, unpadded — used for all descriptive Type-2 measures)
     nr_s1, nr_s2 = trials_to_counts(stim_bin, resp_bin, conf.astype(int), n_ratings)
     nr_s1 = np.array(nr_s1)
     nr_s2 = np.array(nr_s2)
 
     # Zero-cell padding (matches MATLAB type2_SDT_MLE.m behaviour):
-    # add 1/(2*nRatings) to ALL cells when ANY cell is zero
+    # add 1/(2*nRatings) to ALL cells when ANY cell is zero. This padding
+    # only stabilizes the meta-d' MLE log-likelihood (which takes logs of
+    # cell probabilities); AUC2/Gamma/Phi/DeltaConf below are purely
+    # descriptive statistics of the raw counts and must not be smoothed.
+    nr_s1_mle = nr_s1
+    nr_s2_mle = nr_s2
     if np.any(nr_s1 == 0) or np.any(nr_s2 == 0):
         pad = 1.0 / (2 * n_ratings)
-        nr_s1 = nr_s1 + pad
-        nr_s2 = nr_s2 + pad
+        nr_s1_mle = nr_s1 + pad
+        nr_s2_mle = nr_s2 + pad
 
     # meta-d', M-Ratio, M-Diff, model fit stats
     try:
-        meta_d_res = fit_meta_d_mle(nr_s1, nr_s2)
+        meta_d_res = fit_meta_d_mle(nr_s1_mle, nr_s2_mle)
         meta_d = meta_d_res["meta_da"]
         m_ratio = meta_d_res["M_ratio"]
         m_diff  = meta_d_res["M_diff"]

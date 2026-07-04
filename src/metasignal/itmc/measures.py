@@ -756,6 +756,26 @@ def estimate_meta_I(
         ``participant``, ``meta_I``, ``meta_Ir1``, ``meta_Ir1_acc``,
         ``meta_Ir2``, ``RMI``.
     """
+    if backend == "statconfr":
+        global_max = int(data[rating_col].max())
+        offenders = [
+            (pid, int(grp[rating_col].max()))
+            for pid, grp in data.groupby(participant_col, sort=False)
+            if int(grp[rating_col].max()) != global_max
+        ]
+        if offenders:
+            import warnings
+
+            warnings.warn(
+                f"estimate_meta_I: confidence scale (max rating) is {global_max} "
+                f"overall, but {len(offenders)} participant(s) never used the top "
+                f"rating (e.g. participant {offenders[0][0]}). 'statconfr' infers "
+                "n_ratings per participant from their own observed max, so these "
+                "participants' analytic bounds are not comparable to the rest of "
+                "the group.",
+                stacklevel=2,
+            )
+
     records = []
     for pid, grp in data.groupby(participant_col, sort=False):
         stim = grp[stimulus_col].to_numpy()

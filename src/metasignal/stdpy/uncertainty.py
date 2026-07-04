@@ -71,6 +71,10 @@ def compute_meta_uncertainty(
     """
     stim_values = np.unique(stim)
     n_stim = len(stim_values)
+    if n_stim < 2:
+        raise ValueError(
+            "stim must contain both classes; found only one class in input."
+        )
 
     n_choice = np.zeros((n_ratings * 2, n_stim))
 

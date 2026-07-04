@@ -48,13 +48,22 @@ def _compute_participant_estimates(
             meta_da = float(mle["meta_da"])
             da = float(mle["da"])
             m_ratio = float(mle["M_ratio"])
-            log_m_ratio = float(np.log(m_ratio)) if m_ratio > 0 else np.nan
+            if m_ratio > 0:
+                log_m_ratio = float(np.log(m_ratio))
+            else:
+                warnings.warn(
+                    f"Participant {pid}: MLE succeeded but M-ratio={m_ratio:.3g} <= 0 "
+                    "(non-positive metacognitive efficiency); log_m_ratio set to NaN "
+                    "and this participant will be excluded from log-scale group models.",
+                    stacklevel=2,
+                )
+                log_m_ratio = np.nan
         except (ValueError, RuntimeError) as exc:
             warnings.warn(
                 f"Participant {pid}: MLE failed ({exc}). Setting estimates to NaN.",
                 stacklevel=2,
             )
-            meta_da = da = m_ratio = log_m_ratio = np.nan
+            dp = c = meta_da = da = m_ratio = log_m_ratio = np.nan
 
         rows.append({
             "participant": pid,

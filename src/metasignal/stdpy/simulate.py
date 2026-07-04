@@ -634,6 +634,23 @@ def discreteRatings(ratings, nbins: int = 4, verbose: bool = True,
                 "Rating scale has too many identical extreme values to discretise. "
                 "Pass ignore_invalid=True to proceed."
             )
+        if verbose:
+            print("Correcting for bias in both low and high confidence ratings.")
+        lo = conf_bins[0]
+        hi = conf_bins[-1]
+        inner_ratings = ratings[(ratings != lo) & (ratings != hi)]
+        n_inner_bins = max(nbins - 2, 0)
+        masks.append(ratings == lo)
+        if n_inner_bins > 0 and len(inner_ratings) > 0:
+            inner = np.quantile(inner_ratings, np.linspace(0, 1, n_inner_bins + 1))
+            for b in range(n_inner_bins):
+                masks.append(
+                    (ratings >= inner[b]) & (ratings <= inner[b + 1])
+                    & (ratings != lo) & (ratings != hi)
+                )
+        masks.append(ratings == hi)
+        info["confBins"] = [lo, hi]
+        info["rebin"]    = [1]
 
     elif ceiling_bias:
         if verbose:
