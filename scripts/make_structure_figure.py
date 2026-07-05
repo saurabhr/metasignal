@@ -131,7 +131,7 @@ ax.text(
     va="center",
     family="monospace",
     fontsize=8.5,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 ax.text(
     2.2,
@@ -165,7 +165,7 @@ ax.text(
     va="center",
     family="monospace",
     fontsize=8,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 ax.text(
     8.7,
@@ -175,7 +175,7 @@ ax.text(
     va="center",
     family="monospace",
     fontsize=8,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 ax.text(
     7.2,
@@ -245,7 +245,7 @@ ax.text(
     va="center",
     family="monospace",
     fontsize=8,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 
 box(ax, (5.7, 3.2), 4.9, 1.35, DARK, DARK)
@@ -276,7 +276,7 @@ ax.text(
 arrow(
     ax,
     (0.4, 6.3),
-    (0.55, 2.75),
+    (0.55, 2.2),
     connectionstyle="angle,angleA=180,angleB=90,rad=0",
 )
 ax.text(
@@ -292,10 +292,10 @@ ax.text(
 )
 
 # --- Layer 4 (new, bottom): Experimental components ---
-box(ax, (0.4, 0.35), 10.2, 2.35, "#fffaf2", EXP_BORDER, lw=1.8, ls="--")
+box(ax, (0.4, 0.25), 10.2, 1.9, "#fffaf2", EXP_BORDER, lw=1.8, ls="--")
 ax.text(
     0.65,
-    2.45,
+    1.97,
     "Experimental Components",
     ha="left",
     va="center",
@@ -305,7 +305,7 @@ ax.text(
 )
 ax.text(
     3.35,
-    2.45,
+    1.97,
     "(pre-1.0 API, not yet covered by JOSS-reviewed guarantees)",
     ha="left",
     va="center",
@@ -315,10 +315,10 @@ ax.text(
 )
 
 # sdtbayes panel
-box(ax, (0.65, 0.55), 4.85, 1.7, PURPLE_BG, "#8e44ad")
+box(ax, (0.65, 0.45), 4.85, 1.35, PURPLE_BG, "#8e44ad")
 ax.text(
     0.9,
-    2.02,
+    1.6,
     "sdtbayes",
     ha="left",
     va="center",
@@ -329,7 +329,7 @@ ax.text(
 )
 ax.text(
     2.0,
-    2.02,
+    1.6,
     "— Bayesian Estimation",
     ha="left",
     va="center",
@@ -338,17 +338,17 @@ ax.text(
 )
 ax.text(
     3.05,
-    1.2,
+    0.98,
     "7 approaches: ordered logistic · two-stage · full HMeta-d ·\nsubject-level · beta-AUC · meta-regression · within-subject\ndiagnostics: posterior_summary, plot_trace, plot_posterior, plot_forest",
     ha="center",
     va="center",
     family="monospace",
     fontsize=7.3,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 ax.text(
     3.05,
-    0.7,
+    0.55,
     "optional install: pip install metasignal[sdtbayes]",
     ha="center",
     va="center",
@@ -358,10 +358,10 @@ ax.text(
 )
 
 # itmc panel
-box(ax, (5.65, 0.55), 4.6, 1.7, AMBER_BG, EXP_BORDER)
+box(ax, (5.65, 0.45), 4.6, 1.35, AMBER_BG, EXP_BORDER)
 ax.text(
     5.9,
-    2.02,
+    1.6,
     "itmc",
     ha="left",
     va="center",
@@ -372,7 +372,7 @@ ax.text(
 )
 ax.text(
     6.55,
-    2.02,
+    1.6,
     "— Information-Theoretic Metacognition",
     ha="left",
     va="center",
@@ -381,13 +381,13 @@ ax.text(
 )
 ax.text(
     7.95,
-    1.15,
+    0.9,
     "meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2 · RMI\npermtest_meta_I\n(Dayan 2023; port of statConfR's estimateMetaI)",
     ha="center",
     va="center",
     family="monospace",
     fontsize=7.6,
-    linespacing=1.8,
+    linespacing=2.2,
 )
 
 # Layer labels

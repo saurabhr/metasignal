@@ -121,6 +121,12 @@ src = ["src", "tests", "docs"]
 "docs/conf.py" = [
     "A001",  # builtin-variable-shadowing (flake8-builtins)
 ]
+"scripts/make_structure_figure.py" = [
+    "ANN",  # flake8-annotations (throwaway plotting helpers)
+    "D103",  # undocumented-public-function (pydocstyle)
+    "PLR0913",  # too-many-arguments (Pylint)
+    "RUF001",  # ambiguous-unicode-character-string (decorative figure text: –, ′, γ, φ, Δ)
+]
 "src/metasignal/cli.py" = [
     "C901",  # complex-structure (mccabe)
     "FBT001",  # boolean-type-hint-positional-argument (flake8-boolean-trap)
