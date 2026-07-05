@@ -5,20 +5,25 @@
 [![Docs](https://github.com/saurabhr/metasignal/actions/workflows/docs.yml/badge.svg)](https://github.com/saurabhr/metasignal/actions/workflows/docs.yml)
 
 <!-- start docs-include-index -->
-Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) *Nature Communications*, 16(1), 701.
+
+Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) _Nature Communications_, 16(1), 701.
+
 <!-- end docs-include-index -->
 
 ## Installation
 
 <!-- start docs-include-installation -->
+
 ```bash
 pip install .
 ```
+
 <!-- end docs-include-installation -->
 
 ## Usage
 
 <!-- start docs-include-usage -->
+
 ### Python API
 
 ```python
@@ -55,4 +60,10 @@ metasignal compute \
   --conf "2,3,1,4,4,3,2,1,3,4" \
   --n-ratings 4
 ```
+
 <!-- end docs-include-usage -->
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, tests, and the PR process, and
+[docs/roadmap.md](docs/roadmap.md) for known gaps and planned directions.

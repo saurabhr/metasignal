@@ -65,18 +65,20 @@ exclude_docs: |
 nav:
   - Home: index.md
   - User's Guide:
-    - Installation: installation.md
-    - Usage: usage.md
+      - Installation: installation.md
+      - Usage: usage.md
   - Tutorials:
-    - Overview: tutorials/index.md
-    - 1. Getting Started: tutorials/01_getting_started.ipynb
-    - 2. Computing All 26 Measures: tutorials/02_computing_measures.ipynb
-    - 3. Statistical Inference: tutorials/03_statistical_inference.ipynb
-    - 4. Difficulty Dependence: tutorials/04_difficulty_dependence.ipynb
-    - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
-    - 6. Split-Half Reliability: tutorials/06_split_half_reliability.ipynb
-    - 7. Bayesian Hierarchical Meta-d': tutorials/07_bayesian_hierarchical.ipynb
+      - Overview: tutorials/index.md
+      - 1. Getting Started: tutorials/01_getting_started.ipynb
+      - 2. Computing All 26 Measures: tutorials/02_computing_measures.ipynb
+      - 3. Statistical Inference: tutorials/03_statistical_inference.ipynb
+      - 4. Difficulty Dependence: tutorials/04_difficulty_dependence.ipynb
+      - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
+      - 6. Split-Half Reliability: tutorials/06_split_half_reliability.ipynb
+      - 7. Bayesian Hierarchical Meta-d': tutorials/07_bayesian_hierarchical.ipynb
   - API Reference: api.md
   - SDT Bayes: sdtbayes.md
   - CLI Reference: cli.md
+  - Contributing: contributing.md
+  - Future Development: roadmap.md
   - Changelog: changelog.md

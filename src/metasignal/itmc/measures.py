@@ -188,8 +188,7 @@ def _lower_info_bound(prior: np.ndarray, accuracy: float) -> float:
 
     q = cumsum[m3 - 1]
     pl = p[:m3]
-    H_Y  = _entropy(pl / pl.sum()) + np.log2(pl.sum()) * (pl.sum() > 0)
-    # Re-derive: statConfR's H_Y = sum(pl * log(1/pl))  (unnormalized Shannon)
+    # statConfR's H_Y = sum(pl * log(1/pl))  (unnormalized Shannon)
     H_Y  = float(np.sum(-xlogy(pl, pl) / np.log(2)))
     rem  = q - a
     if rem <= 0 or m3 <= 1:
