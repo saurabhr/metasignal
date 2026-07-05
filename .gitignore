@@ -132,6 +132,14 @@ env_metasignal/
 # macOS
 .DS_Store
 
+# PDFs (build artifacts / reference docs; keep them out of the repo)
+*.pdf
+!paper/paper.pdf
+
+# Tutorial 7 savefig output (regenerated at repo root when running the script)
+/canonical_dataset.png
+/three_way_comparison.png
+
 # Compiled CmdStan model binaries and build artifacts
 src/metasignal/sdtbayes/stan/hmeta_d
 src/metasignal/sdtbayes/stan/hmeta_noise

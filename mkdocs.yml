@@ -60,7 +60,6 @@ markdown_extensions:
   - mkdocs-click
 
 exclude_docs: |
-  conf.py.sphinx-bak
   tutorials/rm.txt
 
 nav:
@@ -71,7 +70,7 @@ nav:
   - Tutorials:
     - Overview: tutorials/index.md
     - 1. Getting Started: tutorials/01_getting_started.ipynb
-    - 2. Computing All 20 Measures: tutorials/02_computing_measures.ipynb
+    - 2. Computing All 26 Measures: tutorials/02_computing_measures.ipynb
     - 3. Statistical Inference: tutorials/03_statistical_inference.ipynb
     - 4. Difficulty Dependence: tutorials/04_difficulty_dependence.ipynb
     - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
