@@ -452,60 +452,6 @@ class TestClipAuc2:
 
 
 # ---------------------------------------------------------------------------
-# statespace._mle_matrix
-# ---------------------------------------------------------------------------
-
-class TestMleMatrix:
-    def _make_sessions(self, n_subj, n_sess, rng, n_trials=100):
-        sessions = []
-        for _ in range(n_sess):
-            sess = []
-            for _ in range(n_subj):
-                stim = rng.integers(0, 2, n_trials)
-                resp = stim.copy()
-                flip = rng.random(n_trials) < 0.1
-                resp[flip] = 1 - resp[flip]
-                conf = rng.integers(1, 3, n_trials)
-                sess.append((stim, resp, conf))
-            sessions.append(sess)
-        return sessions
-
-    def _mle(self, sessions, n_ratings=2):
-        from metasignal.sdtbayes.statespace import _mle_matrix
-        return _mle_matrix(sessions, n_ratings)
-
-    def test_output_shapes(self, rng):
-        sessions = self._make_sessions(3, 4, rng)
-        log_mr, valid = self._mle(sessions)
-        assert log_mr.shape == (3, 4)
-        assert valid.shape == (3, 4)
-
-    def test_valid_values_binary(self, rng):
-        sessions = self._make_sessions(3, 2, rng)
-        _, valid = self._mle(sessions)
-        assert set(valid.flatten().tolist()).issubset({0.0, 1.0})
-
-    def test_consistent_participant_count_required(self, rng):
-        sessions = self._make_sessions(3, 2, rng)
-        bad = sessions[0][:2]  # only 2 participants in session 1
-        with pytest.raises(ValueError, match="same number of participants"):
-            from metasignal.sdtbayes.statespace import _mle_matrix
-            _mle_matrix([sessions[0], bad], n_ratings=2)
-
-    def test_log_mr_zero_where_invalid(self, rng):
-        sessions = self._make_sessions(3, 2, rng)
-        log_mr, valid = self._mle(sessions)
-        invalid_mask = valid == 0.0
-        assert np.all(log_mr[invalid_mask] == 0.0)
-
-    def test_good_participants_mostly_valid(self, rng):
-        sessions = self._make_sessions(5, 3, rng, n_trials=200)
-        _, valid = self._mle(sessions)
-        # High-accuracy participants with many trials should mostly converge
-        assert valid.sum() >= 5
-
-
-# ---------------------------------------------------------------------------
 # meta_regression._build_regression_stan_blocks
 # ---------------------------------------------------------------------------
 
@@ -623,42 +569,3 @@ class TestFitWithinSubjectComparisonValidation:
             cond_b = self._make_group(5, rng)
             fit_within_subject_comparison(cond_a, cond_b, n_ratings=2)
         mock_brms.brm.assert_called_once()
-
-
-# ---------------------------------------------------------------------------
-# mixture.fit_mixture_group — input validation (brmspy mocked)
-# ---------------------------------------------------------------------------
-
-class TestFitMixtureGroupValidation:
-    def _make_group(self, n, rng, n_trials=100):
-        parts = []
-        for _ in range(n):
-            stim = rng.integers(0, 2, n_trials)
-            resp = stim.copy()
-            flip = rng.random(n_trials) < 0.15
-            resp[flip] = 1 - resp[flip]
-            # Correlate confidence with accuracy so meta-d' is reliably
-            # positive; fully random confidence yields near-chance,
-            # sign-flipping meta-d' estimates that make this guard-logic
-            # test flaky.
-            correct = stim == resp
-            p_high = np.where(correct, 0.8, 0.2)
-            conf = np.where(rng.random(n_trials) < p_high, 2, 1)
-            parts.append((stim, resp, conf))
-        return parts
-
-    def test_raises_when_too_few_participants(self, rng):
-        pytest.importorskip("pandas")
-        from metasignal.sdtbayes.mixture import fit_mixture_group
-        from unittest.mock import MagicMock, patch
-        mock_brmspy = MagicMock()
-        import warnings
-        with patch.dict("sys.modules", {"brmspy": mock_brmspy}):
-            # 2-component model needs at least 6 valid participants;
-            # use degenerate data so MLE returns NaN for all
-            degenerate = [(np.zeros(20, int), np.zeros(20, int),
-                           np.ones(20, int))] * 2
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                with pytest.raises(ValueError, match="valid estimates"):
-                    fit_mixture_group(degenerate, n_ratings=2, n_components=2)

@@ -50,31 +50,10 @@ Approach 12 — Within-subject condition comparison (``within_subject``) — *br
     conditions.  Participant random intercepts absorb stable between-subject
     differences; ``b_condition1`` is the within-person condition effect.
 
-Unavailable approaches (upstream brmspy/rpy2 limitations)
-------------------------------------------------------------
-These raise a ``RuntimeError`` with a specific explanation and, where one
-exists, a pointer to a working alternative.  Each was found to fail for a
-distinct reason in brmspy's Python↔R object conversion — not from anything
-fixable in calling code (see each function's docstring Notes for detail):
-
-Approach 5 — Robust HMeta-d (``robust``)
-    Student-t hyperprior on log M-ratio; no cmdstanpy port exists yet.
-    Blocked: same stanvar-list conversion issue as pre-fix Approach 3.
-
-Approach 6 — Variational inference (``variational``)
-    cmdstanpy exposes VI via dedicated methods (``.pathfinder()``,
-    ``.variational()``), not the ``algorithm=`` kwarg this wrapper used.
-
-Approach 8 — Gaussian mixture on log M-ratio (``mixture``)
-    brms's ``mixfamily`` object loses its R S3 class round-tripping through
-    brmspy, so ``brm(family=...)`` rejects it.
-
-Approach 9 — Bivariate hierarchical model (``multivariate``)
-    brms's ``rescor`` flag cannot be threaded through brmspy via any of three
-    independently-tried channels.
-
-Approach 11 — State-space model (``statespace``)
-    Same stanvar-list conversion issue as robust; no cmdstanpy port exists.
+Approaches 5, 6, 8, 9, and 11 (robust HMeta-d, variational inference,
+Gaussian mixture, bivariate hierarchical, and state-space models) were
+removed — each was permanently blocked by an upstream brmspy/rpy2 limitation
+with no working implementation. See :doc:`roadmap </roadmap>` for status.
 
 Public API
 ----------
@@ -93,26 +72,11 @@ Approach 3 — full HMeta-d
 Approach 4 — subject-level
     ``fit_subject_level``
 
-Approach 5 — robust HMeta-d (unavailable, see above)
-    ``fit_robust_metad``, ``fit_robust_metad_comparison``
-
-Approach 6 — variational inference (unavailable, see above)
-    ``fit_full_metad_vi``, ``fit_robust_metad_vi``
-
 Approach 7 — Beta AUC
     ``fit_beta_auc_group``, ``fit_beta_auc_comparison``
 
-Approach 8 — mixture (unavailable, see above)
-    ``fit_mixture_group``
-
-Approach 9 — bivariate M-ratio family (unavailable, see above)
-    ``fit_multivariate_mratio``, ``fit_multivariate_mratio_comparison``
-
 Approach 10 — meta-regression
     ``fit_two_stage_regression``, ``fit_full_metad_regression``
-
-Approach 11 — state-space (unavailable, see above)
-    ``fit_statespace_metad``
 
 Approach 12 — within-subject comparison
     ``fit_within_subject_comparison``
@@ -131,19 +95,11 @@ from metasignal.sdtbayes.hierarchical import fit_hierarchical_metad, fit_group_c
 from metasignal.sdtbayes.two_stage import fit_two_stage_group, fit_two_stage_comparison
 from metasignal.sdtbayes.full_metad import fit_full_metad, fit_full_metad_comparison
 from metasignal.sdtbayes.subject_level import fit_subject_level
-from metasignal.sdtbayes.robust import fit_robust_metad, fit_robust_metad_comparison
-from metasignal.sdtbayes.variational import fit_full_metad_vi, fit_robust_metad_vi
 from metasignal.sdtbayes.beta_auc import fit_beta_auc_group, fit_beta_auc_comparison
-from metasignal.sdtbayes.mixture import fit_mixture_group
-from metasignal.sdtbayes.multivariate import (
-    fit_multivariate_mratio,
-    fit_multivariate_mratio_comparison,
-)
 from metasignal.sdtbayes.meta_regression import (
     fit_two_stage_regression,
     fit_full_metad_regression,
 )
-from metasignal.sdtbayes.statespace import fit_statespace_metad
 from metasignal.sdtbayes.within_subject import (
     fit_within_subject_comparison,
 )
@@ -172,25 +128,12 @@ __all__ = [
     "fit_full_metad_comparison",
     # Approach 4 — subject-level (metadpy API, Stan backend)
     "fit_subject_level",
-    # Approach 5 — robust HMeta-d (Student-t hyperprior)
-    "fit_robust_metad",
-    "fit_robust_metad_comparison",
-    # Approach 6 — variational inference
-    "fit_full_metad_vi",
-    "fit_robust_metad_vi",
     # Approach 7 — Beta regression on Type-2 AUC
     "fit_beta_auc_group",
     "fit_beta_auc_comparison",
-    # Approach 8 — Gaussian mixture on log M-ratio
-    "fit_mixture_group",
-    # Approach 9 — bivariate (log M-ratio, d') hierarchical model
-    "fit_multivariate_mratio",
-    "fit_multivariate_mratio_comparison",
     # Approach 10 — Bayesian meta-regression (two paths)
     "fit_two_stage_regression",
     "fit_full_metad_regression",
-    # Approach 11 — state-space (group × sessions random walk)
-    "fit_statespace_metad",
     # Approach 12 — within-subject paired condition comparison
     "fit_within_subject_comparison",
     # Formula interface (Stan or brms backend)

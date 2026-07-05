@@ -46,22 +46,18 @@ setup_runtime()
 | 2 | **Two-stage Bayesian** | brms | ✅ working | `fit_two_stage_group` | MLE per participant → Bayesian on log M-ratio. Fast Stage 2; no Stage-1 uncertainty propagation. |
 | 3 | **Full HMeta-d** | cmdstanpy | ✅ working | `fit_full_metad` | Single-stage port of Fleming (2017), delegating to `fit_meta_formula`. Numerically stable log-space likelihood; most accurate. |
 | 4 | **Subject-level Bayesian** | cmdstanpy | ✅ working | `fit_subject_level` | Single-participant model. Matches `metadpy.hmetad(nR_S1, nR_S2)` API; reproduces metadpy's reference values to within MCMC noise. |
-| 5 | **Robust HMeta-d** | brms | ❌ unavailable | `fit_robust_metad` | Student-t hyperprior on log M-ratio. Blocked by an upstream brmspy stanvar-list conversion limitation; no cmdstanpy port exists yet. |
-| 6 | **Variational inference** | — | ❌ unavailable | `fit_full_metad_vi`, `fit_robust_metad_vi` | cmdstanpy exposes VI via dedicated methods, not the `algorithm=` kwarg this wrapper used. |
 | 7 | **Beta AUC** | brms | ✅ working | `fit_beta_auc_group` | Non-parametric alternative to meta-d'. Models Type-2 AUC directly with a Beta likelihood; no Gaussian SDT assumption. |
-| 8 | **Gaussian mixture** | brms | ❌ unavailable | `fit_mixture_group` | brms's `mixfamily` object loses its R S3 class round-tripping through brmspy. |
-| 9 | **Bivariate hierarchical** | brms | ❌ unavailable | `fit_multivariate_mratio` | brms's `rescor` flag cannot be threaded through brmspy via any tried channel. |
 | 10 | **Meta-regression** | brms + cmdstanpy | ✅ working | `fit_two_stage_regression`, `fit_full_metad_regression` | Regresses log M-ratio on participant-level covariates via either the two-stage (brms) or full hierarchical (cmdstanpy) path. |
-| 11 | **State-space** | brms | ❌ unavailable | `fit_statespace_metad` | Same stanvar-list conversion issue as Approach 5; no cmdstanpy port exists. |
 | 12 | **Within-subject comparison** | brms | ✅ working | `fit_within_subject_comparison` | Paired model for within-subject designs: same participants in two conditions; participant random intercepts absorb stable individual differences. |
 
-Unavailable approaches raise a `RuntimeError` with a specific explanation and,
-where one exists, a pointer to a working alternative — see each function's
-docstring for the exact upstream brmspy/rpy2 limitation encountered.
+Approaches 5 (robust HMeta-d), 6 (variational inference), 8 (Gaussian
+mixture), 9 (bivariate hierarchical), and 11 (state-space) were removed —
+each was permanently blocked by an upstream brmspy/rpy2 limitation with no
+working implementation. See the [roadmap](roadmap.md) for status.
 
-Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
+Approaches 1–3 and 7 have matching two-group comparison counterparts:
 `fit_group_comparison`, `fit_two_stage_comparison`, `fit_full_metad_comparison`,
-`fit_robust_metad_comparison`, `fit_beta_auc_comparison`, `fit_multivariate_mratio_comparison`.
+`fit_beta_auc_comparison`.
 
 ## API Reference
 
@@ -87,43 +83,17 @@ Approaches 1–3, 5, 7, and 9 have matching two-group comparison counterparts:
 
 ::: metasignal.sdtbayes.fit_subject_level
 
-### Approach 5 — Robust HMeta-d
-
-::: metasignal.sdtbayes.fit_robust_metad
-
-::: metasignal.sdtbayes.fit_robust_metad_comparison
-
-### Approach 6 — Variational Inference
-
-::: metasignal.sdtbayes.fit_full_metad_vi
-
-::: metasignal.sdtbayes.fit_robust_metad_vi
-
 ### Approach 7 — Beta Regression on Type-2 AUC
 
 ::: metasignal.sdtbayes.fit_beta_auc_group
 
 ::: metasignal.sdtbayes.fit_beta_auc_comparison
 
-### Approach 8 — Gaussian Mixture on log M-ratio
-
-::: metasignal.sdtbayes.fit_mixture_group
-
-### Approach 9 — Bivariate Hierarchical Model
-
-::: metasignal.sdtbayes.fit_multivariate_mratio
-
-::: metasignal.sdtbayes.fit_multivariate_mratio_comparison
-
 ### Approach 10 — Bayesian Meta-Regression
 
 ::: metasignal.sdtbayes.fit_two_stage_regression
 
 ::: metasignal.sdtbayes.fit_full_metad_regression
-
-### Approach 11 — State-Space Model
-
-::: metasignal.sdtbayes.fit_statespace_metad
 
 ### Approach 12 — Within-Subject Condition Comparison
 
