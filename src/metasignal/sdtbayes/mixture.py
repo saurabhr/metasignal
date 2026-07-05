@@ -68,7 +68,7 @@ def fit_mixture_group(
         ``theta1`` (mixing weight for component 1).
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
         ValueError: If fewer than ``n_components × 3`` participants have valid
             MLE estimates.
 
@@ -125,7 +125,7 @@ def fit_mixture_group(
         )
         raise ValueError(msg)
 
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_mixture_group is currently unavailable: the brms mixture family "
         "object loses its required R S3 class when round-tripped through brmspy, "
         "causing brm() to reject it with \"Argument 'family' is invalid\". This is "

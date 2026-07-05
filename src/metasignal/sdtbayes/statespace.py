@@ -207,7 +207,7 @@ def fit_statespace_metad(
         - ``subj_effect[i]`` — per-participant stable offset.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
         ValueError: If sessions are inconsistent in participant count, or
             fewer than 2 sessions are provided.
 
@@ -258,7 +258,7 @@ def fit_statespace_metad(
         msg = "Need at least 2 sessions for the state-space model."
         raise ValueError(msg)
 
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_statespace_metad is currently unavailable: its brmspy stanvar-injection "
         "path is blocked by an upstream brmspy/rpy2 conversion limitation (a list "
         "mixing data-carrying and code-only stanvar() objects cannot be converted "

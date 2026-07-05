@@ -75,7 +75,7 @@ def fit_full_metad_vi(
         ``mu_logMratio``, ``sigma_logMratio``, ``Mratio``, ``meta_d``.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
 
     Notes:
         :func:`~metasignal.sdtbayes.fit_full_metad` now runs via **cmdstanpy**
@@ -104,7 +104,7 @@ def fit_full_metad_vi(
         fit = fit_full_metad_vi(participants, n_ratings=4)
         print(fit.posterior_summary(var_names=["mu_logMratio", "sigma_logMratio"]))
     """
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_full_metad_vi is currently unavailable: fit_full_metad now runs via "
         "cmdstanpy, which exposes variational inference through dedicated methods "
         "(.pathfinder(), .variational()) rather than an algorithm= kwarg on "
@@ -142,7 +142,7 @@ def fit_robust_metad_vi(
         ``mu_logMratio``, ``sigma_logMratio``, ``nu_logMratio``.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
 
     Notes:
         Unavailable for two independent reasons: (1) the same cmdstanpy/VI
@@ -158,7 +158,7 @@ def fit_robust_metad_vi(
         nu = az.extract(fit.idata)["nu_logMratio"].values
         print(f"nu_logMratio ≈ {nu.mean():.1f}")
     """
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_robust_metad_vi is currently unavailable: fit_robust_metad is blocked "
         "by an upstream brmspy stanvar-injection limitation, and cmdstanpy VI "
         "requires dedicated methods (.pathfinder(), .variational()) rather than an "

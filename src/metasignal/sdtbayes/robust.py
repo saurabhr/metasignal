@@ -212,7 +212,7 @@ def fit_robust_metad(
         ``FitResult`` with ``.idata`` and ``.r``.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
 
     Notes:
         This function's brmspy stanvar-injection path is currently
@@ -230,7 +230,7 @@ def fit_robust_metad(
         which delegates to the working cmdstanpy backend
         (:func:`~metasignal.sdtbayes.fit_meta_formula`).
     """
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_robust_metad is currently unavailable: its brmspy stanvar-injection "
         "path is blocked by an upstream brmspy/rpy2 conversion limitation (a list "
         "mixing data-carrying and code-only stanvar() objects cannot be converted "
@@ -274,7 +274,7 @@ def fit_robust_metad_comparison(
         ``delta_logMratio``, ``nu_logMratio``.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
 
     Notes:
         This function's brmspy stanvar-injection path is currently
@@ -290,7 +290,7 @@ def fit_robust_metad_comparison(
         delta = az.extract(fit.idata)["delta_logMratio"].values
         print(f"P(patient < healthy): {(delta < 0).mean():.3f}")
     """
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_robust_metad_comparison is currently unavailable: its brmspy "
         "stanvar-injection path is blocked by an upstream brmspy/rpy2 conversion "
         "limitation (a list mixing data-carrying and code-only stanvar() objects "

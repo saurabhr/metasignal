@@ -69,7 +69,7 @@ def fit_multivariate_mratio(
         - ``rescor__logmratio__dprime`` — cross-participant correlation.
 
     Raises:
-        RuntimeError: Always — see Notes.
+        NotImplementedError: Always — see Notes.
         ValueError: If fewer than 5 participants have valid MLE estimates.
 
     Notes:
@@ -116,7 +116,7 @@ def fit_multivariate_mratio(
         msg = f"Only {len(valid)} participants have valid estimates — need at least 5."
         raise ValueError(msg)
 
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_multivariate_mratio is currently unavailable: brms's rescor flag "
         "(needed for the cross-response correlation) cannot be threaded through "
         "brmspy to R in this version — three distinct approaches were tried and "
@@ -160,7 +160,7 @@ def fit_multivariate_mratio_comparison(
         ``FitResult`` with bivariate group comparison posteriors.
 
     Raises:
-        RuntimeError: Always — see :func:`fit_multivariate_mratio` Notes for
+        NotImplementedError: Always — see :func:`fit_multivariate_mratio` Notes for
             why brms's ``rescor`` flag cannot currently be used through
             brmspy.
 
@@ -174,7 +174,7 @@ def fit_multivariate_mratio_comparison(
         print(f"P(log M-ratio lower in patients): {(d_mr < 0).mean():.3f}")
         print(f"P(d' lower in patients):          {(d_dp < 0).mean():.3f}")
     """
-    raise RuntimeError(
+    raise NotImplementedError(
         "fit_multivariate_mratio_comparison is currently unavailable: brms's "
         "rescor flag (needed for the cross-response correlation) cannot be "
         "threaded through brmspy to R in this version. Use "

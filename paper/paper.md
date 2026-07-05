@@ -16,7 +16,7 @@ authors:
     orcid: 0000-0003-2018-7768
     affiliation: 2
   - name: Konstantina Sokratous
-    orcid: 0000-0002-7868-7223
+    orcid: 0000-0003-4489-5494
     affiliation: 3
   - name: Brian Odegaard
     orcid: 0000-0002-5459-1884
