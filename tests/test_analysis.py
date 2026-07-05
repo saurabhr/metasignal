@@ -117,6 +117,24 @@ def test_permutation_observed_diff_sign(obs_a, obs_b):
     assert obs_diff > 0.0
 
 
+def test_permutation_null_calibration():
+    """Under a true null (A and B drawn from the same generative process),
+    p-values should not be systematically small. Averaging over several
+    independent null replicates keeps this from flaking on a single draw."""
+    p_values = []
+    for seed in range(5):
+        stim_a, resp_a, conf_a = _make_observer(seed=10 + seed)
+        stim_b, resp_b, conf_b = _make_observer(seed=20 + seed)
+        p, _ = permutation_test(
+            stim_a, resp_a, conf_a,
+            stim_b, resp_b, conf_b,
+            n_ratings=2, measure_index=17, n_perm=200,
+            rng=np.random.default_rng(seed),
+        )
+        p_values.append(p)
+    assert np.mean(p_values) > 0.2
+
+
 def test_permutation_invalid_index_raises(obs_a, obs_b):
     stim_a, resp_a, conf_a = obs_a
     stim_b, resp_b, conf_b = obs_b
