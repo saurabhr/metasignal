@@ -37,6 +37,8 @@ print(results)  # array of 26 float values
 
 For group-level inference, `metasignal.analysis` provides bootstrap confidence intervals, permutation tests, and group summaries over that same 26-element array. For fully Bayesian modelling, `metasignal.sdtbayes` offers 7 hierarchical approaches ranging from fast two-stage estimation to full HMeta-d and meta-regression (optional install: `pip install metasignal[sdtbayes]`).
 
+**Experimental:** `metasignal.itmc` implements the information-theoretic metacognition framework of Dayan (2023), measuring metacognitive sensitivity as mutual information between accuracy and confidence (`meta_I`, `meta_Ir1`, `meta_Ir1_acc`, `meta_Ir2`, `RMI`, `permtest_meta_I`). As a pre-1.0 component, its API may still change between releases — see [API Reference](api.md#itmc-information-theoretic-metacognition-experimental).
+
 See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples. For Bayesian modelling, see [Bayesian Analysis](sdtbayes.md).
 
 ## Contributing

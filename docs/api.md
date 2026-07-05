@@ -47,3 +47,21 @@ The `analysis` sub-package provides non-parametric inference tools that operate 
 ::: metasignal.analysis.permutation_test
 
 ::: metasignal.analysis.group_summary
+
+---
+
+## itmc — Information-theoretic metacognition (experimental)
+
+The `itmc` sub-package implements the information-theoretic metacognition framework of Dayan (2023), measuring metacognitive sensitivity as mutual information between accuracy and confidence. It is a pre-1.0 component and its API may still change between releases.
+
+::: metasignal.itmc.meta_I
+
+::: metasignal.itmc.meta_Ir1
+
+::: metasignal.itmc.meta_Ir1_acc
+
+::: metasignal.itmc.meta_Ir2
+
+::: metasignal.itmc.RMI
+
+::: metasignal.itmc.permtest_meta_I
