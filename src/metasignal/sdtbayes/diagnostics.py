@@ -75,8 +75,11 @@ class FitResult:
             print(diag[~diag["converged"]])   # non-converged parameters
         """
         az = _require_arviz()
-        summary = az.summary(self.idata)
-        diag = summary[["r_hat", "ess_bulk", "ess_tail"]].copy()
+        # round_to="none": az.summary()'s default "auto" rounding formats
+        # numeric columns (including r_hat) as display strings, which breaks
+        # the numeric comparisons below.
+        summary = az.summary(self.idata, round_to="none")
+        diag = summary[["r_hat", "ess_bulk", "ess_tail"]].astype(float).copy()
         diag["converged"] = (
             (diag["r_hat"] <= 1.01)
             & (diag["ess_bulk"] >= 400)
