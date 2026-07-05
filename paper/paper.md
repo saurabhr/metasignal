@@ -21,9 +21,6 @@ authors:
     - name: Brian Odegaard
       orcid: 0000-0002-5459-1884
       affiliation: 1
-    - name: Ashish Aggarwal
-      orcid: 0000-0002-8365-3810
-      affiliation: 1
 affiliations:
     - name: University of Florida, USA
       index: 1
@@ -76,7 +73,7 @@ For researchers requiring full Bayesian inference, the optional `metasignal.sdtb
 - `fit_subject_level` — subject-level Bayesian SDT, yielding full posteriors over d' and criterion _c_ for individual participants.
 - `fit_two_stage_group` — a two-stage approach that first computes per-participant MLE M-ratios (Stage 1) then fits a hierarchical Bayesian model over log M-ratio across participants (Stage 2), providing a group-level posterior mean M-ratio with uncertainty.
 - `fit_full_metad` — a full hierarchical HMeta-d model that ports the JAGS implementation of @fleming2017 to Stan, jointly estimating group-level and per-subject meta-d', M-ratio, d', and criterion from raw count matrices in a single pass.
-- `fit_hierarchical_metad` — a trial-level ordered-logistic model in which confidence ratings are the outcome of a cumulative logistic regression and meta-d' is captured by the `correct` predictor; supports crossed item random effects.
+- `fit_hierarchical_metad` — a trial-level ordered-logistic model in which confidence ratings are the outcome of a cumulative logistic regression and metacognitive discrimination is indexed by the `correct` predictor's coefficient (a log-odds-scale quantity, not meta-d'); supports crossed item random effects.
 - `fit_beta_auc_group` — a non-parametric alternative to meta-d' that models Type 2 AUC directly with a Beta likelihood, avoiding the Gaussian SDT assumption.
 - `fit_two_stage_regression` / `fit_full_metad_regression` — Bayesian meta-regression of log M-ratio on participant-level covariates, via either the two-stage or full hierarchical path.
 - `fit_within_subject_comparison` — a paired model for within-subject designs, where participant random intercepts absorb stable individual differences and the condition effect is estimated directly.

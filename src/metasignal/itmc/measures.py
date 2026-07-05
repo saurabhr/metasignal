@@ -295,12 +295,13 @@ def _sc_meta_I(table: np.ndarray) -> float:
 
 
 def _sc_meta_Ir1(table: np.ndarray, dprime: float) -> float:
-    # I_min uses observed accuracy as the lower bound for BOTH numerator and
-    # denominator (matching statConfR), even though a Gaussian observer at this
-    # d' would have a slightly different accuracy.
+    # The denominator's lower bound uses the Gaussian-implied accuracy at this
+    # d' (matching statConfR's `a <- pnorm(abs(d)/2)`), not the observed table
+    # accuracy — the two differ whenever the estimated d' doesn't exactly
+    # reproduce observed accuracy (generic under unbalanced stimulus priors).
     prior  = table.sum(axis=1) / table.sum()
-    acc    = _get_accuracy_from_table(table)
-    lb     = _lower_info_bound(prior, acc)
+    acc_g  = norm.cdf(abs(dprime) / 2.0)
+    lb     = _lower_info_bound(prior, acc_g)
     info_g = _gaussian_info_statconfr(dprime)
     denom  = info_g - lb
     if denom == 0:

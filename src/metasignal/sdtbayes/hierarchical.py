@@ -1,16 +1,27 @@
-"""Hierarchical Bayesian meta-d' models using brms (via brmspy).
+"""Hierarchical Bayesian ordered-logistic models of confidence on accuracy, via brms (brmspy).
 
 Model description
 -----------------
 Confidence ratings are modelled as an **ordered (cumulative logistic)**
 outcome.  The key predictor is ``correct`` (1 = accurate response,
-0 = error): its population-level coefficient is proportional to meta-d'
-at the group level, while the random slope ``(correct | participant)``
-captures between-subject variability.
+0 = error): its population-level coefficient, ``b_correct``, is a
+monotonically-related index of metacognitive discrimination — larger
+values mean confidence tracks accuracy more strongly — while the random
+slope ``(correct | participant)`` captures between-subject variability.
 
-The formula mirrors the HMeta-d formulation of Fleming (2017) but is
-specified as a mixed-effects ordered regression rather than a custom
-Stan program, making it extensible with standard brms syntax.
+``b_correct`` is **not** meta-d' and is not on the same scale as
+Fleming's (2017) meta-d' or the Maniscalco & Lau (2012) MLE estimate:
+it is a log-odds coefficient from a cumulative-logistic link, so its
+magnitude also depends on the number of confidence categories and how
+respondents use them. It should not be compared in magnitude to
+``d'``, divided by ``d'`` to form an M-ratio-style quantity, or compared
+across datasets with different confidence-scale granularity. For an
+estimate on Fleming's native meta-d' scale, use :func:`fit_full_metad`
+or :func:`fit_subject_level` instead. This model is inspired by the
+same signal — does confidence discriminate correct from incorrect
+responses — as HMeta-d, but reformulated as a mixed-effects ordered
+regression (rather than a custom Stan program) so it is extensible with
+standard brms syntax and supports crossed item random effects.
 
 Crossed random effects
 ----------------------
@@ -96,15 +107,20 @@ def fit_hierarchical_metad(
     items: list[np.ndarray] | None = None,
     **kwargs: Any,
 ) -> Any:
-    """Fit a hierarchical Bayesian meta-d' model across participants.
+    """Fit a hierarchical ordered-logistic model of confidence on accuracy.
 
     Uses an ordered logistic (cumulative) regression where confidence
     ratings are the outcome and ``correct`` is the key predictor.
-    Random slopes per participant allow meta-d' to vary across the group.
+    Random slopes per participant allow metacognitive discrimination to
+    vary across the group.
 
-    The population-level coefficient ``b_correct`` is proportional to
-    group-mean meta-d'; the random slopes in ``r_participant`` capture
-    individual meta-d' deviations from the group mean.
+    The population-level coefficient ``b_correct`` is a monotonically-related
+    index of group-mean metacognitive discrimination on the model's own
+    log-odds scale; the random slopes in ``r_participant`` capture individual
+    deviations from the group mean. ``b_correct`` is not meta-d' and is not
+    on the same scale as Fleming's (2017) or Maniscalco & Lau's (2012)
+    meta-d' — see the module docstring for why. Use :func:`fit_full_metad`
+    or :func:`fit_subject_level` for an estimate on that scale.
 
     Args:
         participants: List of ``(stim, resp, conf)`` tuples, one per participant.
@@ -206,10 +222,12 @@ def fit_group_comparison(
 ) -> Any:
     """Bayesian comparison of metacognition between two groups.
 
-    Extends the hierarchical meta-d' model with a ``group`` predictor and a
-    ``correct × group`` interaction.  The interaction coefficient
-    ``b_correct:group1`` represents the difference in meta-d' between groups
-    on the log-odds scale, with a full posterior distribution.
+    Extends the hierarchical ordered-logistic model with a ``group``
+    predictor and a ``correct × group`` interaction.  The interaction
+    coefficient ``b_correct:group1`` represents the difference in
+    metacognitive discrimination between groups on the model's own
+    log-odds scale (not meta-d' units — see the module docstring), with a
+    full posterior distribution.
 
     Args:
         group_a: Participants in group A — list of ``(stim, resp, conf)`` tuples.
@@ -228,7 +246,7 @@ def fit_group_comparison(
     Returns:
         ``FitResult`` — same structure as :func:`fit_hierarchical_metad`.
         The parameter of interest is ``b_correct:group1`` (group B minus
-        group A difference in meta-d').
+        group A difference in metacognitive discrimination, log-odds scale).
 
     Raises:
         ImportError: If ``brmspy`` is not installed.
@@ -238,7 +256,7 @@ def fit_group_comparison(
     Example::
 
         fit = fit_group_comparison(healthy, patient, n_ratings=4)
-        # Posterior probability that group B has lower meta-d' than group A:
+        # Posterior probability that group B has lower metacognitive discrimination than group A:
         import arviz as az
         post = az.extract(fit.idata)["b_correct:group1"].values
         print(f"P(group B < group A): {(post < 0).mean():.3f}")
