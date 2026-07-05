@@ -40,7 +40,7 @@ The `stdpy` sub-module is a full NumPy/SciPy implementation of every measure.
 
 ## analysis — Statistical inference
 
-The `analysis` sub-package provides non-parametric inference tools that operate over the 26-measure array produced by `compute_all_measures`.
+The `analysis` sub-package provides non-parametric inference tools that operate over the 26-element array (20 measures + 6 meta-d' model-fit diagnostics) produced by `compute_all_measures`.
 
 ::: metasignal.analysis.bootstrap_measure
 

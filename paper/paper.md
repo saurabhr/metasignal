@@ -37,7 +37,7 @@ bibliography: paper.bib
 
 # Summary
 
-Understanding how accurately people know what they know is among the most fundamental questions in cognitive neuroscience. `metasignal` is a Python package that makes measuring this capacity — metacognition — accessible to any researcher with a Python environment. It implements all twenty measures evaluated in the benchmark by @rahnev2025, spanning first-order perceptual sensitivity (d'), response bias (criterion *c*), and seventeen second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The full suite is computable from a single function call, with no proprietary software required.
+Understanding how accurately people know what they know is among the most fundamental questions in cognitive neuroscience. `metasignal` is a Python package that makes measuring this capacity — metacognition — accessible to any researcher with a Python environment. It implements all twenty measures evaluated in the benchmark by @rahnev2025, spanning first-order perceptual sensitivity (d') and response bias (criterion *c*) from signal detection theory [@green1966], and seventeen second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The full suite is computable from a single function call, with no proprietary software required.
 
 # Statement of Need
 
@@ -57,7 +57,7 @@ The canonical meta-d' implementation by @maniscalco2014 has been the field's wor
 
 # Software Design
 
-![Computational architecture of `metasignal`. Trial-level arrays flow top-down through three layers: (1) `stdpy` computes SDT statistics and all twenty metacognitive measures; (2) `analysis` provides bootstrap CIs, permutation tests, and group summaries; (3) `sdtbayes` (optional) offers four Bayesian estimation approaches, all returning a `FitResult` with shared diagnostics. The CLI exposes the full measure suite without Python code.](structure.png)
+![Computational architecture of `metasignal`. Trial-level arrays flow top-down through three layers: (1) `stdpy` computes SDT statistics and all twenty metacognitive measures; (2) `analysis` provides bootstrap CIs, permutation tests, and group summaries; (3) `sdtbayes` (optional) offers three Bayesian estimation approaches, all returning a `FitResult` with shared diagnostics. The CLI exposes the full measure suite without Python code.](structure.png)
 
 `metasignal` accepts NumPy arrays of stimulus labels, responses, and confidence ratings as its universal input and exposes all measures through the `stdpy` submodule, implemented in NumPy [@harris2020] and SciPy [@virtanen2020]. Core estimation routines include:
 
@@ -67,7 +67,7 @@ The canonical meta-d' implementation by @maniscalco2014 has been the field's wor
 - `compute_type2_auc`, `compute_gamma`, `compute_phi`, `compute_delta_conf` — nonparametric Type 2 statistics.
 - `compute_meta_uncertainty` — model-based meta-uncertainty estimation.
 - `compute_meta_noise` — meta-noise estimation via lookup-table interpolation.
-- `compute_all_measures` — computes all twenty measures in a single call, returning a fixed-length NumPy array whose index-to-measure mapping is documented in the API reference.
+- `compute_all_measures` — computes all twenty measures in a single call, returning a 26-element NumPy array (the twenty measures followed by six meta-d' model-fit diagnostics — logL, AIC, BIC, AICc, k, n) whose index-to-measure mapping is documented in the API reference.
 
 Beyond point estimation, the `metasignal.analysis` sub-package provides a complete inferential pipeline for group-level research. `bootstrap_measure` estimates percentile-bootstrap confidence intervals for any element of the twenty-measure array (default 2000 resamples, reproducible via an optional `numpy.random.Generator`), enabling uncertainty quantification without parametric assumptions. `permutation_test` implements a two-sided permutation test for between-condition differences (default 5000 shuffles), which is the recommended alternative to parametric t-tests given that the sampling distributions of measures such as M-ratio and meta-d' are non-Gaussian at typical sample sizes [@fleming2017; @rahnev2025]. `group_summary` aggregates results across participants, returning per-participant matrices, group means, medians, standard errors, and per-measure valid counts that handle NaN values arising from degenerate response patterns.
 
@@ -77,7 +77,7 @@ For researchers requiring full Bayesian inference, the optional `metasignal.sdtb
 - `fit_two_stage_group` — a two-stage approach that first computes per-participant MLE M-ratios (Stage 1) then fits a hierarchical Bayesian model over log M-ratio across participants (Stage 2), providing a group-level posterior mean M-ratio with uncertainty.
 - `fit_full_metad` — a full hierarchical HMeta-d model that ports the JAGS implementation of @fleming2017 to Stan, jointly estimating group-level and per-subject meta-d', M-ratio, d', and criterion from raw count matrices in a single pass.
 
-Group comparison variants (`fit_two_stage_comparison`, `fit_full_metad_comparison`) extend each approach to two-group designs. All fits return ArviZ `InferenceData` objects, and the `diagnostics` module provides `posterior_summary`, `convergence_diagnostics`, `plot_trace`, `plot_posterior`, and `plot_forest` for routine MCMC quality checks. Together, `sdtbayes` makes `metasignal` the only Python package that covers both the full frequentist benchmark of @rahnev2025 and the hierarchical Bayesian estimation approach of @fleming2017 within a single, consistent interface.
+Group comparison variants (`fit_two_stage_comparison`, `fit_full_metad_comparison`) extend each approach to two-group designs. All fits return ArviZ `InferenceData` objects, and the `diagnostics` module provides `posterior_summary`, `convergence_diagnostics`, `plot_trace`, `plot_posterior`, and `plot_forest` for routine MCMC quality checks. Together, these three estimation approaches let `sdtbayes` users move from raw trial data to full hierarchical Bayesian inference without leaving `metasignal`.
 
 The `metasignal compute` CLI prints all twenty measures as a named table from comma-separated trial data, enabling shell-level integration with experiment-control software and batch pipelines. Six tutorial Jupyter notebooks accompany the package, covering basic SDT computation, the full measure suite, statistical inference, difficulty-dependence testing, metacognitive bias, and split-half reliability — making the package accessible to researchers regardless of programming background.
 

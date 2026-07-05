@@ -13,7 +13,7 @@ All computation functions expect three parallel arrays of the same length, one r
 
 ## Pure Python API (`stdpy`)
 
-### Compute all 26 measures at once
+### Compute all measures at once
 
 ```python
 import numpy as np
@@ -32,7 +32,9 @@ results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)
 ```
 
-The returned array has 26 elements, indexed as follows:
+The returned array has 26 elements: the first 20 are metacognitive/SDT measures, and the last 6 are meta-d' model-fit diagnostics (not measures themselves).
+
+**Measures (indices 0-19):**
 
 | Index | Measure |
 | --- | --- |
@@ -56,6 +58,11 @@ The returned array has 26 elements, indexed as follows:
 | 17 | d' |
 | 18 | c |
 | 19 | mean confidence |
+
+**Model-fit diagnostics (indices 20-25):**
+
+| Index | Diagnostic |
+| --- | --- |
 | 20 | logL (meta-d' MLE log-likelihood) |
 | 21 | AIC |
 | 22 | BIC |

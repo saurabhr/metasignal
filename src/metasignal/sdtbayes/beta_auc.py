@@ -28,9 +28,8 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes._fit_common import require_brms
 from metasignal.sdtbayes.diagnostics import FitResult
-
-_BRMSPY_MSG = "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
 
 
 # ---------------------------------------------------------------------------
@@ -127,10 +126,7 @@ def fit_beta_auc_group(
         intercept = az.extract(fit.idata)["b_Intercept"].values
         print(f"Group mean AUC2: {expit(intercept).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
+    brms = require_brms()
 
     df = _compute_auc2_per_participant(participants, n_ratings)
     valid = _clip_auc2(df.dropna(subset=["auc2"]))
@@ -203,11 +199,8 @@ def fit_beta_auc_comparison(
         delta = az.extract(fit.idata)["b_group1"].values
         print(f"P(patient AUC2 < healthy): {(delta < 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
+    brms = require_brms()
+    import pandas as pd
 
     df_a = _compute_auc2_per_participant(group_a, n_ratings)
     df_a["group"] = 0

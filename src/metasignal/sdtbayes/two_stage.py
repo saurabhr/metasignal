@@ -17,11 +17,11 @@ typical sample sizes in metacognition research (20–50 participants with
 
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes._fit_common import compute_mle_row, require_brms
 from metasignal.sdtbayes.diagnostics import FitResult
 
 
@@ -31,50 +31,11 @@ def _compute_participant_estimates(
 ) -> "pd.DataFrame":
     """Run MLE on each participant and return a summary DataFrame."""
     import pandas as pd
-    from metasignal.stdpy.core import trials_to_counts
-    from metasignal.stdpy.metad import fit_meta_d_mle
-    from metasignal.stdpy.core import compute_sdt_resp
 
-    rows = []
-    for pid, (stim, resp, conf) in enumerate(participants):
-        stim = np.asarray(stim)
-        resp = np.asarray(resp)
-        conf = np.asarray(conf)
-
-        try:
-            dp, c, _ = compute_sdt_resp(stim, resp)
-            nr_s1, nr_s2 = trials_to_counts(stim, resp, conf, n_ratings)
-            mle = fit_meta_d_mle(nr_s1, nr_s2)
-            meta_da = float(mle["meta_da"])
-            da = float(mle["da"])
-            m_ratio = float(mle["M_ratio"])
-            if m_ratio > 0:
-                log_m_ratio = float(np.log(m_ratio))
-            else:
-                warnings.warn(
-                    f"Participant {pid}: MLE succeeded but M-ratio={m_ratio:.3g} <= 0 "
-                    "(non-positive metacognitive efficiency); log_m_ratio set to NaN "
-                    "and this participant will be excluded from log-scale group models.",
-                    stacklevel=2,
-                )
-                log_m_ratio = np.nan
-        except (ValueError, RuntimeError) as exc:
-            warnings.warn(
-                f"Participant {pid}: MLE failed ({exc}). Setting estimates to NaN.",
-                stacklevel=2,
-            )
-            dp = c = meta_da = da = m_ratio = log_m_ratio = np.nan
-
-        rows.append({
-            "participant": pid,
-            "dprime": float(dp) if not np.isnan(dp) else np.nan,
-            "c": float(c) if not np.isnan(c) else np.nan,
-            "meta_da": meta_da,
-            "da": da,
-            "m_ratio": m_ratio,
-            "log_m_ratio": log_m_ratio,
-        })
-
+    rows = [
+        {"participant": pid, **compute_mle_row(stim, resp, conf, n_ratings, f"Participant {pid}")}
+        for pid, (stim, resp, conf) in enumerate(participants)
+    ]
     return pd.DataFrame(rows)
 
 
@@ -134,12 +95,7 @@ def fit_two_stage_group(
         print(mle_df[["participant", "m_ratio", "log_m_ratio"]])
         print(posterior_summary(fit, var_names=["b_Intercept", "sigma"]))
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    brms = require_brms()
 
     mle_df = _compute_participant_estimates(participants, n_ratings)
 
@@ -210,12 +166,7 @@ def fit_two_stage_comparison(
         post = az.extract(fit.idata)["b_group1"].values
         print(f"P(group B < group A): {(post < 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    brms = require_brms()
 
     import pandas as pd
 

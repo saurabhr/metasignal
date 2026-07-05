@@ -39,6 +39,7 @@ from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes._fit_common import require_brms
 from metasignal.sdtbayes.diagnostics import FitResult
 
 
@@ -154,12 +155,7 @@ def fit_hierarchical_metad(
         fit_crossed = fit_hierarchical_metad(participants, n_ratings=4, items=item_ids)
         print(posterior_summary(fit_crossed, var_names=["b_correct", "sd_item__Intercept"]))
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    brms = require_brms()
 
     if items is not None and len(items) != len(participants):
         msg = (
@@ -247,12 +243,7 @@ def fit_group_comparison(
         post = az.extract(fit.idata)["b_correct:group1"].values
         print(f"P(group B < group A): {(post < 0).mean():.3f}")
     """
-    try:
-        from brmspy import brms
-    except ImportError as e:
-        raise ImportError(
-            "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
-        ) from e
+    brms = require_brms()
 
     if items_a is not None and len(items_a) != len(group_a):
         msg = f"'items_a' has {len(items_a)} entries but 'group_a' has {len(group_a)}."

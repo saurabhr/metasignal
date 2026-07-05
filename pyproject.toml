@@ -83,6 +83,9 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "slow: marks tests that run real MCMC sampling (deselect with '-m \"not slow\"')",
+]
 
 [project.urls]
 Documentation = "https://metasignal.readthedocs.io/en/stable/"

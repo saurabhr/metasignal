@@ -39,14 +39,12 @@ obtaining R² from generalized linear mixed-effects models.
 
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import numpy as np
 
+from metasignal.sdtbayes._fit_common import compute_mle_row, require_brms
 from metasignal.sdtbayes.diagnostics import FitResult
-
-_BRMSPY_MSG = "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
 
 
 def _compute_paired_estimates(
@@ -68,52 +66,18 @@ def _compute_paired_estimates(
         ``dprime``, ``c``, ``meta_da``, ``da``, ``m_ratio``, ``log_m_ratio``.
     """
     import pandas as pd
-    from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
-    from metasignal.stdpy.metad import fit_meta_d_mle
 
-    rows = []
-    for cond_label, data in ((0, condition_a), (1, condition_b)):
-        for pid, (stim, resp, conf) in enumerate(data):
-            stim = np.asarray(stim)
-            resp = np.asarray(resp)
-            conf = np.asarray(conf)
-            try:
-                dp, c, _ = compute_sdt_resp(stim, resp)
-                nr_s1, nr_s2 = trials_to_counts(stim, resp, conf, n_ratings)
-                mle = fit_meta_d_mle(nr_s1, nr_s2)
-                meta_da = float(mle["meta_da"])
-                da = float(mle["da"])
-                m_ratio = float(mle["M_ratio"])
-                if m_ratio > 0:
-                    log_m_ratio = float(np.log(m_ratio))
-                else:
-                    warnings.warn(
-                        f"Participant {pid}, condition {cond_label}: MLE succeeded but "
-                        f"M-ratio={m_ratio:.3g} <= 0 (non-positive metacognitive "
-                        "efficiency); log_m_ratio set to NaN and this participant "
-                        "will be excluded from log-scale group models.",
-                        stacklevel=2,
-                    )
-                    log_m_ratio = np.nan
-            except (ValueError, RuntimeError) as exc:
-                warnings.warn(
-                    f"Participant {pid}, condition {cond_label}: MLE failed ({exc}). "
-                    "Setting estimates to NaN.",
-                    stacklevel=2,
-                )
-                dp = c = meta_da = da = m_ratio = log_m_ratio = np.nan
-
-            rows.append({
-                "participant": pid,
-                "condition": cond_label,
-                "dprime": float(dp),
-                "c": float(c),
-                "meta_da": meta_da,
-                "da": da,
-                "m_ratio": m_ratio,
-                "log_m_ratio": log_m_ratio,
-            })
-
+    rows = [
+        {
+            "participant": pid,
+            "condition": cond_label,
+            **compute_mle_row(
+                stim, resp, conf, n_ratings, f"Participant {pid}, condition {cond_label}"
+            ),
+        }
+        for cond_label, data in ((0, condition_a), (1, condition_b))
+        for pid, (stim, resp, conf) in enumerate(data)
+    ]
     return pd.DataFrame(rows)
 
 
@@ -191,11 +155,7 @@ def fit_within_subject_comparison(
         # Condition-B minus condition-A M-ratio ratio
         print(f"Median M-ratio ratio B/A: {np.exp(np.median(post)):.3f}")
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
+    brms = require_brms()
 
     if len(condition_a) != len(condition_b):
         msg = (

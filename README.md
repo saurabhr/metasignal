@@ -38,7 +38,7 @@ correct = stim == resp
 conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
                          rng.integers(1, n_ratings, n))   # higher conf when correct
 
-# Compute all 26 measures at once
+# Compute all measures at once (26-element array: 20 measures + 6 fit diagnostics)
 results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)
 

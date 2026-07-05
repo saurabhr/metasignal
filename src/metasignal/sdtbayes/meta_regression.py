@@ -55,9 +55,8 @@ from metasignal.sdtbayes.full_metad import (
     _build_count_matrix,
     _group_likelihood_block,
 )
+from metasignal.sdtbayes._fit_common import require_brms
 from metasignal.sdtbayes.two_stage import _compute_participant_estimates
-
-_BRMSPY_MSG = "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
 
 
 # ---------------------------------------------------------------------------
@@ -127,11 +126,8 @@ def fit_two_stage_regression(
         fit, mle_df = fit_two_stage_regression(participants, n_ratings=4, covariates=covs)
         print(fit.posterior_summary(var_names=["b_Intercept", "b_age", "b_score"]))
     """
-    try:
-        from brmspy import brms
-        import pandas as pd
-    except ImportError as e:
-        raise ImportError(_BRMSPY_MSG) from e
+    brms = require_brms()
+    import pandas as pd
 
     if "participant" not in covariates.columns:
         msg = "'covariates' must contain a 'participant' column."
