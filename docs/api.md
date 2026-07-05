@@ -36,6 +36,40 @@ The `stdpy` sub-module is a full NumPy/SciPy implementation of every measure.
 
 ::: metasignal.stdpy.compute_meta_uncertainty
 
+### Group-level fitting
+
+::: metasignal.stdpy.fit_group
+
+### Plotting
+
+Note: `stdpy.plot_forest` and [`sdtbayes.plot_forest`](sdtbayes.md#diagnostics-and-posteriors) are unrelated functions that happen to share a name — the former plots any scalar measure across subjects/conditions, the latter plots MCMC posterior forest plots.
+
+::: metasignal.stdpy.plot_confidence
+
+::: metasignal.stdpy.plot_type2roc
+
+::: metasignal.stdpy.plot_sanity_check
+
+::: metasignal.stdpy.plot_forest
+
+::: metasignal.stdpy.plot_measures
+
+### Simulation
+
+::: metasignal.stdpy.type2_SDT_simuation
+
+::: metasignal.stdpy.type2_SDT_simuation_bayes
+
+::: metasignal.stdpy.ratings2df
+
+::: metasignal.stdpy.trialSimulation
+
+::: metasignal.stdpy.responseSimulation
+
+::: metasignal.stdpy.pairedResponseSimulation
+
+::: metasignal.stdpy.discreteRatings
+
 ---
 
 ## analysis — Statistical inference

@@ -19,17 +19,28 @@ graph TD
         GROUP["group_summary\ngroup statistics"]
     end
 
-    subgraph SDTBAYES ["sdtbayes — Bayesian Estimation  (pip install metasignal[sdtbayes])"]
-        direction TB
-        subgraph MODELS ["Estimation Approaches"]
-            direction LR
-            SUBJECT["fit_subject_level"]
-            TWO_STAGE["fit_two_stage_group\nfit_two_stage_comparison"]
-            FULL["fit_full_metad\nfit_full_metad_comparison"]
-            HIER["fit_hierarchical_metad\nfit_group_comparison"]
+    subgraph EXPERIMENTAL ["Experimental Components (pre-1.0 API)"]
+        direction LR
+        subgraph SDTBAYES ["sdtbayes — Bayesian Estimation  (pip install metasignal[sdtbayes])"]
+            direction TB
+            subgraph MODELS ["7 Estimation Approaches"]
+                direction LR
+                HIER["fit_hierarchical_metad\nfit_group_comparison"]
+                TWO_STAGE["fit_two_stage_group\nfit_two_stage_comparison"]
+                FULL["fit_full_metad\nfit_full_metad_comparison"]
+                SUBJECT["fit_subject_level"]
+                BETA["fit_beta_auc_group\nfit_beta_auc_comparison"]
+                REGR["fit_two_stage_regression\nfit_full_metad_regression"]
+                WITHIN["fit_within_subject_comparison"]
+            end
+            DIAG["diagnostics.py  ·  FitResult\nposterior_summary · convergence_diagnostics\nplot_trace · plot_posterior · plot_forest"]
+            MODELS --> DIAG
         end
-        DIAG["diagnostics.py  ·  FitResult\nposterior_summary · convergence_diagnostics\nplot_trace · plot_posterior · plot_forest"]
-        MODELS --> DIAG
+
+        subgraph ITMC ["itmc — Information-Theoretic Metacognition"]
+            direction TB
+            ITMC_FN["meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2\nRMI · permtest_meta_I\n(Dayan 2023; port of statConfR's estimateMetaI)"]
+        end
     end
 
     CLI(["metasignal compute\nCLI"])
@@ -38,19 +49,21 @@ graph TD
     COMPUTE_ALL --> BOOTSTRAP
     COMPUTE_ALL --> PERMUTATION
     COMPUTE_ALL --> GROUP
-    COMPUTE_ALL --> SDTBAYES
     COMPUTE_ALL --> CLI
+    STDPY --> EXPERIMENTAL
 
     classDef io fill:#2c3e50,color:#fff,stroke:#1a252f
     classDef measure fill:#e8f4fc,color:#1a5276,stroke:#2980b9
     classDef inference fill:#e9f7ef,color:#1e8449,stroke:#27ae60
     classDef bayes fill:#f5eef8,color:#7d3c98,stroke:#8e44ad
+    classDef itmc fill:#fdf1e3,color:#a85b00,stroke:#c77b00
     classDef diag fill:#7d3c98,color:#fff,stroke:#6c3483
 
     class INPUT,CLI io
     class CORE,MEASURES,COMPUTE_ALL measure
     class BOOTSTRAP,PERMUTATION,GROUP inference
-    class SUBJECT,TWO_STAGE,FULL,HIER bayes
+    class HIER,TWO_STAGE,FULL,SUBJECT,BETA,REGR,WITHIN bayes
+    class ITMC_FN itmc
     class DIAG diag
 ```
 
@@ -61,5 +74,8 @@ graph TD
 | Dark | Input / CLI entry points |
 | Blue | `stdpy` SDT computation layer |
 | Green | `analysis` inferential pipeline |
-| Purple | `sdtbayes` Bayesian estimation (optional) |
+| Purple | `sdtbayes` Bayesian estimation (optional, experimental) |
+| Amber | `itmc` information-theoretic metacognition (experimental) |
 | Solid arrow | Data / control flow |
+
+Rendered as `paper/structure.png` by `scripts/make_structure_figure.py` (matplotlib, not this Mermaid source — kept here as a human-readable outline of the same layout; keep both in sync when the architecture changes).
