@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(REPO, 'src'))
 import numpy as np
 from metasignal.stdpy.compute_all import compute_all_measures
 
-N_MEAS = 20
+N_MEAS = 26
 
 subjects = np.load(os.path.join(OUT, 'shekhar.npz'), allow_pickle=True)['subjects']
 print(f"Loaded {len(subjects)} Shekhar subjects")

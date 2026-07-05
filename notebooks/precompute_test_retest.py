@@ -10,7 +10,7 @@ import numpy as np
 from metasignal.stdpy.compute_all import compute_all_measures
 
 DAYS   = [2, 3, 4, 5, 6, 7]
-N_MEAS = 20
+N_MEAS = 26
 
 subjects = np.load(os.path.join(OUT, 'haddara.npz'), allow_pickle=True)['subjects']
 print(f"Loaded {len(subjects)} Haddara subjects")
@@ -22,7 +22,7 @@ tt = np.full((n_sub, n_days, N_MEAS), np.nan)
 for si, s in enumerate(subjects):
     print(f"  Subject {si+1}/{n_sub}...", flush=True)
     for di, day in enumerate(DAYS):
-        mask = s['Day'] == day
+        mask = s['day'] == day
         if mask.sum() < 10:
             continue
         try:

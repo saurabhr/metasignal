@@ -34,8 +34,9 @@ MEASURE_NAMES = [
     "M-Ratio", "AUC2-Ratio", "Gamma-Ratio", "Phi-Ratio", "DeltaConf-Ratio",
     "M-Diff", "AUC2-Diff", "Gamma-Diff", "Phi-Diff", "DeltaConf-Diff",
     "meta-noise", "meta-uncertainty", "d'", "Criterion", "Confidence",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
 ]
-N_MEASURES = 20
+N_MEASURES = 26
 
 ACC_LO, ACC_HI = 0.60, 0.95
 MAX_PROP_SAME  = 0.85

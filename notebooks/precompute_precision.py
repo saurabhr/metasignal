@@ -11,7 +11,7 @@ from metasignal.stdpy.compute_all import compute_all_measures
 
 # Proportions of trials to corrupt
 PROPS = [0.02, 0.04, 0.06]
-N_MEAS = 20
+N_MEAS = 26
 # MLE measures excluded — too slow for repeated fitting across ~200 corruption calls
 MLE_INDICES = [0, 5, 10]  # meta-d', M-Ratio, M-Diff
 
