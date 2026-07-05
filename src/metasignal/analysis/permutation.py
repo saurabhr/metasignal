@@ -125,5 +125,6 @@ def permutation_test(
         )
 
     null = np.array(null_diffs)
-    p_value = float(np.mean(np.abs(null) >= abs(obs_diff)))
+    n_extreme = int(np.sum(np.abs(null) >= abs(obs_diff)))
+    p_value = (n_extreme + 1) / (len(null) + 1)
     return p_value, obs_diff

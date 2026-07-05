@@ -701,7 +701,7 @@ def permtest_meta_I(
 
     null_mean = float(null.mean()) if len(null) else float("nan")
     null_std  = float(null.std())  if len(null) else float("nan")
-    p_value   = float((null >= observed).mean()) if len(null) else float("nan")
+    p_value   = (int(np.sum(null >= observed)) + 1) / (len(null) + 1) if len(null) else float("nan")
     corrected = observed - null_mean
 
     return {
