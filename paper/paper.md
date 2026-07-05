@@ -1,43 +1,43 @@
 ---
-title: 'metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for Decision-Making'
+title: "metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for Decision-Making"
 tags:
-  - Python
-  - metacognition
-  - signal detection theory
-  - meta-d prime
-  - confidence ratings
-  - decision-making
-  - cognitive psychology
+    - Python
+    - metacognition
+    - signal detection theory
+    - meta-d prime
+    - confidence ratings
+    - decision-making
+    - cognitive psychology
 authors:
-  - name: Saurabh Ranjan
-    orcid: 0000-0002-7868-7223
-    affiliation: 1
-  - name: Mukesh Makwana
-    orcid: 0000-0003-2018-7768
-    affiliation: 2
-  - name: Konstantina Sokratous
-    orcid: 0000-0003-4489-5494
-    affiliation: 3
-  - name: Brian Odegaard
-    orcid: 0000-0002-5459-1884
-    affiliation: 1
-  - name: Ashish Aggarwal
-    orcid: 0000-0002-8365-3810
-    affiliation: 1
+    - name: Saurabh Ranjan
+      orcid: 0000-0002-7868-7223
+      affiliation: 1
+    - name: Mukesh Makwana
+      orcid: 0000-0003-2018-7768
+      affiliation: 2
+    - name: Konstantina Sokratous
+      orcid: 0000-0003-4489-5494
+      affiliation: 3
+    - name: Brian Odegaard
+      orcid: 0000-0002-5459-1884
+      affiliation: 1
+    - name: Ashish Aggarwal
+      orcid: 0000-0002-8365-3810
+      affiliation: 1
 affiliations:
-  - name: University of Florida, USA
-    index: 1
-  - name: Brown University, USA
-    index: 2
-  - name: University of Missouri, USA
-    index: 3
+    - name: University of Florida, USA
+      index: 1
+    - name: Brown University, USA
+      index: 2
+    - name: University of Missouri, USA
+      index: 3
 date: 25 June 2026
 bibliography: paper.bib
 ---
 
 # Summary
 
-Understanding how accurately people know what they know is among the most fundamental questions in cognitive neuroscience. `metasignal` is a Python package that makes measuring this capacity — metacognition — accessible to any researcher with a Python environment. It implements all twenty measures evaluated in the benchmark by @rahnev2025, spanning first-order perceptual sensitivity (d') and response bias (criterion *c*) from signal detection theory [@green1966], and seventeen second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The full suite is computable from a single function call, with no proprietary software required.
+Understanding how accurately people know what they know is among the most fundamental questions in cognitive neuroscience. `metasignal` is a Python package that makes measuring this capacity — metacognition — accessible to any researcher with a Python environment. It implements all twenty measures evaluated in the benchmark by @rahnev2025, spanning first-order perceptual sensitivity (d') and response bias (criterion _c_) from signal detection theory [@green1966], and seventeen second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The full suite is computable from a single function call, with no proprietary software required.
 
 # Statement of Need
 
@@ -45,7 +45,7 @@ Metacognition shapes learning, clinical outcomes, and adaptive decision-making a
 
 `metasignal` closes that gap with a single, maintained package that:
 
-1. **Covers the full benchmark** — all twenty measures from @rahnev2025 (seventeen metacognitive measures plus d', criterion *c*, and mean confidence as Type 1 reference values) are available through a single `compute_all_measures` call.
+1. **Covers the full benchmark** — all twenty measures from @rahnev2025 (seventeen metacognitive measures plus d', criterion _c_, and mean confidence as Type 1 reference values) are available through a single `compute_all_measures` call.
 2. **Requires no proprietary software** — the `stdpy` submodule is a pure NumPy/SciPy implementation that runs in any Python environment, including cloud notebooks and automated pipelines.
 3. **Lowers the barrier to entry** — a command-line interface lets researchers compute all twenty measures from raw trial data in a single shell command, without writing any Python code.
 
@@ -61,7 +61,7 @@ The canonical meta-d' implementation by @maniscalco2014 has been the field's wor
 
 `metasignal` accepts NumPy arrays of stimulus labels, responses, and confidence ratings as its universal input and exposes all measures through the `stdpy` submodule, implemented in NumPy [@harris2020] and SciPy [@virtanen2020]. Core estimation routines include:
 
-- `compute_sdt_resp` — d' and criterion *c* from trial-level stimulus and response vectors.
+- `compute_sdt_resp` — d' and criterion _c_ from trial-level stimulus and response vectors.
 - `trials_to_counts` — conversion of trial-level data into Type 2 rating-scale count matrices.
 - `fit_meta_d_mle` — maximum-likelihood estimation of meta-d' and M-ratio via bounded nonlinear optimisation.
 - `compute_type2_auc`, `compute_gamma`, `compute_phi`, `compute_delta_conf` — nonparametric Type 2 statistics.
@@ -73,7 +73,7 @@ Beyond point estimation, the `metasignal.analysis` sub-package provides a comple
 
 For researchers requiring full Bayesian inference, the optional `metasignal.sdtbayes` subpackage (installed via `pip install metasignal[sdtbayes]`) provides seven hierarchical estimation approaches backed by cmdstanpy/Stan and brms [@burkner2017], with results reported through ArviZ [@kumar2019]:
 
-- `fit_subject_level` — subject-level Bayesian SDT, yielding full posteriors over d' and criterion *c* for individual participants.
+- `fit_subject_level` — subject-level Bayesian SDT, yielding full posteriors over d' and criterion _c_ for individual participants.
 - `fit_two_stage_group` — a two-stage approach that first computes per-participant MLE M-ratios (Stage 1) then fits a hierarchical Bayesian model over log M-ratio across participants (Stage 2), providing a group-level posterior mean M-ratio with uncertainty.
 - `fit_full_metad` — a full hierarchical HMeta-d model that ports the JAGS implementation of @fleming2017 to Stan, jointly estimating group-level and per-subject meta-d', M-ratio, d', and criterion from raw count matrices in a single pass.
 - `fit_hierarchical_metad` — a trial-level ordered-logistic model in which confidence ratings are the outcome of a cumulative logistic regression and meta-d' is captured by the `correct` predictor; supports crossed item random effects.

@@ -69,13 +69,13 @@ graph TD
 
 ## Key
 
-| Colour | Meaning |
-|---|---|
-| Dark | Input / CLI entry points |
-| Blue | `stdpy` SDT computation layer |
-| Green | `analysis` inferential pipeline |
-| Purple | `sdtbayes` Bayesian estimation (optional, experimental) |
-| Amber | `itmc` information-theoretic metacognition (experimental) |
-| Solid arrow | Data / control flow |
+| Colour      | Meaning                                                   |
+| ----------- | --------------------------------------------------------- |
+| Dark        | Input / CLI entry points                                  |
+| Blue        | `stdpy` SDT computation layer                             |
+| Green       | `analysis` inferential pipeline                           |
+| Purple      | `sdtbayes` Bayesian estimation (optional, experimental)   |
+| Amber       | `itmc` information-theoretic metacognition (experimental) |
+| Solid arrow | Data / control flow                                       |
 
 Rendered as `paper/structure.png` by `scripts/make_structure_figure.py` (matplotlib, not this Mermaid source — kept here as a human-readable outline of the same layout; keep both in sync when the architecture changes).
