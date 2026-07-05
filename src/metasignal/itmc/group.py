@@ -8,6 +8,7 @@ interface of ``metasignal.stdpy.fit_group``.
 
 from __future__ import annotations
 
+import warnings
 from typing import List, Optional, Union
 
 import numpy as np
@@ -197,7 +198,8 @@ def _fit_cell(
     else:
         try:
             dp, *_ = compute_sdt_resp(stim, resp)
-        except Exception:
+        except ValueError as e:
+            warnings.warn(f"_fit_cell: dprime set to None ({e})", stacklevel=2)
             dp = None
 
     kw = dict(backend=backend, bias_correction=bias_correction, seed=seed)

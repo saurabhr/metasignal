@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import warnings
 from typing import List, Optional, Union
 
 import numpy as np
@@ -121,17 +122,19 @@ def fit_group(
 
     Returns
     -------
-    results : pd.DataFrame
-        When ``method='mle'``: one row per group cell, 28 measure columns.
-    result : FitResult
-        When any Bayesian method is chosen: the raw posterior fit object
-        from ``metasignal.sdtbayes``.
+    results : pd.DataFrame or FitResult
+        When ``method='mle'``: tidy DataFrame, one row per group cell,
+        28 measure columns.  When any Bayesian method is chosen: the raw
+        ``FitResult`` from ``metasignal.sdtbayes`` (use
+        ``metasignal.sdtbayes.posterior_summary`` to inspect posteriors).
 
     Examples
     --------
-    MLE (default):
+    MLE (default), all measures, single subject:
 
-    >>> fit_group(df, subject='Subject', within='Condition', nRatings=4)
+    >>> from metasignal.stdpy import trialSimulation, fit_group
+    >>> df = trialSimulation(d=1.5, metad=1.5, nTrials=300)
+    >>> fit_group(df, nRatings=4).round(3)
 
     Subject-level Bayesian (metadpy ``hmetad`` equivalent):
 
@@ -146,20 +149,6 @@ def fit_group(
 
     >>> fit_group(df, subject='Subject', within='Condition',
     ...           nRatings=4, method='bayesian')
-
-    Returns
-    -------
-    results : pd.DataFrame or FitResult
-        MLE → tidy DataFrame.  Bayesian → ``FitResult`` (use
-        ``metasignal.sdtbayes.posterior_summary`` to inspect posteriors).
-
-    Examples
-    --------
-    All measures, single subject:
-
-    >>> from metasignal.stdpy import trialSimulation, fit_group
-    >>> df = trialSimulation(d=1.5, metad=1.5, nTrials=300)
-    >>> fit_group(df, nRatings=4).round(3)
 
     Only type-1 measures across subjects:
 
@@ -281,7 +270,8 @@ def _fit_cell(
 
     try:
         dprime, criterion, ln_beta = compute_sdt_resp(stim_v.astype(int), resp_v.astype(int))
-    except Exception:
+    except ValueError as e:
+        warnings.warn(f"_fit_cell: type-1 SDT measures set to NaN ({e})", stacklevel=2)
         dprime = criterion = ln_beta = np.nan
 
     type1 = {

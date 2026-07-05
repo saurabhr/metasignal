@@ -1,5 +1,7 @@
 """Unified script to run all meta-measures and output the comprehensive 26-variable array."""
 
+import warnings
+
 import numpy as np
 
 from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
@@ -86,6 +88,12 @@ def compute_all_measures(
     # meta-d', M-Ratio, M-Diff, model fit stats
     try:
         meta_d_res = fit_meta_d_mle(nr_s1_mle, nr_s2_mle)
+        if not meta_d_res["success"]:
+            warnings.warn(
+                "fit_meta_d_mle did not converge; meta-d’-derived measures set to NaN.",
+                stacklevel=2,
+            )
+            raise RuntimeError("fit_meta_d_mle failed to converge")
         meta_d = meta_d_res["meta_da"]
         m_ratio = meta_d_res["M_ratio"]
         m_diff  = meta_d_res["M_diff"]
