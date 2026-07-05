@@ -14,8 +14,30 @@ Python interface for the Signal Detection Theory (SDT) and meta-measures analysi
 
 <!-- start docs-include-installation -->
 
+The base install includes `stdpy` (SDT + all 26 measures), `analysis` (bootstrap CIs,
+permutation tests, group summaries), `itmc` (information-theoretic metacognition), and the CLI.
+
+**Directly from GitHub, no clone needed:**
+
 ```bash
+pip install git+https://github.com/saurabhr/metasignal.git
+```
+
+**From a downloaded/cloned copy of the source:**
+
+```bash
+git clone https://github.com/saurabhr/metasignal.git
+cd metasignal
 pip install .
+```
+
+**Optional subpackages** are installed as extras on top of either method above:
+
+```bash
+pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"  # from GitHub
+pip install ".[sdtbayes]"       # from a local clone — adds metasignal.sdtbayes (hierarchical Bayesian models)
+pip install ".[matlab]"         # adds the deprecated MATLAB engine wrapper
+pip install ".[sdtbayes,matlab]"  # everything
 ```
 
 <!-- end docs-include-installation -->
