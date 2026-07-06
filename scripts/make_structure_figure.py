@@ -303,16 +303,6 @@ ax.text(
     fontsize=11.5,
     fontweight="bold",
 )
-ax.text(
-    3.35,
-    1.97,
-    "(pre-1.0 API, not yet covered by JOSS-reviewed guarantees)",
-    ha="left",
-    va="center",
-    color="#8a5a1a",
-    fontsize=8,
-    style="italic",
-)
 
 # sdtbayes panel
 box(ax, (0.65, 0.45), 4.85, 1.35, PURPLE_BG, "#8e44ad")
@@ -382,7 +372,7 @@ ax.text(
 ax.text(
     7.95,
     0.9,
-    "meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2 · RMI\npermtest_meta_I\n(Dayan 2023; port of statConfR's estimateMetaI)",
+    "meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2 · RMI\npermtest_meta_I",
     ha="center",
     va="center",
     family="monospace",

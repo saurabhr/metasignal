@@ -13,7 +13,8 @@
 \usepackage{graphicx}
 \usepackage[round]{natbib}  % \citet / \citep author-year citations
 \graphicspath{ {./} }
-\renewcommand{\today}{25 June 2026} % match paper.md's JOSS submission date exactly
+\renewcommand{\today}{} % suppress the date in the title block
+\rhead{\scshape A preprint} % arxiv.sty's default header appends " - \today"; drop that suffix
 
 \title{metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for Decision-Making}
 
@@ -51,7 +52,7 @@ Understanding how accurately people know what they know is among the most fundam
 \section{Statement of Need}
 \label{sec:need}
 
-Metacognition shapes learning, clinical outcomes, and adaptive decision-making across virtually every domain of cognition \citep{flemingdolan2012}, from perceptual \citep{yeungsummerfield2012} to economic decision-making \citep{lebreton2015}. A 26-researcher consensus initiative identified developing falsifiable computational models of visual metacognition as a primary long-term goal \citep{rahnev2022}---an agenda that depends critically on reliable, standardised implementations of the measures used to evaluate those models. Yet the measurement toolkit has remained fragmented and inaccessible. The gold-standard measure, meta-$d'$ \citep{maniscalco2012}, requires solving a constrained maximum-likelihood problem that has historically been available only as a MATLAB script \citep{maniscalco2014}, placing it out of reach for the growing majority of researchers working in Python. The broader landscape of metacognitive measures lacked any systematic comparison until \citet{rahnev2025}---and even then, no open Python implementation of the full benchmark followed.
+Metacognition shapes learning, clinical outcomes, and adaptive decision-making across virtually every domain of cognition \citep{flemingdolan2012} from perceptual \citep{yeungsummerfield2012} to economic decision-making \citep{lebreton2015}, and increasingly to the evaluation of large language models, whose growing use in high-stakes domains such as medical reasoning depends on reliable metacognitive uncertainty communication \citep{steyvers2025,griot2025}. A 26-researcher consensus initiative identified developing falsifiable computational models of visual metacognition as a primary long-term goal \citep{rahnev2022}---an agenda that depends critically on reliable, standardised implementations of the measures used to evaluate those models. Yet the measurement toolkit has remained fragmented and inaccessible. The gold-standard measure, meta-$d'$ \citep{maniscalco2012}, requires solving a constrained maximum-likelihood problem that has historically been available only as a MATLAB script \citep{maniscalco2014}, placing it out of reach for the growing majority of researchers working in Python. The broader landscape of metacognitive measures lacked any systematic comparison until \citet{rahnev2025}---and even then, no open Python implementation of the full benchmark followed.
 
 \texttt{metasignal} closes that gap with a single, maintained package that:
 

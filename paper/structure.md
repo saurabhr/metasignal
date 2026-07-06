@@ -19,7 +19,7 @@ graph TD
         GROUP["group_summary\ngroup statistics"]
     end
 
-    subgraph EXPERIMENTAL ["Experimental Components (pre-1.0 API)"]
+    subgraph EXPERIMENTAL ["Experimental Components"]
         direction LR
         subgraph SDTBAYES ["sdtbayes — Bayesian Estimation  (pip install metasignal[sdtbayes])"]
             direction TB
@@ -39,7 +39,7 @@ graph TD
 
         subgraph ITMC ["itmc — Information-Theoretic Metacognition"]
             direction TB
-            ITMC_FN["meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2\nRMI · permtest_meta_I\n(Dayan 2023; port of statConfR's estimateMetaI)"]
+            ITMC_FN["meta_I · meta_Ir1 · meta_Ir1_acc · meta_Ir2\nRMI · permtest_meta_I"]
         end
     end
 
