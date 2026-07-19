@@ -10,7 +10,11 @@ from metasignal.stdpy.type2 import (
     compute_delta_conf,
 )
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
-from metasignal.stdpy.metanoise import compute_meta_noise
+from metasignal.stdpy.metanoise import (
+    MATLAB_META_NOISE_SEARCH_ARTIFACT,
+    compute_meta_noise,
+    is_matlab_meta_noise_artifact,
+)
 from metasignal.stdpy.compute_all import compute_all_measures
 from metasignal.stdpy.group import fit_group, MEASURE_COLS
 from metasignal.stdpy.plot import (
@@ -41,6 +45,8 @@ __all__ = [
     "compute_meta_uncertainty",
     "compute_delta_conf",
     "compute_meta_noise",
+    "MATLAB_META_NOISE_SEARCH_ARTIFACT",
+    "is_matlab_meta_noise_artifact",
     "compute_all_measures",
     "fit_group",
     "MEASURE_COLS",

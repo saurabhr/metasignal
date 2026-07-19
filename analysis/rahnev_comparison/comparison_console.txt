@@ -1,0 +1,140 @@
+Repo:   .
+MATLAB: matlab/metasignal_mat/Results
+Python: notebooks/precomputed
+Note: Python arrays sliced to 20 primary measures (ignore fit-stats cols 21–26).
+
+============================================================================================
+SECTION 1: Measure-level agreement (MATLAB .mat vs Python *_mle.npz, first 20 cols)
+============================================================================================
+Comparison             Status    MaxDiff   NaNΔ  Min r* Worst             
+--------------------------------------------------------------------------------------------
+  * Min r excludes meta-noise/uncertainty and non-M Ratio/Diff measures from PASS gating
+Haddara raw            PASS   1.5654e-01      1  1.0000 meta-noise        
+Haddara bias           PASS   2.1454e+00      3  0.9997 meta-uncertainty  
+Haddara oddEven        PASS   2.6393e-01      0  1.0000 meta-noise        
+Maniscalco raw         PASS   2.1482e-03      0  1.0000 meta-uncertainty  
+Maniscalco bias        PASS   1.1629e-01      0  1.0000 meta-uncertainty  
+Rouault1 diff          PASS   1.3948e+00     29  1.0000 meta-uncertainty  
+Rouault2 diff          PASS   4.0173e+00     21  1.0000 meta-uncertainty  
+Shekhar diff           PASS   2.9837e-01      1  0.9999 meta-noise        
+Shekhar bias           PASS   3.0902e-01      2  0.9999 meta-noise        
+Locke bias             PASS   1.3761e-03      0  1.0000 meta-uncertainty  
+
+============================================================================================
+SECTION 2: Statistical contrasts (Python vs MATLAB vs paper/MATLAB-table refs)
+============================================================================================
+
+Table 3: Shekhar difficulty
+  Measure                Py t    MAT t    Ref t   Sig   Ref
+  --------------------------------------------------------------
+  meta-d'              22.822   22.616   22.616     ✓     ✓
+  AUC2                 20.728   20.612   20.612     ✓     ✓
+  Gamma                29.393   29.238   29.238     ✓     ✓
+  Phi                  10.926   10.898   10.898     ✓     ✓
+  DeltaConf            14.909   14.834   14.834     ✓     ✓
+  M-Ratio              -1.237   -1.240   -1.240     ✓     ✓
+  d'                   23.777   23.777   23.777     ✓     ✓
+  Confidence           14.544   14.543   14.543     ✓     ✓
+
+Table 4: Rouault1 difficulty
+  Measure                Py t    MAT t    Ref t   Sig   Ref
+  --------------------------------------------------------------
+  meta-d'              35.283   35.285   35.285     ✓     ✓
+  AUC2                 35.405   35.405   35.405     ✓     ✓
+  d'                   49.278   49.278   49.278     ✓     ✓
+  Confidence           32.390   32.390   32.390     ✓     ✓
+
+Table 6: Haddara metacognitive bias
+  Measure                Py t    MAT t    Ref t   Sig   Ref
+  --------------------------------------------------------------
+  AUC2                  0.688    0.688    0.688     ✓     ✓
+  Gamma                -4.331   -4.331   -4.331     ✓     ✓
+  Phi                   1.257    1.257    1.257     ✓     ✓
+  DeltaConf             1.034    1.034    1.034     ✓     ✓
+  M-Ratio               1.920    1.994    1.795     ✓     ✓
+  Gamma-Diff            2.334    2.334    2.361     ✓     ✓
+  Confidence           24.538   24.538   24.538     ✓     ✓
+
+============================================================================================
+SECTION 3: Paper reference checks (Rahnev 2025 published scalars)
+============================================================================================
+  Haddara meta-d' mean — Paper 1.140 | MATLAB 1.1256 | Python 1.1256
+  MATLAB metas_precision last cell shape: (70, 1, 6, 4, 20)
+    corruption 0% — Paper 1.14 | MATLAB 1.1770
+    corruption 2% — Paper 0.98 | MATLAB 1.0033
+    corruption 4% — Paper 0.84 | MATLAB 0.8545
+    corruption 6% — Paper 0.72 | MATLAB 0.7261
+
+========================================================================================
+TABLE A — Group means (Paper scalars where known | MATLAB | Python)
+========================================================================================
+
+### Haddara (n=70)
+Measure               Paper     MATLAB     Python        |Δ|        r
+----------------------------------------------------------------------
+meta-d'               1.140     1.1256     1.1256  4.804e-07   1.0000
+AUC2                      —     0.6415     0.6415          0   1.0000
+Gamma                     —     0.4475     0.4475          0   1.0000
+Phi                       —     0.2241     0.2241  2.776e-17   1.0000
+DeltaConf                 —     0.4545     0.4545          0   1.0000
+M-Ratio                   —     0.7935     0.7935  1.057e-06   1.0000
+AUC2-Ratio                —     0.9472     0.9472   2.22e-16   1.0000
+Gamma-Ratio               —     0.8096     0.8096  3.331e-16   1.0000
+Phi-Ratio                 —     0.8034     0.8034   1.11e-16   1.0000
+DeltaConf-Ratio           —     0.7902     0.7902   1.11e-16   1.0000
+M-Diff                    —    -0.3207    -0.3207  4.804e-07   1.0000
+AUC2-Diff                 —    -0.0363    -0.0363  6.939e-18   1.0000
+Gamma-Diff                —    -0.1026    -0.1026  8.327e-17   1.0000
+Phi-Diff                  —    -0.0533    -0.0533  2.776e-17   1.0000
+DeltaConf-Diff            —    -0.1163    -0.1163  2.776e-17   1.0000
+meta-noise                —     0.3586     0.3564   0.002236   0.9988
+meta-uncertainty          —     0.5257     0.5256  5.243e-05   1.0000
+d'                        —     1.4467     1.4467          0   1.0000
+Criterion                 —    -0.0746    -0.0746  1.388e-17   1.0000
+Confidence                —     2.4434     2.4434          0   1.0000
+
+### Maniscalco (n=22)
+Measure               Paper     MATLAB     Python        |Δ|        r
+----------------------------------------------------------------------
+meta-d'                   —     1.5612     1.5612  3.705e-06   1.0000
+AUC2                      —     0.7009     0.7009          0   1.0000
+Gamma                     —     0.5560     0.5560          0   1.0000
+Phi                       —     0.2673     0.2673          0   1.0000
+DeltaConf                 —     0.7514     0.7514          0   1.0000
+M-Ratio                   —     0.7693     0.7693  1.412e-06   1.0000
+AUC2-Ratio                —     0.9287     0.9287          0   1.0000
+Gamma-Ratio               —     0.7929     0.7929          0   1.0000
+Phi-Ratio                 —     0.7878     0.7878   2.22e-16   1.0000
+DeltaConf-Ratio           —     0.7563     0.7563   1.11e-16   1.0000
+M-Diff                    —    -0.4569    -0.4569  3.705e-06   1.0000
+AUC2-Diff                 —    -0.0549    -0.0549  4.163e-17   1.0000
+Gamma-Diff                —    -0.1350    -0.1350  2.776e-17   1.0000
+Phi-Diff                  —    -0.0659    -0.0659  6.939e-17   1.0000
+DeltaConf-Diff            —    -0.2254    -0.2254          0   1.0000
+meta-noise                —     0.4138     0.4138          0   1.0000
+meta-uncertainty          —     0.7448     0.7449  9.586e-05   1.0000
+d'                        —     2.0219     2.0219  4.441e-16   1.0000
+Criterion                 —    -0.1125    -0.1125  2.776e-17   1.0000
+Confidence                —     2.4240     2.4240          0   1.0000
+
+============================================================================================
+SUMMARY
+============================================================================================
+  Arrays:  0 exact, 10 pass, 0 warn, 0 fail / 10
+  Stats:   19/19 sig match, 19/19 ref-t match
+  Paper:   OK
+  meta-noise MAT↔PY (after masking MATLAB ~0.4959 artefact):
+    Haddara raw            r=0.999  max|Δ|=0.157
+    Haddara bias           r=1.000  max|Δ|=0.157
+    Haddara oddEven        r=0.998  max|Δ|=0.264
+    Maniscalco raw         r=1.000  max|Δ|=0
+    Maniscalco bias        r=1.000  max|Δ|=0
+    Rouault1 diff          r=1.000  max|Δ|=0.193
+    Rouault2 diff          r=1.000  max|Δ|=0.163
+    Shekhar diff           r=0.993  max|Δ|=0.298
+    Shekhar bias           r=0.989  max|Δ|=0.309
+    Locke bias             r=1.000  max|Δ|=0
+
+  OVERALL: PASS
+
+JSON written to analysis/rahnev_comparison/comparison_report.json

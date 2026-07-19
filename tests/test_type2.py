@@ -116,9 +116,11 @@ def test_sdt_expect_conf_keys(counts):
         assert key in result, f"Missing key: {key}"
 
 
-def test_sdt_expect_conf_totals_preserved(counts):
-    """Expected total counts should roughly equal actual total counts."""
+def test_sdt_expect_conf_returns_proportions(counts):
+    """MATLAB SDTexpectConf returns proportions (each stimulus sums to 1)."""
     nr_s1, nr_s2 = counts
     result = sdt_expect_conf(nr_s1, nr_s2)
-    assert abs(np.sum(result["nR_S1_exp"]) - np.sum(result["nR_S1_act"])) < 1.0
-    assert abs(np.sum(result["nR_S2_exp"]) - np.sum(result["nR_S2_act"])) < 1.0
+    assert abs(np.sum(result["nR_S1_exp"]) - 1.0) < 1e-6
+    assert abs(np.sum(result["nR_S2_exp"]) - 1.0) < 1e-6
+    assert abs(np.sum(result["nR_S1_act"]) - np.sum(nr_s1)) < 1e-9
+    assert abs(np.sum(result["nR_S2_act"]) - np.sum(nr_s2)) < 1e-9

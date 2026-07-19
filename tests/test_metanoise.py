@@ -73,3 +73,34 @@ def test_logl_finite(good_observer):
     stim, resp, conf = good_observer
     result = compute_meta_noise(stim, resp, conf, n_ratings=2)
     assert np.isfinite(result["logL"])
+
+
+def test_boundary_rates_use_global_grid():
+    """HR/FAR at 0/1 must yield Inf init criteria → global −5:0.01:5 search."""
+    from metasignal.stdpy.metanoise import _compute_sdt_criteria
+
+    n = 40
+    stim = np.array([0] * (n // 2) + [1] * (n // 2), dtype=float)
+    resp = stim.copy()
+    conf = np.ones(n, dtype=float)
+    conf[stim == 1] = 4
+    conf[stim == 0] = 1
+    n_ratings = 4
+    dprime, c = _compute_sdt_criteria(stim, resp, conf, n_ratings)
+    assert np.isinf(c).any(), "expected ±Inf criteria when rates hit 0/1"
+    result = compute_meta_noise(stim, resp, conf, n_ratings=n_ratings)
+    assert np.isfinite(result["meta_noise"])
+    assert np.isfinite(dprime) or np.isinf(dprime)
+
+
+def test_matlab_artifact_helper():
+    from metasignal.stdpy.metanoise import (
+        MATLAB_META_NOISE_SEARCH_ARTIFACT,
+        is_matlab_meta_noise_artifact,
+    )
+
+    assert is_matlab_meta_noise_artifact(MATLAB_META_NOISE_SEARCH_ARTIFACT)
+    assert not is_matlab_meta_noise_artifact(0.2)
+    arr = np.array([0.2, MATLAB_META_NOISE_SEARCH_ARTIFACT, np.nan])
+    mask = is_matlab_meta_noise_artifact(arr)
+    assert list(mask) == [False, True, False]

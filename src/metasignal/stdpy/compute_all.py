@@ -18,7 +18,12 @@ from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 
 
 def compute_all_measures(
-    stim: np.ndarray, resp: np.ndarray, conf: np.ndarray, n_ratings: int
+    stim: np.ndarray,
+    resp: np.ndarray,
+    conf: np.ndarray,
+    n_ratings: int,
+    *,
+    matlab_compat: bool = False,
 ) -> np.ndarray:
     """Compute all 26 meta-signal measures mimicking the MATLAB output.
 
@@ -30,6 +35,10 @@ def compute_all_measures(
       16: metaNoise, 17: metaUncertainty, 18: dprime, 19: c, 20: mean_conf,
       21: logL, 22: AIC, 23: BIC, 24: AICc, 25: k, 26: n
     ]
+
+    matlab_compat :
+        Forwarded to ``fit_meta_d_mle`` / ``compute_meta_uncertainty`` for
+        single-start / high-budget MATLAB-like optimizer behaviour.
     """
     stim = np.asarray(stim, dtype=float)
     resp = np.asarray(resp, dtype=float)
@@ -87,7 +96,9 @@ def compute_all_measures(
 
     # meta-d', M-Ratio, M-Diff, model fit stats
     try:
-        meta_d_res = fit_meta_d_mle(nr_s1_mle, nr_s2_mle)
+        meta_d_res = fit_meta_d_mle(
+            nr_s1_mle, nr_s2_mle, matlab_compat=matlab_compat
+        )
         if not meta_d_res["success"]:
             warnings.warn(
                 "fit_meta_d_mle did not converge; meta-d’-derived measures set to NaN.",
@@ -148,7 +159,13 @@ def compute_all_measures(
 
     # metaUncertainty
     try:
-        meta_uncert = compute_meta_uncertainty(stim_bin, resp_bin, conf.astype(int), n_ratings)
+        meta_uncert = compute_meta_uncertainty(
+            stim_bin,
+            resp_bin,
+            conf.astype(int),
+            n_ratings,
+            matlab_compat=matlab_compat,
+        )
     except (ValueError, RuntimeError):
         meta_uncert = np.nan
 

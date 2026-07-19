@@ -1,0 +1,2247 @@
+{
+  "array_comparisons": [
+    {
+      "label": "Haddara raw",
+      "status": "PASS",
+      "shape": [
+        70,
+        20
+      ],
+      "max_abs_diff": 0.15654115187641957,
+      "mean_abs_diff": 0.00011578567030679826,
+      "nan_mismatches": 1,
+      "min_correlation": 0.9999999993088,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-noise",
+      "worst_diff": 0.15654115187641957,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 70,
+          "pearson_r": 0.9999999996216197,
+          "max_abs_diff": 4.735557567592252e-05,
+          "mean_abs_diff": 7.257164690788236e-06,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.1102230246251565e-16,
+          "mean_abs_diff": 2.4781763942525817e-17,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "M-Ratio",
+          "n": 70,
+          "pearson_r": 0.9999999993088,
+          "max_abs_diff": 2.762659281541069e-05,
+          "mean_abs_diff": 5.191147360112134e-06,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 6.661338147750939e-16,
+          "mean_abs_diff": 1.5860328923216522e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.9984014443252818e-15,
+          "mean_abs_diff": 3.925431408496089e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.885780586188048e-15,
+          "mean_abs_diff": 5.602661192126237e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.1086244689504383e-15,
+          "mean_abs_diff": 6.165702868900423e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "M-Diff",
+          "n": 70,
+          "pearson_r": 0.999999999498139,
+          "max_abs_diff": 4.735557567570048e-05,
+          "mean_abs_diff": 7.2571646908286305e-06,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.3306690738754696e-16,
+          "mean_abs_diff": 1.1419436824715895e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 9.43689570931383e-16,
+          "mean_abs_diff": 2.3869795029440865e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 70,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 8.049116928532385e-16,
+          "mean_abs_diff": 1.8576410251317352e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 1.5543122344752192e-15,
+          "mean_abs_diff": 3.9016409151112644e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "meta-noise",
+          "n": 69,
+          "pearson_r": 0.9988156640499225,
+          "max_abs_diff": 0.15654115187641957,
+          "mean_abs_diff": 0.002268712346035066,
+          "mat_finite": 69,
+          "py_finite": 70
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 70,
+          "pearson_r": 0.9999998382141264,
+          "max_abs_diff": 0.002649297255751318,
+          "mean_abs_diff": 5.805167872384846e-05,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "d'",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.2688263138573217e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Criterion",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.7755575615628914e-16,
+          "mean_abs_diff": 5.987274168514237e-17,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Confidence",
+          "n": 70,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Haddara bias",
+      "status": "PASS",
+      "shape": [
+        70,
+        2,
+        20
+      ],
+      "max_abs_diff": 2.1453795078801585,
+      "mean_abs_diff": 0.0009411613667334695,
+      "nan_mismatches": 3,
+      "min_correlation": 0.9996882689450676,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 2.1453795078801585,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 140,
+          "pearson_r": 0.9997812330820959,
+          "max_abs_diff": 0.11891195633646934,
+          "mean_abs_diff": 0.0008595603483016623,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "M-Ratio",
+          "n": 140,
+          "pearson_r": 0.9997837985270509,
+          "max_abs_diff": 0.05903968795090986,
+          "mean_abs_diff": 0.00042939247963280554,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 140,
+          "pearson_r": 0.9999999999999996,
+          "max_abs_diff": 6.661338147750939e-16,
+          "mean_abs_diff": 1.5384519055520026e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.7755575615628914e-14,
+          "mean_abs_diff": 7.545551485220261e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.285460875053104e-14,
+          "mean_abs_diff": 1.1888307798508484e-15,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.141309269314661e-13,
+          "mean_abs_diff": 1.7396798287653123e-15,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "M-Diff",
+          "n": 140,
+          "pearson_r": 0.9996882689450676,
+          "max_abs_diff": 0.11891195633647023,
+          "mean_abs_diff": 0.0008595603483016238,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 140,
+          "pearson_r": 0.9999999999999996,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.0705722023171153e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.1213252548714081e-14,
+          "mean_abs_diff": 3.861990092803223e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 140,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 3.635980405647388e-15,
+          "mean_abs_diff": 2.052425689719988e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.220446049250313e-15,
+          "mean_abs_diff": 3.2037864424897374e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "meta-noise",
+          "n": 137,
+          "pearson_r": 0.9995499658302865,
+          "max_abs_diff": 0.15654115187641957,
+          "mean_abs_diff": 0.0011426361450833544,
+          "mat_finite": 137,
+          "py_finite": 140
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 140,
+          "pearson_r": 0.9794573360977212,
+          "max_abs_diff": 2.1453795078801585,
+          "mean_abs_diff": 0.015536395330023826,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "d'",
+          "n": 140,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.2688263138573217e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Criterion",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.7755575615628914e-16,
+          "mean_abs_diff": 5.987274168514237e-17,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Confidence",
+          "n": 140,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Haddara oddEven",
+      "status": "PASS",
+      "shape": [
+        70,
+        2,
+        20
+      ],
+      "max_abs_diff": 0.26393202250021036,
+      "mean_abs_diff": 0.0001403720047501391,
+      "nan_mismatches": 0,
+      "min_correlation": 0.9999999976739326,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-noise",
+      "worst_diff": 0.26393202250021036,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 140,
+          "pearson_r": 0.9999999990215884,
+          "max_abs_diff": 0.00011085644187759647,
+          "mean_abs_diff": 1.1575801759844208e-05,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.1102230246251565e-16,
+          "mean_abs_diff": 2.3548871186385155e-17,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "M-Ratio",
+          "n": 140,
+          "pearson_r": 0.9999999976739326,
+          "max_abs_diff": 6.532252103308434e-05,
+          "mean_abs_diff": 9.072168967682354e-06,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 140,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 5.551115123125783e-16,
+          "mean_abs_diff": 1.5463820700136108e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.9984014443252818e-15,
+          "mean_abs_diff": 4.1573887189981306e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.55351295663786e-15,
+          "mean_abs_diff": 5.498082148288777e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.218847493575595e-15,
+          "mean_abs_diff": 6.155790163323412e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "M-Diff",
+          "n": 140,
+          "pearson_r": 0.9999999987112076,
+          "max_abs_diff": 0.00011085644187747157,
+          "mean_abs_diff": 1.1575801759837666e-05,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.3306690738754696e-16,
+          "mean_abs_diff": 1.0943626957019401e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.3322676295501878e-15,
+          "mean_abs_diff": 2.6010939434075097e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 140,
+          "pearson_r": 0.9999999999999996,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.7981647916696732e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 140,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 1.7763568394002505e-15,
+          "mean_abs_diff": 3.9650822308041307e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "meta-noise",
+          "n": 140,
+          "pearson_r": 0.9980289390884347,
+          "max_abs_diff": 0.26393202250021036,
+          "mean_abs_diff": 0.002576284107127836,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 140,
+          "pearson_r": 0.9999984641725131,
+          "max_abs_diff": 0.016479675639930136,
+          "mean_abs_diff": 0.00019893221538468204,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "d'",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.395708945243054e-16,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Criterion",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.7755575615628914e-16,
+          "mean_abs_diff": 5.531289711971762e-17,
+          "mat_finite": 140,
+          "py_finite": 140
+        },
+        {
+          "name": "Confidence",
+          "n": 140,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 140,
+          "py_finite": 140
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Maniscalco raw",
+      "status": "PASS",
+      "shape": [
+        22,
+        20
+      ],
+      "max_abs_diff": 0.002148162489863381,
+      "mean_abs_diff": 7.883948934583762e-06,
+      "nan_mismatches": 0,
+      "min_correlation": 0.999999999309929,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 0.002148162489863381,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 22,
+          "pearson_r": 0.9999999997116561,
+          "max_abs_diff": 6.214188258280018e-05,
+          "mean_abs_diff": 1.5273564798632096e-05,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "AUC2",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Gamma",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Phi",
+          "n": 22,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 3.469446951953614e-17,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "DeltaConf",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "M-Ratio",
+          "n": 22,
+          "pearson_r": 0.999999999309929,
+          "max_abs_diff": 2.284897436244382e-05,
+          "mean_abs_diff": 8.029106640772277e-06,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.766263902812749e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 3.0531133177191805e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.4432899320127035e-15,
+          "mean_abs_diff": 4.289498049688105e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.1102230246251565e-15,
+          "mean_abs_diff": 4.213801025281844e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "M-Diff",
+          "n": 22,
+          "pearson_r": 0.9999999995829056,
+          "max_abs_diff": 6.2141882581912e-05,
+          "mean_abs_diff": 1.527356479854883e-05,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.3306690738754696e-16,
+          "mean_abs_diff": 1.3625464393126921e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 7.771561172376096e-16,
+          "mean_abs_diff": 2.296143073656574e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 9.43689570931383e-16,
+          "mean_abs_diff": 1.9618145491955892e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 22,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 1.3322676295501878e-15,
+          "mean_abs_diff": 4.945538927875697e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "meta-noise",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 22,
+          "pearson_r": 0.9999998856964315,
+          "max_abs_diff": 0.002148162489863381,
+          "mean_abs_diff": 0.00011910274245104362,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "d'",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.8167285857502563e-16,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Criterion",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 7.317379025938531e-17,
+          "mat_finite": 22,
+          "py_finite": 22
+        },
+        {
+          "name": "Confidence",
+          "n": 22,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 22,
+          "py_finite": 22
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Maniscalco bias",
+      "status": "PASS",
+      "shape": [
+        22,
+        2,
+        20
+      ],
+      "max_abs_diff": 0.1162852762861371,
+      "mean_abs_diff": 0.00013636629364072482,
+      "nan_mismatches": 0,
+      "min_correlation": 0.999999997759996,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 0.1162852762861371,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 44,
+          "pearson_r": 0.9999999988280341,
+          "max_abs_diff": 0.00019244636056936493,
+          "mean_abs_diff": 2.3712248837329125e-05,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "AUC2",
+          "n": 44,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Gamma",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Phi",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "DeltaConf",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "M-Ratio",
+          "n": 44,
+          "pearson_r": 0.999999997759996,
+          "max_abs_diff": 7.471742416920168e-05,
+          "mean_abs_diff": 1.2498994441203933e-05,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.6905668784064883e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 44,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 1.2212453270876722e-15,
+          "mean_abs_diff": 2.731400963992573e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.9984014443252818e-15,
+          "mean_abs_diff": 4.560745720477206e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.9984014443252818e-15,
+          "mean_abs_diff": 4.081331232570888e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "M-Diff",
+          "n": 44,
+          "pearson_r": 0.9999999985114085,
+          "max_abs_diff": 0.00019244636056936493,
+          "mean_abs_diff": 2.3712248837351206e-05,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.3625464393126921e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.3322676295501878e-15,
+          "mean_abs_diff": 2.510617976140979e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 44,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 1.1657341758564144e-15,
+          "mean_abs_diff": 1.9460443357776182e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 44,
+          "pearson_r": 0.9999999999999997,
+          "max_abs_diff": 1.7763568394002505e-15,
+          "mean_abs_diff": 3.936245269125555e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "meta-noise",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 44,
+          "pearson_r": 0.999822183382121,
+          "max_abs_diff": 0.1162852762861371,
+          "mean_abs_diff": 0.002667402380696075,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "d'",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.8167285857502563e-16,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Criterion",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 7.317379025938531e-17,
+          "mat_finite": 44,
+          "py_finite": 44
+        },
+        {
+          "name": "Confidence",
+          "n": 44,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 44,
+          "py_finite": 44
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Rouault1 diff",
+      "status": "PASS",
+      "shape": [
+        466,
+        2,
+        20
+      ],
+      "max_abs_diff": 1.3947549393906244,
+      "mean_abs_diff": 0.00042722753579545625,
+      "nan_mismatches": 29,
+      "min_correlation": 0.999999900411281,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 1.3947549393906244,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 932,
+          "pearson_r": 0.9999999351279532,
+          "max_abs_diff": 0.00800271518300763,
+          "mean_abs_diff": 4.842685246948199e-05,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "AUC2",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Gamma",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Phi",
+          "n": 932,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 1.626768581549066e-17,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "DeltaConf",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "M-Ratio",
+          "n": 912,
+          "pearson_r": 0.9999999924601058,
+          "max_abs_diff": 0.0009287916622575665,
+          "mean_abs_diff": 3.529352445219041e-05,
+          "mat_finite": 912,
+          "py_finite": 912
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 7.771561172376096e-16,
+          "mean_abs_diff": 1.6915415182057105e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.326938559031987e-12,
+          "mean_abs_diff": 3.6504426389181385e-15,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 932,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 4.0589753780295723e-13,
+          "mean_abs_diff": 1.7973335921623306e-15,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.666400516522117e-12,
+          "mean_abs_diff": 6.475659451917791e-15,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "M-Diff",
+          "n": 932,
+          "pearson_r": 0.999999900411281,
+          "max_abs_diff": 0.008002715183007686,
+          "mean_abs_diff": 4.8426852469546735e-05,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 6.661338147750939e-16,
+          "mean_abs_diff": 1.1930132609035345e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.887379141862766e-15,
+          "mean_abs_diff": 2.160289114976096e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.5543122344752192e-15,
+          "mean_abs_diff": 1.6430734931902212e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 6.661338147750939e-15,
+          "mean_abs_diff": 8.960405140805179e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "meta-noise",
+          "n": 903,
+          "pearson_r": 0.9999169408085998,
+          "max_abs_diff": 0.19349550499537335,
+          "mean_abs_diff": 0.00025414193660196823,
+          "mat_finite": 903,
+          "py_finite": 932
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 932,
+          "pearson_r": 0.9931151519025695,
+          "max_abs_diff": 1.3947549393906244,
+          "mean_abs_diff": 0.008144465238095916,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "d'",
+          "n": 932,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 1.3322676295501878e-15,
+          "mean_abs_diff": 1.4966270950251407e-16,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Criterion",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 6.452724620725746e-17,
+          "mat_finite": 932,
+          "py_finite": 932
+        },
+        {
+          "name": "Confidence",
+          "n": 932,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 932,
+          "py_finite": 932
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Rouault2 diff",
+      "status": "PASS",
+      "shape": [
+        484,
+        2,
+        20
+      ],
+      "max_abs_diff": 4.017290563415772,
+      "mean_abs_diff": 0.0007365832731893803,
+      "nan_mismatches": 21,
+      "min_correlation": 0.9999755784961714,
+      "median_correlation": 0.9999999999999999,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 4.017290563415772,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 968,
+          "pearson_r": 0.9999760057358426,
+          "max_abs_diff": 0.1365042836552317,
+          "mean_abs_diff": 0.00017880452147712596,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "AUC2",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Gamma",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Phi",
+          "n": 968,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 1.4009708987962313e-17,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "DeltaConf",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "M-Ratio",
+          "n": 968,
+          "pearson_r": 0.999984646731109,
+          "max_abs_diff": 0.07698651105910703,
+          "mean_abs_diff": 0.00010571917630354897,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 968,
+          "pearson_r": 0.9999999999999996,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.8041124150158794e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-15,
+          "mean_abs_diff": 4.820040286323367e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 968,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 7.993605777301127e-15,
+          "mean_abs_diff": 7.408040104958636e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 968,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 1.1102230246251565e-14,
+          "mean_abs_diff": 1.2801847076676321e-15,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "M-Diff",
+          "n": 968,
+          "pearson_r": 0.9999755784961714,
+          "max_abs_diff": 0.1365042836552326,
+          "mean_abs_diff": 0.00017880452147712064,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 6.661338147750939e-16,
+          "mean_abs_diff": 1.2845555656819992e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.4432899320127035e-15,
+          "mean_abs_diff": 2.481658129682523e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 968,
+          "pearson_r": 0.9999999999999998,
+          "max_abs_diff": 1.1657341758564144e-15,
+          "mean_abs_diff": 2.1116315766663135e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 968,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 5.551115123125783e-15,
+          "mean_abs_diff": 9.423132613967237e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "meta-noise",
+          "n": 947,
+          "pearson_r": 0.9997677730751362,
+          "max_abs_diff": 0.16311896062463196,
+          "mean_abs_diff": 0.0004803748977035511,
+          "mat_finite": 947,
+          "py_finite": 968
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 968,
+          "pearson_r": 0.9792559189447614,
+          "max_abs_diff": 4.017290563415772,
+          "mean_abs_diff": 0.013782404107270973,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "d'",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.5804621156337457e-16,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Criterion",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.885780586188048e-16,
+          "mean_abs_diff": 6.927424657785068e-17,
+          "mat_finite": 968,
+          "py_finite": 968
+        },
+        {
+          "name": "Confidence",
+          "n": 968,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 968,
+          "py_finite": 968
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Shekhar diff",
+      "status": "PASS",
+      "shape": [
+        20,
+        3,
+        20
+      ],
+      "max_abs_diff": 0.2983738762488435,
+      "mean_abs_diff": 0.002099244392677552,
+      "nan_mismatches": 1,
+      "min_correlation": 0.9999460776670634,
+      "median_correlation": 0.9999497978988561,
+      "worst_measure": "meta-noise",
+      "worst_diff": 0.2983738762488435,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 60,
+          "pearson_r": 0.9999791173396011,
+          "max_abs_diff": 0.018343841874179923,
+          "mean_abs_diff": 0.002248326008138754,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "AUC2",
+          "n": 60,
+          "pearson_r": 0.9999714428820872,
+          "max_abs_diff": 0.002879921900423077,
+          "mean_abs_diff": 0.0002957631535201214,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Gamma",
+          "n": 60,
+          "pearson_r": 0.9999685109262411,
+          "max_abs_diff": 0.006414690356711383,
+          "mean_abs_diff": 0.000700422878210671,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Phi",
+          "n": 60,
+          "pearson_r": 0.9999586292406357,
+          "max_abs_diff": 0.0026726770479396644,
+          "mean_abs_diff": 0.0004574478808667964,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "DeltaConf",
+          "n": 60,
+          "pearson_r": 0.9999860792960491,
+          "max_abs_diff": 0.01314676212170518,
+          "mean_abs_diff": 0.0018852460752387704,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "M-Ratio",
+          "n": 60,
+          "pearson_r": 0.9999460776670634,
+          "max_abs_diff": 0.008175169492593226,
+          "mean_abs_diff": 0.0015323540765869456,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 60,
+          "pearson_r": 0.9999311916883015,
+          "max_abs_diff": 0.003256185034923975,
+          "mean_abs_diff": 0.00040300860650233084,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 60,
+          "pearson_r": 0.9999329055958368,
+          "max_abs_diff": 0.00973976724395742,
+          "mean_abs_diff": 0.0013224718972243894,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 60,
+          "pearson_r": 0.9999341270552048,
+          "max_abs_diff": 0.008303627911293132,
+          "mean_abs_diff": 0.0016352252646734853,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 60,
+          "pearson_r": 0.9999325703098608,
+          "max_abs_diff": 0.01223118941827983,
+          "mean_abs_diff": 0.0017572329446971448,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "M-Diff",
+          "n": 60,
+          "pearson_r": 0.9999559446956914,
+          "max_abs_diff": 0.018343841874180367,
+          "mean_abs_diff": 0.0022483260081387698,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 60,
+          "pearson_r": 0.9999309667227902,
+          "max_abs_diff": 0.002788520409970574,
+          "mean_abs_diff": 0.0002971310681864588,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 60,
+          "pearson_r": 0.9999289489717044,
+          "max_abs_diff": 0.006099332163984839,
+          "mean_abs_diff": 0.0006867065246401146,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 60,
+          "pearson_r": 0.9999364549386209,
+          "max_abs_diff": 0.0028926240550618543,
+          "mean_abs_diff": 0.0004780193026880611,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 60,
+          "pearson_r": 0.9999535181306486,
+          "max_abs_diff": 0.011404488630031295,
+          "mean_abs_diff": 0.0018521873752952074,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "meta-noise",
+          "n": 59,
+          "pearson_r": 0.9925601377700566,
+          "max_abs_diff": 0.2983738762488435,
+          "mean_abs_diff": 0.019549754777309802,
+          "mat_finite": 59,
+          "py_finite": 60
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 60,
+          "pearson_r": 0.9999178560177037,
+          "max_abs_diff": 0.06438496650774206,
+          "mean_abs_diff": 0.0034929060703898685,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "d'",
+          "n": 60,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.1287267417022424e-16,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Criterion",
+          "n": 60,
+          "pearson_r": 1.0,
+          "max_abs_diff": 5.551115123125783e-16,
+          "mean_abs_diff": 8.858654550654895e-17,
+          "mat_finite": 60,
+          "py_finite": 60
+        },
+        {
+          "name": "Confidence",
+          "n": 60,
+          "pearson_r": 0.9999989929721035,
+          "max_abs_diff": 0.005252100840336116,
+          "mean_abs_diff": 0.0014331997809870192,
+          "mat_finite": 60,
+          "py_finite": 60
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Shekhar bias",
+      "status": "PASS",
+      "shape": [
+        20,
+        3,
+        2,
+        20
+      ],
+      "max_abs_diff": 0.3090169943749477,
+      "mean_abs_diff": 0.0027585604316832067,
+      "nan_mismatches": 2,
+      "min_correlation": 0.9999381856413185,
+      "median_correlation": 0.9999378350161067,
+      "worst_measure": "meta-noise",
+      "worst_diff": 0.3090169943749477,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 120,
+          "pearson_r": 0.9999773860859351,
+          "max_abs_diff": 0.019559295790937847,
+          "mean_abs_diff": 0.002433117478613508,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "AUC2",
+          "n": 120,
+          "pearson_r": 0.9999719496948027,
+          "max_abs_diff": 0.002879921900423188,
+          "mean_abs_diff": 0.000295763153520127,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Gamma",
+          "n": 120,
+          "pearson_r": 0.9999684876706445,
+          "max_abs_diff": 0.006711386073622316,
+          "mean_abs_diff": 0.0007588109073019567,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Phi",
+          "n": 120,
+          "pearson_r": 0.9999480070991927,
+          "max_abs_diff": 0.0032566718519057014,
+          "mean_abs_diff": 0.0005351061164110712,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "DeltaConf",
+          "n": 120,
+          "pearson_r": 0.9999806900211052,
+          "max_abs_diff": 0.01314676212170518,
+          "mean_abs_diff": 0.0018852460752388019,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "M-Ratio",
+          "n": 120,
+          "pearson_r": 0.9999381856413185,
+          "max_abs_diff": 0.008692847284196281,
+          "mean_abs_diff": 0.0016749509537336484,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 120,
+          "pearson_r": 0.9999268877134421,
+          "max_abs_diff": 0.0032887845816262917,
+          "mean_abs_diff": 0.0004069127235499949,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 120,
+          "pearson_r": 0.9999288832205079,
+          "max_abs_diff": 0.010074711763808697,
+          "mean_abs_diff": 0.0013890483782738531,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 120,
+          "pearson_r": 0.9998974161436717,
+          "max_abs_diff": 0.01397326392566578,
+          "mean_abs_diff": 0.0020419022295557433,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 120,
+          "pearson_r": 0.9998929159377129,
+          "max_abs_diff": 0.019829435016275543,
+          "mean_abs_diff": 0.0022148138927893294,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "M-Diff",
+          "n": 120,
+          "pearson_r": 0.9999516750769956,
+          "max_abs_diff": 0.01955929579093829,
+          "mean_abs_diff": 0.002433117478613458,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 120,
+          "pearson_r": 0.9999268140936368,
+          "max_abs_diff": 0.0027891251469193135,
+          "mean_abs_diff": 0.0002971838950780135,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 120,
+          "pearson_r": 0.9999311285521331,
+          "max_abs_diff": 0.006385208275320409,
+          "mean_abs_diff": 0.0007408542092989721,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 120,
+          "pearson_r": 0.9999141980167645,
+          "max_abs_diff": 0.0033731800080577523,
+          "mean_abs_diff": 0.0005599892351783608,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 120,
+          "pearson_r": 0.9999374843908948,
+          "max_abs_diff": 0.011398889012652624,
+          "mean_abs_diff": 0.001854190064504002,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "meta-noise",
+          "n": 118,
+          "pearson_r": 0.9887280862009816,
+          "max_abs_diff": 0.3090169943749477,
+          "mean_abs_diff": 0.030377557833593326,
+          "mat_finite": 118,
+          "py_finite": 120
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 120,
+          "pearson_r": 0.9999156913349966,
+          "max_abs_diff": 0.09477705748738963,
+          "mean_abs_diff": 0.0042997608507879224,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "d'",
+          "n": 120,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.1287267417022424e-16,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Criterion",
+          "n": 120,
+          "pearson_r": 1.0,
+          "max_abs_diff": 5.551115123125783e-16,
+          "mean_abs_diff": 8.858654550654895e-17,
+          "mat_finite": 120,
+          "py_finite": 120
+        },
+        {
+          "name": "Confidence",
+          "n": 120,
+          "pearson_r": 0.9999987042860292,
+          "max_abs_diff": 0.00525210084033656,
+          "mean_abs_diff": 0.0014331997809870138,
+          "mat_finite": 120,
+          "py_finite": 120
+        }
+      ],
+      "failed_measures": []
+    },
+    {
+      "label": "Locke bias",
+      "status": "PASS",
+      "shape": [
+        10,
+        7,
+        20
+      ],
+      "max_abs_diff": 0.0013761146949424659,
+      "mean_abs_diff": 7.538094990216856e-06,
+      "nan_mismatches": 0,
+      "min_correlation": 0.9999999916731419,
+      "median_correlation": 1.0,
+      "worst_measure": "meta-uncertainty",
+      "worst_diff": 0.0013761146949424659,
+      "measure_stats": [
+        {
+          "name": "meta-d'",
+          "n": 70,
+          "pearson_r": 0.9999999960544175,
+          "max_abs_diff": 0.0001719057130507018,
+          "mean_abs_diff": 3.160450444767226e-05,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "M-Ratio",
+          "n": 70,
+          "pearson_r": 0.9999999922428465,
+          "max_abs_diff": 0.00013598014835258798,
+          "mean_abs_diff": 3.0332799224590108e-05,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 5.551115123125783e-16,
+          "mean_abs_diff": 1.0943626957019401e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.1086244689504383e-15,
+          "mean_abs_diff": 4.042401334304811e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi-Ratio",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 3.1086244689504383e-15,
+          "mean_abs_diff": 4.900841637273906e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf-Ratio",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 3.9968028886505635e-15,
+          "mean_abs_diff": 6.203371150093063e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "M-Diff",
+          "n": 70,
+          "pearson_r": 0.9999999916731419,
+          "max_abs_diff": 0.0001719057130507018,
+          "mean_abs_diff": 3.1604504447686955e-05,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "AUC2-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 6.97854472621527e-17,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Gamma-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 1.5543122344752192e-15,
+          "mean_abs_diff": 2.640744765715551e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Phi-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 7.216449660063518e-16,
+          "mean_abs_diff": 1.4313946853202912e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "DeltaConf-Diff",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 8.881784197001252e-16,
+          "mean_abs_diff": 1.7763568394002506e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "meta-noise",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "meta-uncertainty",
+          "n": 70,
+          "pearson_r": 0.9999999936779371,
+          "max_abs_diff": 0.0013761146949424659,
+          "mean_abs_diff": 5.72200916819233e-05,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "d'",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 4.440892098500626e-16,
+          "mean_abs_diff": 1.2846866427805384e-16,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Criterion",
+          "n": 70,
+          "pearson_r": 1.0,
+          "max_abs_diff": 2.220446049250313e-16,
+          "mean_abs_diff": 5.729543823511969e-17,
+          "mat_finite": 70,
+          "py_finite": 70
+        },
+        {
+          "name": "Confidence",
+          "n": 70,
+          "pearson_r": 0.9999999999999999,
+          "max_abs_diff": 0.0,
+          "mean_abs_diff": 0.0,
+          "mat_finite": 70,
+          "py_finite": 70
+        }
+      ],
+      "failed_measures": []
+    }
+  ],
+  "stat_comparisons": [
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "meta-d'",
+      "py_t": 22.82223288609765,
+      "mat_t": 22.616135218160952,
+      "ref_t": 22.616,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "AUC2",
+      "py_t": 20.727802700082275,
+      "mat_t": 20.611974019065553,
+      "ref_t": 20.612,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "Gamma",
+      "py_t": 29.39301088268827,
+      "mat_t": 29.237937406290403,
+      "ref_t": 29.238,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "Phi",
+      "py_t": 10.925500888530532,
+      "mat_t": 10.897616670784931,
+      "ref_t": 10.898,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "DeltaConf",
+      "py_t": 14.90946728837878,
+      "mat_t": 14.833614962062537,
+      "ref_t": 14.834,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "M-Ratio",
+      "py_t": -1.2369498883670202,
+      "mat_t": -1.2397079734181784,
+      "ref_t": -1.24,
+      "py_sig": false,
+      "mat_sig": false,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "d'",
+      "py_t": 23.776731898849043,
+      "mat_t": 23.77673189884904,
+      "ref_t": 23.777,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 3: Shekhar difficulty",
+      "measure": "Confidence",
+      "py_t": 14.543929314942032,
+      "mat_t": 14.542830864800731,
+      "ref_t": 14.543,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 4: Rouault1 difficulty",
+      "measure": "meta-d'",
+      "py_t": 35.28319144541084,
+      "mat_t": 35.28456025308444,
+      "ref_t": 35.285,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 4: Rouault1 difficulty",
+      "measure": "AUC2",
+      "py_t": 35.4052879665032,
+      "mat_t": 35.4052879665032,
+      "ref_t": 35.405,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 4: Rouault1 difficulty",
+      "measure": "d'",
+      "py_t": 49.27783803509015,
+      "mat_t": 49.27783803509015,
+      "ref_t": 49.278,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 4: Rouault1 difficulty",
+      "measure": "Confidence",
+      "py_t": 32.3903846576518,
+      "mat_t": 32.3903846576518,
+      "ref_t": 32.39,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "AUC2",
+      "py_t": 0.6883137519998576,
+      "mat_t": 0.6883137519998576,
+      "ref_t": 0.688,
+      "py_sig": false,
+      "mat_sig": false,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "Gamma",
+      "py_t": -4.331001082258035,
+      "mat_t": -4.331001082258035,
+      "ref_t": -4.331,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "Phi",
+      "py_t": 1.2571207913365139,
+      "mat_t": 1.2571207913365139,
+      "ref_t": 1.257,
+      "py_sig": false,
+      "mat_sig": false,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "DeltaConf",
+      "py_t": 1.0342028923360536,
+      "mat_t": 1.0342028923360536,
+      "ref_t": 1.034,
+      "py_sig": false,
+      "mat_sig": false,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "M-Ratio",
+      "py_t": 1.9195553639178216,
+      "mat_t": 1.9936740039080982,
+      "ref_t": 1.795,
+      "py_sig": false,
+      "mat_sig": false,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "Gamma-Diff",
+      "py_t": 2.334404435344258,
+      "mat_t": 2.334404435344266,
+      "ref_t": 2.361,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    },
+    {
+      "table": "Table 6: Haddara metacognitive bias",
+      "measure": "Confidence",
+      "py_t": 24.537601124646216,
+      "mat_t": 24.537601124646216,
+      "ref_t": 24.538,
+      "py_sig": true,
+      "mat_sig": true,
+      "sig_match": true,
+      "ref_match": true
+    }
+  ],
+  "paper_checks": [
+    {
+      "metric": "Haddara meta-d' mean",
+      "paper": 1.14,
+      "matlab": 1.1255898830439246,
+      "python": 1.125590363470215,
+      "matlab_ok": true,
+      "python_ok": true
+    },
+    {
+      "metric": "Haddara meta-d' corruption 0%",
+      "paper": 1.14,
+      "matlab": 1.1770119483273043,
+      "python": null,
+      "matlab_ok": true,
+      "python_ok": true
+    },
+    {
+      "metric": "Haddara meta-d' corruption 2%",
+      "paper": 0.98,
+      "matlab": 1.0033299156950037,
+      "python": null,
+      "matlab_ok": true,
+      "python_ok": true
+    },
+    {
+      "metric": "Haddara meta-d' corruption 4%",
+      "paper": 0.84,
+      "matlab": 0.8544875418339114,
+      "python": null,
+      "matlab_ok": true,
+      "python_ok": true
+    },
+    {
+      "metric": "Haddara meta-d' corruption 6%",
+      "paper": 0.72,
+      "matlab": 0.7260570457949518,
+      "python": null,
+      "matlab_ok": true,
+      "python_ok": true
+    }
+  ],
+  "overall_pass": true
+}
