@@ -53,3 +53,13 @@ def test_meta_uncertainty_within_bounds(observer_data):
     stim, resp, conf = observer_data
     result = compute_meta_uncertainty(stim, resp, conf, n_ratings=2)
     assert 0.0 < result <= 5.0
+
+
+def test_matlab_compat_single_start(observer_data):
+    stim, resp, conf = observer_data
+    rng = np.random.default_rng(0)
+    result = compute_meta_uncertainty(
+        stim, resp, conf, n_ratings=2, rng=rng, matlab_compat=True
+    )
+    assert 0.0 < result <= 5.0
+    assert np.isfinite(result)

@@ -1,0 +1,12 @@
+[1/10] Haddara raw
+[2/10] Haddara metacognitive bias
+[3/10] Haddara odd-even
+[4/10] Maniscalco raw
+[5/10] Maniscalco metacognitive bias
+[6/10] Rouault1 difficulty
+[7/10] Rouault2 difficulty
+[8/10] Shekhar difficulty
+[9/10] Shekhar metacognitive bias
+[10/10] Locke response bias
+Wrote 10 scatter grids, 2 summaries, CSV, and PDF to /Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/figures/full_comparison
+Combined PDF: /Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/figures/full_comparison/full_matlab_python_comparison.pdf

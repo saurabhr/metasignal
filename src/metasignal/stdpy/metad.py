@@ -13,6 +13,8 @@ def fit_meta_d_mle(
     nr_s1: np.ndarray,
     nr_s2: np.ndarray,
     s: float = 1.0,
+    *,
+    matlab_compat: bool = False,
 ) -> dict[str, Any]:
     """Fit meta-d' using Maximum Likelihood Estimation.
 
@@ -20,6 +22,10 @@ def fit_meta_d_mle(
         nr_s1: Counts for S1 stimulus.
         nr_s2: Counts for S2 stimulus.
         s: Ratio of standard deviations (sd(S1)/sd(S2)). Default is 1.0.
+        matlab_compat: If True, use MATLAB ``fit_meta_d_MLE``-like optimizer
+            budgets (``maxiter``/``maxfun`` = 1e5) and still return the fit
+            even when SciPy reports non-convergence (MATLAB packages the
+            returned ``fmincon`` point regardless).
 
     Returns:
         dict: Results of the fit.
@@ -137,13 +143,18 @@ def fit_meta_d_mle(
 
         return -log_l
 
+    opt = (
+        {"maxiter": 10**5, "ftol": 1e-12}
+        if matlab_compat
+        else {"maxiter": 1000}
+    )
     res = minimize(
         neg_log_likelihood,
         guess,
         method="SLSQP",
         bounds=bounds,
         constraints=cons,
-        options={"maxiter": 1000},
+        options=opt,
     )
     meta_d1_final = res.x[0]
     scale = np.sqrt(2 / (1 + s**2)) * s
@@ -159,6 +170,9 @@ def fit_meta_d_mle(
     # AICc: small-sample correction
     aicc = aic + (2 * k * (k + 1)) / max(n_obs - k - 1, 1)
 
+    # MATLAB packages the returned point even when fmincon quality is poor.
+    success = True if matlab_compat else bool(res.success)
+
     return {
         "da": da,
         "meta_da": meta_da,
@@ -171,5 +185,6 @@ def fit_meta_d_mle(
         "AIC": aic,
         "BIC": bic,
         "AICc": aicc,
-        "success": res.success,
+        "success": success,
+        "optimizer_success": bool(res.success),
     }

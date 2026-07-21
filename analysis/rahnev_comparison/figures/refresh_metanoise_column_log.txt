@@ -1,0 +1,186 @@
+Haddara...
+    raw 5/70
+    raw 10/70
+    raw 15/70
+    raw 20/70
+    raw 25/70
+    raw 30/70
+    raw 35/70
+    raw 40/70
+    raw 45/70
+    raw 50/70
+    raw 55/70
+    raw 60/70
+    raw 65/70
+    raw 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[raw] meta-noise mean=0.3564 n_finite=70
+    bias 5/70
+    bias 10/70
+    bias 15/70
+    bias 20/70
+    bias 25/70
+    bias 30/70
+    bias 35/70
+    bias 40/70
+    bias 45/70
+    bias 50/70
+    bias 55/70
+    bias 60/70
+    bias 65/70
+    bias 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[bias] meta-noise mean=0.4247 n_finite=140
+    split 5/70
+    split 10/70
+    split 15/70
+    split 20/70
+    split 25/70
+    split 30/70
+    split 35/70
+    split 40/70
+    split 45/70
+    split 50/70
+    split 55/70
+    split 60/70
+    split 65/70
+    split 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[split] meta-noise mean=0.3626 n_finite=140
+Maniscalco...
+    raw 5/22
+    raw 10/22
+    raw 15/22
+    raw 20/22
+    raw 22/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[raw] meta-noise mean=0.4138 n_finite=22
+    bias 5/22
+    bias 10/22
+    bias 15/22
+    bias 20/22
+    bias 22/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[bias] meta-noise mean=0.6260 n_finite=44
+    split 5/22
+    split 10/22
+    split 15/22
+    split 20/22
+    split 22/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[split] meta-noise mean=0.4960 n_finite=44
+Shekhar...
+    shekhar diff 5/20
+    shekhar diff 10/20
+    shekhar diff 15/20
+    shekhar diff 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[diff] meta-noise mean=0.3791 n_finite=60
+    shekhar bias 5/20
+    shekhar bias 10/20
+    shekhar bias 15/20
+    shekhar bias 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[bias] meta-noise mean=0.4372 n_finite=120
+    split 5/20
+    split 10/20
+    split 15/20
+    split 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[split] meta-noise mean=0.3722 n_finite=40
+Locke...
+    locke 5/10
+    locke 10/10
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/locke_mle.npz[rb] meta-noise mean=1.1116 n_finite=70
+Rouault1...
+    rouault 10/466
+    rouault 20/466
+    rouault 30/466
+    rouault 40/466
+    rouault 50/466
+    rouault 60/466
+    rouault 70/466
+    rouault 80/466
+    rouault 90/466
+    rouault 100/466
+    rouault 110/466
+    rouault 120/466
+    rouault 130/466
+    rouault 140/466
+    rouault 150/466
+    rouault 160/466
+    rouault 170/466
+    rouault 180/466
+    rouault 190/466
+    rouault 200/466
+    rouault 210/466
+    rouault 220/466
+    rouault 230/466
+    rouault 240/466
+    rouault 250/466
+    rouault 260/466
+    rouault 270/466
+    rouault 280/466
+    rouault 290/466
+    rouault 300/466
+    rouault 310/466
+    rouault 320/466
+    rouault 330/466
+    rouault 340/466
+    rouault 350/466
+    rouault 360/466
+    rouault 370/466
+    rouault 380/466
+    rouault 390/466
+    rouault 400/466
+    rouault 410/466
+    rouault 420/466
+    rouault 430/466
+    rouault 440/466
+    rouault 450/466
+    rouault 460/466
+    rouault 466/466
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault1_mle.npz[diff] meta-noise mean=0.4072 n_finite=932
+Rouault2...
+    rouault 10/484
+    rouault 20/484
+    rouault 30/484
+    rouault 40/484
+    rouault 50/484
+    rouault 60/484
+    rouault 70/484
+    rouault 80/484
+    rouault 90/484
+    rouault 100/484
+    rouault 110/484
+    rouault 120/484
+    rouault 130/484
+    rouault 140/484
+    rouault 150/484
+    rouault 160/484
+    rouault 170/484
+    rouault 180/484
+    rouault 190/484
+    rouault 200/484
+    rouault 210/484
+    rouault 220/484
+    rouault 230/484
+    rouault 240/484
+    rouault 250/484
+    rouault 260/484
+    rouault 270/484
+    rouault 280/484
+    rouault 290/484
+    rouault 300/484
+    rouault 310/484
+    rouault 320/484
+    rouault 330/484
+    rouault 340/484
+    rouault 350/484
+    rouault 360/484
+    rouault 370/484
+    rouault 380/484
+    rouault 390/484
+    rouault 400/484
+    rouault 410/484
+    rouault 420/484
+    rouault 430/484
+    rouault 440/484
+    rouault 450/484
+    rouault 460/484
+    rouault 470/484
+    rouault 480/484
+    rouault 484/484
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault2_mle.npz[diff] meta-noise mean=0.2557 n_finite=968
+Done.

@@ -1,0 +1,35 @@
+Haddara...
+    raw 10/70
+    raw 20/70
+    raw 30/70
+    raw 40/70
+    raw 50/70
+    raw 60/70
+    raw 70/70
+    split 10/70
+    split 20/70
+    split 30/70
+    split 40/70
+    split 50/70
+    split 60/70
+    split 70/70
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz keys=['bias', 'raw', 'split']
+Maniscalco...
+    raw 10/22
+    raw 20/22
+    split 10/22
+    split 20/22
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz keys=['bias', 'raw', 'split']
+Rouault1...
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault1_mle.npz keys=['diff']
+Rouault2...
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault2_mle.npz keys=['diff']
+Shekhar...
+    split 10/20
+    split 20/20
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz keys=['bias', 'diff', 'split']
+Locke...
+  wrote /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/locke_mle.npz keys=['rb']
+haddara raw meta-noise mean=0.3734 median=0.2115
+maniscalco raw meta-noise mean=0.4790 median=0.4152
+Done.

@@ -1,0 +1,157 @@
+Haddara...
+    raw 10/70
+    raw 20/70
+    raw 30/70
+    raw 40/70
+    raw 50/70
+    raw 60/70
+    raw 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[raw] meta-uncertainty mean=0.5256 n_finite=70
+    bias 10/70
+    bias 20/70
+    bias 30/70
+    bias 40/70
+    bias 50/70
+    bias 60/70
+    bias 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[bias] meta-uncertainty mean=0.6130 n_finite=140
+    split 10/70
+    split 20/70
+    split 30/70
+    split 40/70
+    split 50/70
+    split 60/70
+    split 70/70
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[split] meta-uncertainty mean=0.5535 n_finite=140
+Maniscalco...
+    raw 10/22
+    raw 20/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[raw] meta-uncertainty mean=0.7449 n_finite=22
+    bias 10/22
+    bias 20/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[bias] meta-uncertainty mean=0.8244 n_finite=44
+    split 10/22
+    split 20/22
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[split] meta-uncertainty mean=0.7036 n_finite=44
+Rouault1...
+    rouault diff 20/466
+    rouault diff 40/466
+    rouault diff 60/466
+    rouault diff 80/466
+    rouault diff 100/466
+    rouault diff 120/466
+    rouault diff 140/466
+    rouault diff 160/466
+    rouault diff 180/466
+    rouault diff 200/466
+    rouault diff 220/466
+    rouault diff 240/466
+    rouault diff 260/466
+    rouault diff 280/466
+    rouault diff 300/466
+    rouault diff 320/466
+    rouault diff 340/466
+    rouault diff 360/466
+    rouault diff 380/466
+    rouault diff 400/466
+    rouault diff 420/466
+    rouault diff 440/466
+    rouault diff 460/466
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault1_mle.npz[diff] meta-uncertainty mean=0.4665 n_finite=932
+Rouault2...
+    rouault diff 20/484
+    rouault diff 40/484
+    rouault diff 60/484
+    rouault diff 80/484
+    rouault diff 100/484
+    rouault diff 120/484
+    rouault diff 140/484
+    rouault diff 160/484
+    rouault diff 180/484
+    rouault diff 200/484
+    rouault diff 220/484
+    rouault diff 240/484
+    rouault diff 260/484
+    rouault diff 280/484
+    rouault diff 300/484
+    rouault diff 320/484
+    rouault diff 340/484
+    rouault diff 360/484
+    rouault diff 380/484
+    rouault diff 400/484
+    rouault diff 420/484
+    rouault diff 440/484
+    rouault diff 460/484
+    rouault diff 480/484
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault2_mle.npz[diff] meta-uncertainty mean=0.5517 n_finite=968
+Shekhar...
+    shekhar diff 5/20
+    shekhar diff 10/20
+    shekhar diff 15/20
+    shekhar diff 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[diff] meta-uncertainty mean=0.6616 n_finite=60
+    shekhar bias 5/20
+    shekhar bias 10/20
+    shekhar bias 15/20
+    shekhar bias 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[bias] meta-uncertainty mean=0.7178 n_finite=120
+    split 10/20
+    split 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[split] meta-uncertainty mean=0.5534 n_finite=40
+Locke...
+    locke rb 5/10
+    locke rb 10/10
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/locke_mle.npz[rb] meta-uncertainty mean=1.4782 n_finite=70
+Done.
+lt diff 200/484
+    rouault diff 210/484
+    rouault diff 220/484
+    rouault diff 230/484
+    rouault diff 240/484
+    rouault diff 250/484
+    rouault diff 260/484
+    rouault diff 270/484
+    rouault diff 280/484
+    rouault diff 290/484
+    rouault diff 300/484
+    rouault diff 310/484
+    rouault diff 320/484
+    rouault diff 330/484
+    rouault diff 340/484
+    rouault diff 350/484
+    rouault diff 360/484
+    rouault diff 370/484
+    rouault diff 380/484
+    rouault diff 390/484
+    rouault diff 400/484
+    rouault diff 410/484
+    rouault diff 420/484
+    rouault diff 430/484
+    rouault diff 440/484
+    rouault diff 450/484
+    rouault diff 460/484
+    rouault diff 470/484
+    rouault diff 480/484
+    rouault diff 484/484
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault2_mle.npz[diff] meta-uncertainty mean=0.5509 n_finite=968
+Shekhar...
+    shekhar diff 5/20
+    shekhar diff 10/20
+    shekhar diff 15/20
+    shekhar diff 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[diff] meta-uncertainty mean=0.6616 n_finite=60
+    shekhar bias 5/20
+    shekhar bias 10/20
+    shekhar bias 15/20
+    shekhar bias 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[bias] meta-uncertainty mean=0.7178 n_finite=120
+    split 5/20
+    split 10/20
+    split 15/20
+    split 20/20
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[split] meta-uncertainty mean=0.5534 n_finite=40
+Locke...
+    locke rb 5/10
+    locke rb 10/10
+  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/locke_mle.npz[rb] meta-uncertainty mean=1.4782 n_finite=70
+Done.

@@ -9,9 +9,11 @@ from scipy.stats import norm
 
 
 def sdt_expect_conf(nr_s1: np.ndarray, nr_s2: np.ndarray) -> dict[str, Any]:
-    """Compute expected counts based on SDT assumptions.
+    """Compute SDT-expected rating distributions (MATLAB ``SDTexpectConf``).
 
-    Replicates MATLAB SDTexpectConf behavior.
+    Returns **proportions** for ``nR_S1_exp`` / ``nR_S2_exp`` (each sums to 1),
+    matching MATLAB ``nR_*_SDTexpect``. Using counts instead of proportions
+    changes Ratio/Diff measures whenever S1 and S2 base rates differ (e.g. Locke).
     """
     n_ratings = len(nr_s1) // 2
 
@@ -25,37 +27,30 @@ def sdt_expect_conf(nr_s1: np.ndarray, nr_s2: np.ndarray) -> dict[str, Any]:
 
     sum1 = np.sum(nr_s1_c)
     sum2 = np.sum(nr_s2_c)
-    # Keep original totals for scaling so expected counts match actual totals
-    orig_sum1 = np.sum(nr_s1)
-    orig_sum2 = np.sum(nr_s2)
 
-    # Cumulative sums for HR and FAR across criteria
-    hr = np.cumsum(nr_s2_c[::-1]) / sum2
-    far = np.cumsum(nr_s1_c[::-1]) / sum1
+    # Match MATLAB: flip(cumsum(flip(nR(2:end)))) / sum(nR)
+    # Excludes the first cell from the cumulative chain (same as SDTexpectConf.m).
+    hr = np.flip(np.cumsum(np.flip(nr_s2_c[1:]))) / sum2
+    far = np.flip(np.cumsum(np.flip(nr_s1_c[1:]))) / sum1
 
-    # We want HR/FAR for all 2*nRatings-1 criteria
-    hr_orig = hr[:-1][::-1]
-    far_orig = far[:-1][::-1]
-
-    # d' and c at the primary (middle) criterion
+    # d' and c at the primary (middle) criterion — MATLAB HR(nRatings)
     t1_idx = n_ratings - 1
-    dprime = norm.ppf(hr_orig[t1_idx]) - norm.ppf(far_orig[t1_idx])
+    dprime = norm.ppf(hr[t1_idx]) - norm.ppf(far[t1_idx])
 
     # c for all criteria
-    c = -0.5 * (norm.ppf(hr_orig) + norm.ppf(far_orig))
+    c = -0.5 * (norm.ppf(hr) + norm.ppf(far))
 
     # Expected HR and FAR based on d' and c
     exp_far = 1 - norm.cdf(c, -dprime / 2, 1)
     exp_hr = 1 - norm.cdf(c, dprime / 2, 1)
 
-    # Expected proportions — scale by original (uncorrected) totals so that
-    # sum(nR_S1_exp) == sum(nR_S1_act) even when zero-cell correction was applied
-    exp_nr_s1 = np.diff(np.concatenate([[0], exp_far[::-1], [1]]))[::-1]
-    exp_nr_s2 = np.diff(np.concatenate([[0], exp_hr[::-1], [1]]))[::-1]
+    # Expected *proportions* (MATLAB nR_*_SDTexpect); do NOT rescale by trial counts
+    exp_nr_s1 = np.flip(np.diff(np.concatenate([[0], np.flip(exp_far), [1]])))
+    exp_nr_s2 = np.flip(np.diff(np.concatenate([[0], np.flip(exp_hr), [1]])))
 
     return {
-        "nR_S1_exp": exp_nr_s1 * orig_sum1,
-        "nR_S2_exp": exp_nr_s2 * orig_sum2,
+        "nR_S1_exp": exp_nr_s1,
+        "nR_S2_exp": exp_nr_s2,
         "nR_S1_act": nr_s1,
         "nR_S2_act": nr_s2,
         "dprime": dprime,

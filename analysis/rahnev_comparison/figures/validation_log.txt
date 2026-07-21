@@ -1,0 +1,20 @@
+Loading analysis module and recomputing summaries...
+/opt/anaconda3/lib/python3.11/site-packages/numpy/lib/nanfunctions.py:1879: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py:207: RuntimeWarning: Mean of empty slice
+  denominator = np.nanmean(sd_subject_measure, axis=0)
+/Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py:210: RuntimeWarning: Mean of empty slice
+  drop = np.nanmean(arr[:, :, 0, :] - arr[:, :, alteration, :], axis=1)
+/Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py:215: RuntimeWarning: Mean of empty slice
+  mean_subject = np.nanmean(np.asarray(by_size), axis=(0, 1))
+/Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py:216: RuntimeWarning: Mean of empty slice
+  mean_measure = np.nanmean(mean_subject, axis=0)[:N_META]
+Fig_main_validation...
+Fig1_identity_scatters...
+Fig2_profile_overlays...
+Fig3_error_summary...
+Fig4_protocol_caveats...
+
+Wrote publication-ready figures to /Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/figures/validation
+Main-text figure: /Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/figures/validation/Fig_main_validation.pdf
+Combined PDF:     /Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/figures/validation/validation_figures.pdf
