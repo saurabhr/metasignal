@@ -263,7 +263,7 @@ ax.text(
 ax.text(
     8.15,
     3.75,
-    "CLI: CSV input, no Python code required",
+    "CLI: CSV input, no code required",
     ha="center",
     va="center",
     color="#cfd8e3",
