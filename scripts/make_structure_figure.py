@@ -69,6 +69,9 @@ ax.set_xlim(0, 11)
 ax.set_ylim(0, 9.2)
 ax.axis("off")
 
+# --- Enclosing frame around the whole diagram ---
+box(ax, (0.15, 0.08), 10.7, 9.05, "none", "#4a4a4a", lw=1.6, radius=0.05)
+
 # --- Input Data ---
 box(ax, (3.7, 8.4), 3.6, 0.6, DARK, DARK)
 ax.text(
