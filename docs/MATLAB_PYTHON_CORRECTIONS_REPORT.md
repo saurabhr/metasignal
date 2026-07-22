@@ -40,13 +40,15 @@ After correction:
 | Task-effect profile, paper vs Python | *r* = 1.000 |
 | Metacognitive-bias profile, paper vs Python | *r* = 1.000 |
 | Response-bias profile, paper vs Python | *r* = 1.000 |
-| Split-half profile, MATLAB vs Python | *r* = 0.992 |
 | Test--retest ICC profile, MATLAB vs Python | *r* = 0.999 |
-| Precision profile, MATLAB vs Python | *r* = 0.996 |
 | Meta-noise, mean per-analysis MATLAB vs Python | *r* = 0.998 |
 | Meta-uncertainty, mean per-analysis MATLAB vs Python | *r* = 0.995 |
+| Split-half profile, paper vs bin-stratified Python | *r* = 0.965 (relative ranking only; see below) |
+| Precision profile, paper vs bin-stratified Python | *r* = 0.25 (not usable; see below) |
 
-The 18 non-model-based measures now agree with MATLAB to numerical precision (maximum systematic bias below 1.5e-3). Three implementation issues were corrected (meta-noise search/interpolation, meta-noise criteria boundary handling, and SDT-expected proportions), and the meta-uncertainty optimizer was stabilized. The reliability and precision caches were rebuilt to the paper protocol. Remaining subject-level differences are limited to bounded maximum-likelihood optimizer variation in the meta-d' family and to the sparsest low-information model fits.
+The 18 non-model-based measures now agree with MATLAB to numerical precision (maximum systematic bias below 1.5e-3). Three implementation issues were corrected (meta-noise search/interpolation, meta-noise criteria boundary handling, and SDT-expected proportions), and the meta-uncertainty optimizer was stabilized. Remaining subject-level differences are limited to bounded maximum-likelihood optimizer variation in the meta-d' family and to the sparsest low-information model fits.
+
+**Split-half and precision are not resolved.** An earlier version of this report claimed *r* = 0.992 (split-half) and *r* = 0.996 (precision) MATLAB-vs-Python agreement after a cache rebuild. Those numbers were generated from a whole-dataset odd/even split and a whole-dataset confidence-corruption run — not the bin-stratified protocol (50/100/200/400-trial bins, analyzed per bin) that Rahnev (2025) actually uses — and are not reproducible from the current repository state. A subsequent bin-stratified reimplementation (`analysis/rahnev_comparison/scripts/compute_reliability_proper.py`), built directly from raw trial data, reproduces the *relative* ranking of split-half reliability across measures (*r* = 0.965) but undershoots the *absolute* published magnitude by roughly half throughout. Running the identical per-bin procedure on the MATLAB split-half arrays bundled in this repository shows the same undershoot, which rules out a `stdpy` computation error and points instead to how non-overlapping bins and per-day repeats were originally sampled when those `.mat` files were generated — a detail not recoverable from the Methods section's prose alone. Precision is worse: under a bin-instance cap needed for tractable runtime, the least-stable measures (Gamma-Ratio, meta-noise, meta-uncertainty) occasionally reverse sign. See `paper/paper.md`'s Limitations section and `reliability_proper.json` for the full numbers.
 
 # Error 1: Meta-noise Fitting
 
@@ -203,15 +205,15 @@ The mean per-analysis meta-noise correlation is now 0.998.
 
 Meta-uncertainty has a non-convex objective. MATLAB uses `fmincon` from a single random start; the former Python code used a single L-BFGS-B start with a different seed, so the two occasionally landed in different local optima. The estimator now uses a deterministic multi-start (retaining the published objective) that removes seed dependence. Mean cross-language correlation is 0.995 (Rouault subsets 0.993 and 0.979). An optional `matlab_compat` flag reproduces the MATLAB single-start configuration for users who must match a specific MATLAB output file.
 
-# Protocol Cache Rebuild for Reliability and Precision
+# Protocol Cache Rebuild for Reliability
 
-The split-half, test--retest, and precision analyses depend on the exact data-preparation protocol, not only on the estimators. The caches were rebuilt by `rebuild_protocol_caches.py` to mirror the MATLAB `ana_*.m` scripts precisely: the same bin sizes (50/100/200/400 trials), the same day structure, the same sequential confidence-alteration rule, and Fisher-*z* aggregation.
+The split-half, test--retest, and precision analyses depend on the exact data-preparation protocol, not only on the estimators. `rebuild_protocol_caches.py` rebuilt the test--retest caches to mirror the MATLAB `ana_*.m` bin size (400 trials), day structure, and Fisher-*z* aggregation successfully.
 
 | Analysis | MATLAB vs Python *r* (before rebuild) | after rebuild |
 |---|---:|---:|
-| Split-half | protocol-mismatched | **0.992** |
 | Test--retest ICC | 0.954 | **0.999** |
-| Precision | incomplete cache | **0.996** |
+
+Split-half and precision are **not** included in this table: an earlier version of this rebuild claimed they had also reached full protocol parity (*r* = 0.992 and 0.996 respectively), but those figures came from a whole-dataset odd/even split and a whole-dataset corruption run rather than the bin-stratified protocol the MATLAB `ana_*.m` scripts actually use, and are not reproducible from the current repository. See the Executive Result section above for the honest current numbers and their cause.
 
 # Remaining Differences
 
