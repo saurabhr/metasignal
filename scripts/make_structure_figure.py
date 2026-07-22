@@ -271,26 +271,6 @@ ax.text(
 )
 
 
-# stdpy -> Layer 4 (sdtbayes/itmc consume raw trial data & count matrices
-# directly, in parallel with compute_all_measures -- not its output)
-arrow(
-    ax,
-    (0.4, 6.3),
-    (0.55, 2.2),
-    connectionstyle="angle,angleA=180,angleB=90,rad=0",
-)
-ax.text(
-    0.2,
-    4.5,
-    "raw trial data / count matrices",
-    ha="center",
-    va="center",
-    color="#7a7a7a",
-    fontsize=7,
-    rotation=90,
-    style="italic",
-)
-
 # --- Layer 4 (new, bottom): Experimental components ---
 box(ax, (0.4, 0.25), 10.2, 1.9, "#fffaf2", EXP_BORDER, lw=1.8, ls="--")
 ax.text(
@@ -379,24 +359,6 @@ ax.text(
     fontsize=7.6,
     linespacing=2.2,
 )
-
-# Layer labels
-for y, label in (
-    (6.95, "LAYER 1"),
-    (5.35, "LAYER 2"),
-    (3.85, "LAYER 3"),
-    (1.5, "LAYER 4"),
-):
-    ax.text(
-        -0.05,
-        y,
-        label,
-        ha="right",
-        va="center",
-        color="#8a97a3",
-        fontsize=8,
-        rotation=90,
-    )
 
 plt.tight_layout()
 fig.savefig(OUT_PATH, dpi=200, bbox_inches="tight")
