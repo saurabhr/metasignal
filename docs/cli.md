@@ -63,7 +63,20 @@ mean_conf                2.6000
 | `--conf` | Comma-separated integers (1 to n-ratings) | `"1,3,2,4"` |
 | `--n-ratings` | Integer — number of confidence categories | `4` |
 
-All four options are required. Arrays must be the same length.
+`--n-ratings` is always required. Provide either all three of
+`--stim`/`--resp`/`--conf`, or `--csv` — not both. Arrays (or CSV columns)
+must be the same length.
+
+### Reading trial data from a CSV
+
+As an alternative to typing values inline, `--csv` reads one trial per row:
+
+```bash
+metasignal compute --csv trials.csv --n-ratings 4
+```
+
+Column names default to `stim`, `resp`, `conf` and can be overridden with
+`--stim-col`, `--resp-col`, `--conf-col` for CSVs with different headers.
 
 ---
 
