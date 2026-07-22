@@ -10,6 +10,13 @@ The **third number** is for emergencies when we need to start branches for older
 
 ## [Unreleased]
 
+### Added
+
+- `metasignal compute` now accepts trial data from a CSV file via `--csv`,
+  as an alternative to typing `--stim`/`--resp`/`--conf` inline.
+  `--stim-col`/`--resp-col`/`--conf-col` override the default column names
+  (`stim`/`resp`/`conf`).
+
 ### Fixed
 
 - `sdt_expect_conf` (SDT-expected confidence distributions) now returns

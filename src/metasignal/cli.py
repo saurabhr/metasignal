@@ -43,32 +43,55 @@ def cli() -> None:
 # ── compute ───────────────────────────────────────────────────────────────
 
 @cli.command()
+@click.option("--stim", type=str, default=None, help="Comma-separated stimulus values (0/1).")
+@click.option("--resp", type=str, default=None, help="Comma-separated response values (0/1).")
 @click.option(
-    "--stim", type=str, required=True, help="Comma-separated stimulus values (0/1)."
+    "--conf", type=str, default=None, help="Comma-separated confidence ratings (1 to n-ratings)."
 )
 @click.option(
-    "--resp", type=str, required=True, help="Comma-separated response values (0/1)."
+    "--csv", "csv_path", type=click.Path(exists=True, dir_okay=False), default=None,
+    help="CSV with one trial per row, as an alternative to --stim/--resp/--conf.",
 )
-@click.option(
-    "--conf", type=str, required=True, help="Comma-separated confidence ratings (1 to n-ratings)."
-)
+@click.option("--stim-col", default="stim", show_default=True, help="Stimulus column name (CSV mode).")
+@click.option("--resp-col", default="resp", show_default=True, help="Response column name (CSV mode).")
+@click.option("--conf-col", default="conf", show_default=True, help="Confidence column name (CSV mode).")
 @click.option(
     "--n-ratings", type=int, required=True, help="Number of confidence rating categories."
 )
-def compute(stim: str, resp: str, conf: str, n_ratings: int) -> None:
-    """Compute all 26 SDT and metacognitive measures from trial-level data."""
+def compute(
+    stim: Optional[str], resp: Optional[str], conf: Optional[str],
+    csv_path: Optional[str], stim_col: str, resp_col: str, conf_col: str,
+    n_ratings: int,
+) -> None:
+    """Compute all 26 SDT and metacognitive measures from trial-level data.
+
+    Trial data can be given inline (--stim/--resp/--conf) or from a CSV with
+    one trial per row (--csv), but not both.
+    """
     if n_ratings < 1:
         raise click.BadParameter(
             f"must be a positive integer, got {n_ratings}.", param_hint="'--n-ratings'"
         )
 
-    stim_arr = _parse_numeric_csv("stim", stim)
-    resp_arr = _parse_numeric_csv("resp", resp)
-    conf_arr = _parse_numeric_csv("conf", conf)
+    inline_given = any(v is not None for v in (stim, resp, conf))
+    if csv_path is not None and inline_given:
+        raise click.UsageError("Use either --csv or --stim/--resp/--conf, not both.")
+    if csv_path is None and not (stim is not None and resp is not None and conf is not None):
+        raise click.UsageError("Provide --csv, or all three of --stim/--resp/--conf.")
+
+    if csv_path is not None:
+        df = _read_csv(csv_path, stim_col, resp_col, conf_col)
+        stim_arr = df[stim_col].to_numpy(dtype=float)
+        resp_arr = df[resp_col].to_numpy(dtype=float)
+        conf_arr = df[conf_col].to_numpy(dtype=float)
+    else:
+        stim_arr = _parse_numeric_csv("stim", stim)
+        resp_arr = _parse_numeric_csv("resp", resp)
+        conf_arr = _parse_numeric_csv("conf", conf)
 
     if len(stim_arr) != len(resp_arr) or len(stim_arr) != len(conf_arr):
         raise click.UsageError(
-            f"--stim ({len(stim_arr)}), --resp ({len(resp_arr)}), and --conf ({len(conf_arr)}) "
+            f"stim ({len(stim_arr)}), resp ({len(resp_arr)}), and conf ({len(conf_arr)}) "
             "must all have the same number of values."
         )
 

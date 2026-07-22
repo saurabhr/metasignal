@@ -178,6 +178,26 @@ metasignal compute \
   --n-ratings 4
 ```
 
+Trial data can also be read from a CSV with one trial per row instead of typed inline:
+
+```bash
+cat > trials.csv <<'CSV'
+stim,resp,conf
+0,0,4
+1,1,4
+0,0,3
+1,0,1
+0,0,3
+1,1,4
+0,1,2
+1,1,3
+CSV
+
+metasignal compute --csv trials.csv --n-ratings 4
+```
+
+Both commands above print the identical 26-value table (they encode the same eight trials); this was verified directly rather than assumed. Column names default to `stim`, `resp`, and `conf` and can be overridden with `--stim-col`, `--resp-col`, and `--conf-col` for CSVs with different headers.
+
 ## Recommended scientific workflow
 
 1. Check that stimulus and response each contain two categories.
