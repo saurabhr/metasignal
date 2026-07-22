@@ -8,6 +8,24 @@ The **first number** of the version is the year.
 The **second number** is incremented with each release, starting at 1 for each year.
 The **third number** is for emergencies when we need to start branches for older releases.
 
+## [Unreleased]
+
+### Fixed
+
+- `sdt_expect_conf` (SDT-expected confidence distributions) now returns
+  proportions matching MATLAB's `SDTexpectConf`, instead of counts rescaled
+  by trial totals. This corrects Ratio/Diff-family measures whenever S1 and
+  S2 base rates differ.
+- `compute_meta_noise` now follows the MATLAB search/interpolation procedure
+  and preserves signal-detection criteria boundary behavior (hit/false-alarm
+  rates of 0 or 1 are no longer clipped), fixing large MATLAB↔Python
+  divergences in sparse difficulty subsets.
+- `compute_meta_uncertainty` now uses a deterministic multi-start optimizer,
+  removing optimizer-seed-dependent noise in the fitted estimate.
+
+See [docs/MATLAB_PYTHON_CORRECTIONS_REPORT.md](docs/MATLAB_PYTHON_CORRECTIONS_REPORT.md)
+for full validation numbers.
+
 ## [2025.1.0] - 2026-07-04
 
 ### Added

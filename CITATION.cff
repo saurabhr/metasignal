@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the JOSS paper below."
+title: "metasignal"
+type: software
+version: 2025.1.0
+date-released: 2026-07-04
+repository-code: "https://github.com/saurabhr/metasignal"
+license: MIT
+authors:
+  - family-names: Ranjan
+    given-names: Saurabh
+    orcid: "https://orcid.org/0000-0002-7868-7223"
+    affiliation: University of Florida, USA
+  - family-names: Makwana
+    given-names: Mukesh
+    orcid: "https://orcid.org/0000-0003-2018-7768"
+    affiliation: Brown University, USA
+  - family-names: Sokratous
+    given-names: Konstantina
+    orcid: "https://orcid.org/0000-0003-4489-5494"
+    affiliation: University of Missouri, USA
+  - family-names: Odegaard
+    given-names: Brian
+    orcid: "https://orcid.org/0000-0002-5459-1884"
+    affiliation: University of Florida, USA
+preferred-citation:
+  type: article
+  title: "metasignal: Validated Python Tools for Signal Detection Theory and Metacognitive Measurement"
+  journal: "Journal of Open Source Software"
+  authors:
+    - family-names: Ranjan
+      given-names: Saurabh
+      orcid: "https://orcid.org/0000-0002-7868-7223"
+    - family-names: Makwana
+      given-names: Mukesh
+      orcid: "https://orcid.org/0000-0003-2018-7768"
+    - family-names: Sokratous
+      given-names: Konstantina
+      orcid: "https://orcid.org/0000-0003-4489-5494"
+    - family-names: Odegaard
+      given-names: Brian
+      orcid: "https://orcid.org/0000-0002-5459-1884"

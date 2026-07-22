@@ -4,6 +4,7 @@
 
 Thanks for your interest in improving metasignal. This document covers how to set up a
 development environment, run the checks that CI runs, and the conventions the project follows.
+Participation in this project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Development setup
 

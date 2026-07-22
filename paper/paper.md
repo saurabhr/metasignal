@@ -1,91 +1,224 @@
 ---
-title: "metasignal: A Python Package for Signal Detection Theory and Metacognitive Measures for Decision-Making"
+title: "metasignal: Validated Python Tools for Signal Detection Theory and Metacognitive Measurement"
+author: "Saurabh Ranjan; Mukesh Makwana; Konstantina Sokratous; Brian Odegaard"
 tags:
-    - Python
-    - metacognition
-    - signal detection theory
-    - meta-d prime
-    - confidence ratings
-    - decision-making
-    - cognitive psychology
+  - Python
+  - metacognition
+  - signal detection theory
+  - confidence
+  - meta-d prime
+  - reproducible research
 authors:
-    - name: Saurabh Ranjan
-      orcid: 0000-0002-7868-7223
-      affiliation: 1
-    - name: Mukesh Makwana
-      orcid: 0000-0003-2018-7768
-      affiliation: 2
-    - name: Konstantina Sokratous
-      orcid: 0000-0003-4489-5494
-      affiliation: 3
-    - name: Brian Odegaard
-      orcid: 0000-0002-5459-1884
-      affiliation: 1
+  - name: Saurabh Ranjan
+    orcid: 0000-0002-7868-7223
+    affiliation: 1
+  - name: Mukesh Makwana
+    orcid: 0000-0003-2018-7768
+    affiliation: 2
+  - name: Konstantina Sokratous
+    orcid: 0000-0003-4489-5494
+    affiliation: 3
+  - name: Brian Odegaard
+    orcid: 0000-0002-5459-1884
+    affiliation: 1
 affiliations:
-    - name: University of Florida, USA
-      index: 1
-    - name: Brown University, USA
-      index: 2
-    - name: University of Missouri, USA
-      index: 3
-date: 25 June 2026
+  - name: University of Florida, USA
+    index: 1
+  - name: Brown University, USA
+    index: 2
+  - name: University of Missouri, USA
+    index: 3
+date: 18 July 2026
 bibliography: paper.bib
 ---
 
 # Summary
 
-Understanding how accurately people know what they know is among the most fundamental questions in cognitive neuroscience. `metasignal` is a Python package that makes measuring this capacity — metacognition — accessible to any researcher with a Python environment. It implements all twenty measures evaluated in the benchmark by @rahnev2025, spanning first-order perceptual sensitivity (d') and response bias (criterion _c_) from signal detection theory [@green1966], mean confidence, and seventeen second-order metacognitive measures including meta-d', M-ratio, meta-uncertainty, meta-noise, Type 2 AUC, gamma, phi, and delta confidence. The full suite is computable from a single function call, with no proprietary software required.
+`metasignal` is an open-source Python package for signal detection theory (SDT) and metacognitive measurement. It implements the 17 metacognitive measures evaluated by @rahnev2025, together with the reference variables d', response criterion *c*, and mean confidence. The measures include meta-d', M-ratio, M-difference, Type-2 area under the receiver-operating-characteristic curve (AUC2), Gamma, Phi, delta confidence, their SDT-normalized ratio and difference forms, meta-noise, and meta-uncertainty. A single function computes the complete set from trial-level stimulus, response, and confidence arrays. The package also provides a command-line interface, group summaries, bootstrap confidence intervals, permutation tests, optional hierarchical Bayesian models, and information-theoretic measures.
+
+We validated the Python implementation against the original MATLAB pipeline and the numerical results reported by @rahnev2025. The validation covers subject-level estimates, published summary effects, and the analysis profiles for task performance, metacognitive bias, response bias, and reliability. This paper describes the scientific motivation, package design, validation procedure, results, and a simple workflow for new users.
 
 # Statement of Need
 
-Metacognition shapes learning, clinical outcomes, and adaptive decision-making across virtually every domain of cognition [@flemingdolan2012], from perceptual [@yeungsummerfield2012] to economic [@lebreton2015] decision-making, and increasingly the evaluation of large language models, whose growing use in high-stakes domains such as medical reasoning depends on reliable metacognitive uncertainty communication [@steyvers2025; @griot2025]. A 26-researcher consensus initiative identified developing falsifiable computational models of visual metacognition as a primary long-term goal [@rahnev2022] — an agenda that depends critically on reliable, standardised implementations of the measures used to evaluate those models. Yet the measurement toolkit has remained fragmented and inaccessible. The gold-standard measure, meta-d' [@maniscalco2012], requires solving a constrained maximum-likelihood problem that has historically been available only as a MATLAB script [@maniscalco2014], placing it out of reach for the growing majority of researchers working in Python. The broader landscape of metacognitive measures lacked any systematic comparison until @rahnev2025 — and even then, no open Python implementation of the full benchmark followed.
+Metacognition is the ability to evaluate the quality of one's own decisions. It supports learning, adaptive choice, and communication of uncertainty [@flemingdolan2012; @yeungsummerfield2012]. Metacognitive measurement is also relevant to clinical research and to the evaluation of uncertainty reported by artificial-intelligence systems [@steyvers2025; @griot2025]. A consensus statement identified reliable computational models and standardized measurement as major goals for visual-metacognition research [@rahnev2022].
 
-`metasignal` closes that gap with a single, maintained package that:
+Many metacognitive measures have been proposed, but they quantify different properties and respond differently to task performance, response bias, confidence bias, and sample size. Meta-d' is widely used because it expresses metacognitive sensitivity in the same SDT units as perceptual sensitivity [@maniscalco2012]. Its canonical toolbox was distributed as MATLAB code, later joined by a direct Python port [@maniscalco2014; @lee_maniscalco_type2sdt_python], but each covers meta-d' alone. The other sixteen measures benchmarked by @rahnev2025 remained spread across separate papers and software projects, with no single package covering the full set in Python. This made it difficult to compare measures within one reproducible workflow.
 
-1. **Covers the full benchmark** — all twenty measures from @rahnev2025 (seventeen metacognitive measures plus d', criterion _c_, and mean confidence as Type 1 reference values) are available through a single `compute_all_measures` call.
-2. **Requires no proprietary software** — the `stdpy` submodule is a pure NumPy/SciPy implementation that runs in any Python environment, including cloud notebooks and automated pipelines.
-3. **Lowers the barrier to entry** — a command-line interface lets researchers compute all twenty measures from raw trial data in a single shell command, without writing any Python code.
+@rahnev2025 provided the first broad empirical comparison of 17 measures. The study assessed validity and precision, dependence on nuisance variables, split-half reliability, and test--retest reliability. `metasignal` translates this benchmark into a documented Python package that requires no proprietary software. It is intended for cognitive scientists, psychophysicists, neuroscientists, clinical researchers, and researchers studying confidence in artificial systems.
 
 # State of the Field
 
-The canonical meta-d' implementation by @maniscalco2014 has been the field's workhorse since 2012 but is MATLAB-only and covers a single measure. `metadpy` [@legrand2021] and `hmeta-d` [@fleming2017] brought hierarchical Bayesian meta-d' to Python and R respectively, addressing estimation reliability but still covering only a fraction of the measures benchmarked by @rahnev2025. No existing package provides the meta-uncertainty and meta-noise estimators, the full suite of ratio and difference normalisation variants, a CLI-based workflow, or a unified interface that combines the full frequentist benchmark with hierarchical Bayesian estimation. The result is that researchers wishing to compare measures — as recommended by @rahnev2025 — have had to stitch together code from multiple repositories in multiple languages.
+The meta-d' toolbox of @maniscalco2014, including its Python port [@lee_maniscalco_type2sdt_python], remains an important reference implementation. `metadpy` [@legrand2021] and HMeta-d [@fleming2017] provide Bayesian or hierarchical estimation, but focus mainly on the meta-d' family. `statConfR` provides models of decision confidence and information-theoretic measures in R [@rausch2025]. These tools are valuable for their intended tasks, but none offers the complete @rahnev2025 benchmark through one pure-Python interface.
 
-`metasignal` consolidates this fragmented landscape into a single, documented, tested Python package. Its optional `sdtbayes` subpackage further adds full hierarchical Bayesian inference — including a Stan port of the HMeta-d model of @fleming2017 — making it the only Python package that addresses both the breadth of the @rahnev2025 benchmark and the estimation reliability concerns raised by @fleming2017.
+`metasignal` complements rather than replaces these packages. Its main contribution is breadth, a common trial-level interface, and explicit cross-language validation. The optional `sdtbayes` subpackage adds Stan-based hierarchical estimation, while the experimental `itmc` subpackage implements measures motivated by metacognitive information theory [@dayan2023; @meyen2025].
 
 # Software Design
 
-![Computational architecture of `metasignal`. Trial-level arrays flow top-down through four layers: (1) `stdpy` computes SDT statistics and all twenty metacognitive measures; (2) `compute_all_measures` returns the full 26-element output; (3) `analysis` provides bootstrap CIs, permutation tests, and group summaries, and the CLI exposes the full measure suite without Python code; (4) two experimental, pre-1.0 components — `sdtbayes`, offering seven Bayesian estimation approaches that return a `FitResult` with shared diagnostics, and `itmc`, an information-theoretic metacognition module.](structure.png)
+![Architecture of `metasignal`. Trial-level data enter the stable `stdpy` layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.](structure.png){width=80%}
 
-`metasignal` accepts NumPy arrays of stimulus labels, responses, and confidence ratings as its universal input and exposes all measures through the `stdpy` submodule, implemented in NumPy [@harris2020] and SciPy [@virtanen2020]. Core estimation routines include:
+The package follows four design principles.
 
-- `compute_sdt_resp` — d' and criterion _c_ from trial-level stimulus and response vectors.
-- `trials_to_counts` — conversion of trial-level data into Type 2 rating-scale count matrices.
-- `fit_meta_d_mle` — maximum-likelihood estimation of meta-d' and M-ratio via bounded nonlinear optimisation.
-- `compute_type2_auc`, `compute_gamma`, `compute_phi`, `compute_delta_conf` — nonparametric Type 2 statistics.
-- `compute_meta_uncertainty` — model-based meta-uncertainty estimation.
-- `compute_meta_noise` — meta-noise estimation via lookup-table interpolation.
-- `compute_all_measures` — computes all twenty measures in a single call, returning a 26-element NumPy array (the twenty measures followed by six meta-d' model-fit diagnostics — logL, AIC, BIC, AICc, k, n) whose index-to-measure mapping is documented in the API reference.
+First, stimulus identity, behavioral response, and confidence are represented as parallel NumPy arrays. This simple format is compatible with most behavioral data-processing workflows. Second, the stable `stdpy` layer uses NumPy [@harris2020] and SciPy [@virtanen2020] and does not require MATLAB. Third, `compute_all_measures` provides a common entry point while individual functions remain available for researchers who need one statistic. Fourth, optional Bayesian dependencies are isolated from the lightweight frequentist core.
 
-Beyond point estimation, the `metasignal.analysis` sub-package provides a complete inferential pipeline for group-level research. `bootstrap_measure` estimates percentile-bootstrap confidence intervals for any element of the twenty-measure array (default 2000 resamples, reproducible via an optional `numpy.random.Generator`), enabling uncertainty quantification without parametric assumptions. `permutation_test` implements a two-sided permutation test for between-condition differences (default 5000 shuffles), which is the recommended alternative to parametric t-tests given that the sampling distributions of measures such as M-ratio and meta-d' are non-Gaussian at typical sample sizes [@fleming2017; @rahnev2025]. `group_summary` aggregates results across participants, returning per-participant matrices, group means, medians, standard errors, and per-measure valid counts that handle NaN values arising from degenerate response patterns.
+`compute_all_measures` returns 26 values. The first 20 are the 17 metacognitive measures plus d', criterion, and mean confidence. The final six values—log-likelihood, AIC, BIC, AICc, number of fitted parameters, and number of observations—are diagnostics for the meta-d' fit, not additional metacognitive measures.
 
-For researchers requiring full Bayesian inference, the optional `metasignal.sdtbayes` subpackage (installed via `pip install metasignal[sdtbayes]`) provides seven hierarchical estimation approaches backed by cmdstanpy/Stan and brms [@burkner2017], with results reported through ArviZ [@kumar2019]:
+# Methods
 
-- `fit_subject_level` — subject-level Bayesian SDT, yielding full posteriors over d' and criterion _c_ for individual participants.
-- `fit_two_stage_group` — a two-stage approach that first computes per-participant MLE M-ratios (Stage 1) then fits a hierarchical Bayesian model over log M-ratio across participants (Stage 2), providing a group-level posterior mean M-ratio with uncertainty.
-- `fit_full_metad` — a full hierarchical HMeta-d model that ports the JAGS implementation of @fleming2017 to Stan, jointly estimating group-level and per-subject meta-d', M-ratio, d', and criterion from raw count matrices in a single pass.
-- `fit_hierarchical_metad` — a trial-level ordered-logistic model in which confidence ratings are the outcome of a cumulative logistic regression and metacognitive discrimination is indexed by the `correct` predictor's coefficient (a log-odds-scale quantity, not meta-d'); supports crossed item random effects.
-- `fit_beta_auc_group` — a non-parametric alternative to meta-d' that models Type 2 AUC directly with a Beta likelihood, avoiding the Gaussian SDT assumption.
-- `fit_two_stage_regression` / `fit_full_metad_regression` — Bayesian meta-regression of log M-ratio on participant-level covariates, via either the two-stage or full hierarchical path.
-- `fit_within_subject_comparison` — a paired model for within-subject designs, where participant random intercepts absorb stable individual differences and the condition effect is estimated directly.
+## Core computation
 
-Group comparison variants (`fit_group_comparison`, `fit_two_stage_comparison`, `fit_full_metad_comparison`, `fit_beta_auc_comparison`) extend the corresponding approaches to two-group designs. All fits return a `FitResult` wrapping an ArviZ `InferenceData` object, and the `diagnostics` module provides `posterior_summary`, `convergence_diagnostics`, `plot_trace`, `plot_posterior`, and `plot_forest` for routine MCMC quality checks. Together, these seven estimation approaches let `sdtbayes` users move from raw trial data to full hierarchical Bayesian inference without leaving `metasignal`.
+The package first converts trial-level data into Type-2 response-count arrays. Type-1 sensitivity and criterion are computed under the equal-variance SDT model [@green1966]. Nonparametric Type-2 measures are computed directly from the observed counts. Meta-d' is estimated by maximum likelihood [@maniscalco2012], from which M-ratio and M-difference are derived. SDT-normalized Ratio and Difference measures compare observed statistics with statistics expected under an ideal equal-variance SDT observer.
 
-`metasignal` also ships an experimental `itmc` subpackage implementing the information-theoretic metacognition framework of @dayan2023, which measures metacognitive sensitivity as mutual information between accuracy and confidence rather than via signal-detection assumptions. It offers `meta_I`, `meta_Ir1`, `meta_Ir1_acc`, and `meta_Ir2` — variants normalising raw mutual information against first-order performance — plus `RMI` [@meyen2025], a relative mutual-information efficiency measure, and `permtest_meta_I`, a permutation test of whether meta-I is significantly above chance. Two backends are available: a direct entropy calculation following @dayan2023, and an exact Python port of the `estimateMetaI` routine from the `statConfR` R package [@rausch2025] for numerical parity with that implementation. As a pre-1.0 component, `itmc`'s API may still change between releases.
+Meta-noise is estimated with the lognormal confidence-noise model used by the MATLAB benchmark. The Python implementation follows the MATLAB procedure: it evaluates the zero-noise Gaussian baseline, searches outward from that lower bound, uses golden-section optimization, and evaluates the precomputed integral table using inverse-distance weighting. Meta-uncertainty is fitted with its corresponding model-based estimator.
 
-The `metasignal compute` CLI prints all 26 values (20 measures plus 6 meta-d' fit diagnostics) as a named table from comma-separated trial data, and a `metasignal bayes` subcommand exposes the two-stage Bayesian group and comparison fits directly from a CSV, enabling shell-level integration with experiment-control software and batch pipelines. Seven tutorial Jupyter notebooks accompany the package, covering basic SDT computation, the full measure suite, statistical inference, difficulty-dependence testing, metacognitive bias, split-half reliability, and Bayesian hierarchical meta-d' — making the package accessible to researchers regardless of programming background.
+## Cross-language equivalence: validation strategy
+
+Re-implementing an established analysis pipeline in a new language is common in computational science, and it carries a specific obligation: the new code must be shown to reproduce the reference, not merely to run. We therefore treat the original MATLAB pipeline as the authoritative reference and validate `metasignal` against it using the practices normally expected of a reference-tracking reimplementation:
+
+1. **Golden-master (regression) comparison.** Every measure is compared against fixed reference outputs generated by the original MATLAB code on the same input trials, rather than against hand-copied numbers.
+2. **Agreement, not just correlation.** For each measure we report Pearson correlation *r* (association), together with mean absolute error, root-mean-square error, systematic bias (mean signed difference), and maximum absolute error (magnitude of disagreement). Correlation alone can hide a constant offset, so the error and bias statistics are reported alongside it. Identity (\(y = x\)) scatter plots are provided for visual inspection.
+3. **A pre-specified pass gate.** A measure array passes only if it meets fixed tolerances on both correlation and absolute error; the gate result is written to machine-readable JSON so it can be re-checked in continuous integration.
+4. **Three-way anchoring.** Where the paper prints numbers, we additionally check Python against the published values, so agreement is anchored to the peer-reviewed record and not only to the MATLAB code.
+5. **Honest reporting of residual differences with root causes.** Any measure that does not reach numerical identity is reported explicitly, with an explanation distinguishing genuine implementation differences from protocol- or optimizer-dependent variation.
+6. **Reproducible harness and unit tests.** The full comparison is scripted and versioned in the repository, and unit tests encode fixed reference expectations for the corrected components.
+
+This is the same evidence structure used by other cross-language scientific reimplementations (for example `metadpy` and `pingouin`, which validate against MATLAB/HMeta-d and R/JASP respectively): a reference is fixed, agreement is quantified with correlation *and* error/agreement statistics, and discrepancies are documented rather than suppressed.
+
+## Validation data and procedure
+
+Validation used the six datasets distributed with the Rahnev analysis pipeline: Haddara, Maniscalco, Rouault experiments 1 and 2, Shekhar, and Locke. The comparison used three sources:
+
+1. values reported in the text, figures, and supplementary tables of @rahnev2025;
+2. subject-level MATLAB arrays stored in `matlab/metasignal_mat/Results`; and
+3. Python arrays generated from the same trial subsets.
+
+Ten subject-level analysis arrays were compared: raw estimates, metacognitive-bias recoding, odd--even splits, difficulty conditions, and response-bias conditions. For each measure we examined Pearson correlation, mean absolute error, root-mean-square error, signed bias, maximum absolute error, and missing-value agreement. We also reproduced 19 statistical checks from the supplementary analyses and compared the 17-measure profiles for task-performance dependence, metacognitive-bias dependence, response-bias dependence, and test--retest reliability, the last using the same bin size (400 trials), day structure, and Fisher-*z* aggregation as the MATLAB scripts. Split-half reliability and precision are also reported by @rahnev2025 from a bin-averaged protocol (50, 100, 200, and 400-trial bins), but our current comparison scripts instead estimate them from a single whole-dataset split and a single whole-dataset confidence-corruption run; these two comparisons are therefore not yet protocol-matched to the published values and are reported separately as a lower-confidence check (see Limitations).
+
+The complete workflow is implemented in `analysis/rahnev_comparison/scripts`. The JSON results, CSV summaries, identity plots, profile overlays, and combined PDFs are stored beside the scripts. This makes the validation repeatable rather than dependent on a manually prepared table.
+
+# Validation Results
+
+![Comparison of published Rahnev values with MATLAB and Python replications. Panels show task-performance effects, metacognitive-bias effects, response-bias correlations, test--retest ICC, and the task-performance profile across all 17 measures.](validation_main.png){width=88%}
+
+All 10 subject-level comparison arrays passed the predefined comparison gate, and all 19 supplementary statistical checks matched in statistical significance and reference *t* value. Across the 18 non-model-based measures, MATLAB and Python agreed to numerical precision at the subject level (maximum systematic bias below \(1.5 \times 10^{-3}\); per-analysis correlations of 1.000). Ten of these measures agreed to within a maximum absolute difference of \(10^{-2}\) across every subject and analysis.
+
+The analysis profiles were essentially identical across sources: task-performance dependence (paper--Python *r* = 1.000; MATLAB--Python *r* = 1.000), metacognitive-bias dependence (paper--Python *r* = 1.000; MATLAB--Python *r* = 1.000), and response-bias dependence (paper--Python *r* = 1.000; MATLAB--Python *r* = 1.000). Test--retest ICC, matched to the MATLAB bin-size-400 protocol, also aligned closely (MATLAB--Python *r* = 0.999).
+
+The two model-based measures required dedicated fixes. The meta-noise implementation was corrected in two stages: first to follow the MATLAB search and interpolation procedure, and then to preserve the boundary behavior of the signal-detection criteria (leaving hit and false-alarm rates of 0 or 1 unclipped, so that infinite criteria are initialized on the same global grid as MATLAB). After both corrections, MATLAB--Python meta-noise correlations reached 0.999 in the Haddara raw analysis, 1.000 in Maniscalco, and 1.000 in the Rouault difficulty subsets that had previously been the weakest cases (*r* = 0.734 and 0.631 before the boundary fix). Meta-uncertainty was stabilized with a deterministic multi-start optimizer that keeps the published likelihood but removes optimizer-seed noise, giving a mean cross-language correlation of 0.995 (Rouault subsets 0.993 and 0.979). Correcting SDT-expected rating arrays from trial counts to per-stimulus proportions made the Locke Ratio and Difference outputs numerically equivalent to MATLAB.
+
+Some differences remain and are reported as limitations rather than hidden. Meta-d', M-ratio, and M-difference correlate at 1.000 across analyses but can differ by up to about 0.14 for individual participants because both pipelines use bounded numerical maximum-likelihood optimizers with different internal solvers. Meta-noise and meta-uncertainty retain a small number of subject-level differences in the sparsest difficulty subsets, where the likelihood surface is flat. A single degenerate value returned by the MATLAB meta-noise search (near 0.4959) is identified programmatically and excluded from agreement statistics. For users who need to reproduce a specific MATLAB result file rather than a scientifically stable estimate, the model-based estimators expose an optional `matlab_compat` mode that mimics MATLAB's single-start optimizer configuration. The package therefore supports the scientific conclusions of @rahnev2025 and reproduces the MATLAB pipeline to numerical precision for the non-model-based measures, while documenting the residual, well-understood variation in low-information model fits.
+
+# Simple Procedure for Use
+
+## Installation
+
+Install from the public repository:
+
+```bash
+pip install git+https://github.com/saurabhr/metasignal.git
+```
+
+For development or reproducible validation:
+
+```bash
+git clone https://github.com/saurabhr/metasignal.git
+cd metasignal
+pip install -e .
+```
+
+## Prepare trial-level data
+
+Each trial requires four values:
+
+- `stim`: stimulus category, coded with two values such as 0 and 1;
+- `resp`: participant response, coded with the same two values;
+- `conf`: integer confidence rating from 1 to `n_ratings`; and
+- `n_ratings`: number of possible confidence levels.
+
+The arrays must have the same length. Missing trials are removed jointly. A study should compute participant-level estimates separately before group inference.
+
+## Compute all measures
+
+The following self-contained example simulates one participant with a fixed random seed, so that any user can run it and obtain the same numbers. This doubles as a minimal reproducibility check of the installation.
+
+```python
+import numpy as np
+from metasignal import stdpy
+
+rng = np.random.default_rng(2025)
+n = 800
+stim = rng.integers(0, 2, n)                 # two stimulus categories
+evidence = (stim * 2 - 1) * 0.9 + rng.normal(0, 1, n)
+resp = (evidence > 0).astype(int)            # observer response
+edges = np.quantile(np.abs(evidence), [0.25, 0.5, 0.75])
+conf = np.digitize(np.abs(evidence), edges) + 1   # 4-point confidence
+
+values = stdpy.compute_all_measures(stim, resp, conf, n_ratings=4)
+
+meta_d  = values[0]    # meta-d'
+auc2    = values[1]    # Type-2 AUC
+m_ratio = values[5]    # M-ratio (meta-d'/d')
+dprime  = values[17]   # d'
+print(f"d'={dprime:.3f}  meta-d'={meta_d:.3f}  M-ratio={m_ratio:.3f}  AUC2={auc2:.3f}")
+```
+
+Running this prints:
+
+```text
+d'=1.929  meta-d'=1.841  M-ratio=0.955  AUC2=0.762
+```
+
+`compute_all_measures` returns all 26 values in a fixed order; the first 20 are the 17 metacognitive measures plus d', criterion, and mean confidence, and the last six are meta-d' fit diagnostics. Researchers should use realistic trial counts for scientific estimation; the seed here only makes the example reproducible.
+
+## Compute selected measures
+
+```python
+dprime, criterion, ln_beta = stdpy.compute_sdt_resp(stim, resp)
+nr_s1, nr_s2 = stdpy.trials_to_counts(stim, resp, conf, n_ratings=4)
+meta_fit = stdpy.fit_meta_d_mle(nr_s1, nr_s2)
+auc2 = stdpy.compute_type2_auc(nr_s1, nr_s2)
+
+print(meta_fit["meta_da"])
+print(meta_fit["M_ratio"])
+```
+
+## Command-line use
+
+```bash
+metasignal compute \
+  --stim "0,1,0,1,0,1,0,1" \
+  --resp "0,1,0,0,0,1,1,1" \
+  --conf "4,4,3,1,3,4,2,3" \
+  --n-ratings 4
+```
+
+## Recommended scientific workflow
+
+1. Check that stimulus and response each contain two categories.
+2. Confirm that confidence values are integers within the declared scale.
+3. Compute measures independently for each participant and condition.
+4. Inspect missing values and convergence diagnostics before group analysis.
+5. Use bootstrap intervals or permutation tests when sampling distributions are uncertain.
+6. Report the measure definition, trial count, confidence scale, exclusion criteria, and reliability protocol.
+7. For direct replication, preserve the original bin sizes, recoding rules, and random-resampling procedure.
+
+# Research Impact Statement
+
+`metasignal` turns a broad methodological benchmark into reusable research infrastructure. It provides a common implementation for comparing measures, lowers the barrier for laboratories without MATLAB, and makes numerical validation visible and reproducible. Seven tutorial notebooks cover preprocessing, measure computation, statistical tables, difficulty dependence, bias, split-half reliability, and test--retest reliability. Automated tests, continuous integration, API documentation, and contribution guidelines support reuse and extension.
+
+The validation materials are also a scholarly contribution. They identify implementation details that materially affect results—especially the zero-noise boundary in meta-noise fitting and the use of proportions in SDT-expected ratings. Recording these details helps prevent apparently contradictory results that arise from software rather than theory.
+
+# Limitations
+
+No single measure is optimal for every design [@rahnev2025]. Model-based measures can be unstable with small samples or sparse confidence categories. Ratio measures can become extreme when their expected denominator approaches zero — the same instability that our current single-bin precision check triggers for measures such as Gamma-Ratio, since it skips the bin-averaging that damps this in the published protocol (see below). Reliability estimates depend on bin size and resampling design. The optional Bayesian and information-theoretic components have broader dependencies and should not be interpreted as direct replacements for the 17-measure benchmark. Users should choose measures based on their scientific question and report analysis settings completely.
+
+Split-half reliability and precision are not yet validated against @rahnev2025 on a like-for-like basis. The published values for both are averages over a bin-size-stratified protocol (non-overlapping bins of 50, 100, 200, and 400 trials, analyzed separately and then averaged); our current comparison scripts instead compute a single whole-dataset odd/even split and a single whole-dataset confidence-corruption run. This is a validation-harness gap, not a defect in the underlying measure implementations — the same `stdpy` functions reproduce the published task-performance, metacognitive-bias, and response-bias profiles at *r* = 1.000. A bin-stratified reimplementation of these two comparisons is planned; until it lands, readers should not treat any currently-reported split-half or precision correlation against @rahnev2025 as protocol-matched.
+
+# Conclusions
+
+`metasignal` provides a simple, open, and validated Python interface to the principal SDT and metacognitive measures compared by @rahnev2025. The Python implementation reproduces the MATLAB and published profiles closely for the central task-performance, metacognitive-bias, and response-bias analyses. The package combines breadth, ease of use, transparent validation, and optional inferential tools. Remaining differences are localized to low-information model fits or unmatched reliability protocols and are documented explicitly. This combination makes `metasignal` suitable for reproducible metacognition research while preserving appropriate scientific caution.
 
 # AI Usage Disclosure
 
-Claude (Anthropic) was used to assist in writing portions of this paper and in generating initial drafts of source code and documentation. All content was reviewed, verified, and edited by the author. The software logic, numerical methods, and validation against reference outputs are the intellectual contribution of the author.
+Claude (Anthropic) and OpenAI language models were used to assist with initial drafts of portions of the source code, documentation, validation report, and manuscript. All software behavior, numerical comparisons, citations, scientific claims, and final wording were reviewed and edited by the authors. Responsibility for the software and manuscript remains with the authors.
 
 # References
