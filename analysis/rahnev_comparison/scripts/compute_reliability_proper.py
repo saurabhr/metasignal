@@ -89,13 +89,23 @@ def bin_starts(n_trials: int, bin_size: int) -> list[int]:
 
 # ---------------------------------------------------------------------------
 # Split-half (bin = 100 only, matches Fig. 7)
+#
+# Rahnev (2025) Methods: "a bin size of k here means that 2k trials were
+# examined with both the odd and even trials having a sample size of k."
+# bin_size below is therefore the PER-HALF trial count k; the window read
+# from the trial stream is 2*bin_size, split into odd/even halves of
+# bin_size each. (Previously this function read a window of only
+# `bin_size` trials and split THAT in half, giving bin_size/2 trials per
+# half -- half the intended sample size, which is why the split-half
+# correlations undershot the published Fig. 7 values.)
 # ---------------------------------------------------------------------------
 
 
 def split_half_for_bin(stim, resp, conf, n_ratings, start, bin_size):
-    seg_stim = stim[start : start + bin_size]
-    seg_resp = resp[start : start + bin_size]
-    seg_conf = conf[start : start + bin_size]
+    window = 2 * bin_size
+    seg_stim = stim[start : start + window]
+    seg_resp = resp[start : start + window]
+    seg_conf = conf[start : start + window]
     odd = slice(0, None, 2)
     even = slice(1, None, 2)
     m_odd = safe_measures(seg_stim[odd], seg_resp[odd], seg_conf[odd], n_ratings)
@@ -120,7 +130,7 @@ def dataset_split_half_haddara(bin_size=100):
             mask = s["day"] == day
             day_subjects.append((s["stim"][mask], s["resp"][mask], s["conf"][mask], s["n_ratings"]))
         n_trials_day = min(len(ds[0]) for ds in day_subjects) if day_subjects else 0
-        starts = bin_starts(n_trials_day, bin_size)
+        starts = bin_starts(n_trials_day, 2 * bin_size)
         for start in starts:
             odd_mat, even_mat = [], []
             for stim, resp, conf, nr in day_subjects:
@@ -140,7 +150,7 @@ def dataset_split_half_haddara(bin_size=100):
 def dataset_split_half_maniscalco(bin_size=100):
     subjects = preprocess_maniscalco()
     n_trials = min(len(s["stim"]) for s in subjects)
-    starts = bin_starts(n_trials, bin_size)
+    starts = bin_starts(n_trials, 2 * bin_size)
     per_bin_r = []
     for bi, start in enumerate(starts):
         odd_mat, even_mat = [], []
@@ -166,7 +176,7 @@ def dataset_split_half_shekhar(bin_size=100):
             mask = s["contrast"] == level
             level_subjects.append((s["stim"][mask], s["resp"][mask], s["conf"][mask], s["n_ratings"]))
         n_trials = min(len(ls[0]) for ls in level_subjects)
-        starts = bin_starts(n_trials, bin_size)
+        starts = bin_starts(n_trials, 2 * bin_size)
         per_bin_r = []
         for bi, start in enumerate(starts):
             odd_mat, even_mat = [], []
