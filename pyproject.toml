@@ -88,8 +88,8 @@ markers = [
 ]
 
 [project.urls]
-Documentation = "https://metasignal.readthedocs.io/en/stable/"
-Changelog = "https://metasignal.readthedocs.io/en/stable/changelog.html"
+Documentation = "https://metasignal.readthedocs.io/en/latest/"
+Changelog = "https://metasignal.readthedocs.io/en/latest/changelog.html"
 "Source Code" = "https://github.com/saurabhr/metasignal"
 "Issue Tracker" = "https://github.com/saurabhr/metasignal/issues"
 
