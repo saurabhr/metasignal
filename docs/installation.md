@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- Python 3.9 or later
-- NumPy, SciPy, matplotlib (installed automatically)
+- Python 3.10 or later
+- NumPy, SciPy, matplotlib, pandas, click (installed automatically)
 
 ## Install
 

@@ -16,6 +16,10 @@ The **third number** is for emergencies when we need to start branches for older
   as an alternative to typing `--stim`/`--resp`/`--conf` inline.
   `--stim-col`/`--resp-col`/`--conf-col` override the default column names
   (`stim`/`resp`/`conf`).
+- `compute_all_measures` accepts a `return_type` keyword (`'array'`
+  *(default, unchanged)*, `'dict'`, or `'dataframe'`) to get the 26 values
+  labeled by measure name instead of by position. The canonical name list is
+  exported as `metasignal.stdpy.MEASURE_NAMES`.
 
 ### Fixed
 
@@ -29,6 +33,11 @@ The **third number** is for emergencies when we need to start branches for older
   divergences in sparse difficulty subsets.
 - `compute_meta_uncertainty` now uses a deterministic multi-start optimizer,
   removing optimizer-seed-dependent noise in the fitted estimate.
+- `compute_meta_noise` no longer produces a spurious `RuntimeWarning:
+  invalid value encountered in log`. Tiny floating-point negatives from
+  criterion-grid differencing could reach a `log()` call unclipped, in rare
+  cases corrupting the search bounds for the meta-noise optimizer on sparse
+  difficulty subsets.
 
 See [docs/MATLAB_PYTHON_CORRECTIONS_REPORT.md](docs/MATLAB_PYTHON_CORRECTIONS_REPORT.md)
 for full validation numbers.

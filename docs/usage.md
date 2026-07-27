@@ -34,6 +34,17 @@ print(results)
 
 The returned array has 26 elements: the first 20 are metacognitive/SDT measures, and the last 6 are meta-d' model-fit diagnostics (not measures themselves).
 
+Pass `return_type='dict'` or `return_type='dataframe'` to get the same 26 values
+labeled by measure name instead of by position (the default, `'array'`, is
+unchanged and positional):
+
+```python
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings, return_type="dict")
+print(results["meta_d"], results["M_ratio"])
+```
+
+The canonical, ordered list of names is available as `stdpy.MEASURE_NAMES`.
+
 **Measures (indices 0-19):**
 
 | Index | Measure |

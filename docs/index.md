@@ -33,6 +33,10 @@ conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
 
 results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
 print(results)  # array of 26 float values
+
+# Or labeled by name instead of position:
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings, return_type="dict")
+print(results["meta_d"])
 ```
 
 For group-level inference, `metasignal.analysis` provides bootstrap confidence intervals, permutation tests, and group summaries over that same 26-element array. For fully Bayesian modelling, `metasignal.sdtbayes` offers 7 hierarchical approaches ranging from fast two-stage estimation to full HMeta-d and meta-regression (optional install: `pip install metasignal[sdtbayes]`).
