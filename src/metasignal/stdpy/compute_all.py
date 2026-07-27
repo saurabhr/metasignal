@@ -3,6 +3,7 @@
 import warnings
 
 import numpy as np
+import pandas as pd
 
 from metasignal.stdpy.core import compute_sdt_resp, trials_to_counts
 from metasignal.stdpy.type2 import (
@@ -16,6 +17,25 @@ from metasignal.stdpy.metad import fit_meta_d_mle
 from metasignal.stdpy.metanoise import compute_meta_noise
 from metasignal.stdpy.uncertainty import compute_meta_uncertainty
 
+# Canonical names for the 26 compute_all_measures outputs, in return order.
+MEASURE_NAMES = [
+    "meta_d", "AUC2", "Gamma", "Phi", "DeltaConf",
+    "M_ratio", "AUC2_ratio", "Gamma_ratio", "Phi_ratio", "DeltaConf_ratio",
+    "M_diff", "AUC2_diff", "Gamma_diff", "Phi_diff", "DeltaConf_diff",
+    "MetaNoise", "MetaUncertainty", "dprime", "criterion", "mean_conf",
+    "logL", "AIC", "BIC", "AICc", "k", "n",
+]
+
+_RETURN_TYPES = {"array", "dict", "dataframe"}
+
+
+def _format_result(values: np.ndarray, return_type: str):
+    if return_type == "array":
+        return values
+    if return_type == "dict":
+        return dict(zip(MEASURE_NAMES, values))
+    return pd.DataFrame([dict(zip(MEASURE_NAMES, values))])
+
 
 def compute_all_measures(
     stim: np.ndarray,
@@ -24,10 +44,12 @@ def compute_all_measures(
     n_ratings: int,
     *,
     matlab_compat: bool = False,
-) -> np.ndarray:
+    return_type: str = "array",
+) -> "np.ndarray | dict | pd.DataFrame":
     """Compute all 26 meta-signal measures mimicking the MATLAB output.
 
-    Returns an array of 26 elements corresponding to:
+    Returns 26 values corresponding to (see ``MEASURE_NAMES`` for the exact,
+    ordered list):
     [
       1: meta_d, 2: AUC2, 3: gamma, 4: phi, 5: deltaConf,
       6: M_ratio, 7: AUC2_ratio, 8: gamma_ratio, 9: phi_ratio, 10: deltaConf_ratio,
@@ -39,7 +61,17 @@ def compute_all_measures(
     matlab_compat :
         Forwarded to ``fit_meta_d_mle`` / ``compute_meta_uncertainty`` for
         single-start / high-budget MATLAB-like optimizer behaviour.
+    return_type :
+        ``'array'`` *(default)* — ``numpy.ndarray`` of 26 values, positional
+        (backward compatible).
+        ``'dict'`` — ``{measure_name: value}``.
+        ``'dataframe'`` — single-row ``pandas.DataFrame`` with measure names
+        as columns.
     """
+    if return_type not in _RETURN_TYPES:
+        raise ValueError(
+            f"return_type must be one of {sorted(_RETURN_TYPES)}, got {return_type!r}"
+        )
     stim = np.asarray(stim, dtype=float)
     resp = np.asarray(resp, dtype=float)
     conf = np.asarray(conf, dtype=float)
@@ -51,7 +83,7 @@ def compute_all_measures(
     conf = conf[valid]
 
     if len(stim) == 0:
-        return np.full(26, np.nan)
+        return _format_result(np.full(26, np.nan), return_type)
 
     if len(np.unique(stim)) > 2:
         msg = f"stim must be binary (2 classes); found {len(np.unique(stim))} distinct values"
@@ -75,7 +107,7 @@ def compute_all_measures(
     mean_conf = np.mean(conf)
 
     if np.array_equal(stim_bin, resp_bin) or dprime == 0 or len(np.unique(conf)) == 1:
-        return np.full(26, np.nan)
+        return _format_result(np.full(26, np.nan), return_type)
 
     # Convert to counts (raw, unpadded — used for all descriptive Type-2 measures)
     nr_s1, nr_s2 = trials_to_counts(stim_bin, resp_bin, conf.astype(int), n_ratings)
@@ -170,10 +202,11 @@ def compute_all_measures(
         meta_uncert = np.nan
 
     # Combine all
-    return np.array([
+    values = np.array([
         meta_d, auc2, gamma, phi, delta_conf,
         m_ratio, auc2_ratio, gamma_ratio, phi_ratio, delta_conf_ratio,
         m_diff, auc2_diff, gamma_diff, phi_diff, delta_conf_diff,
         meta_noise, meta_uncert, float(dprime), float(c), float(mean_conf),
         logL, aic, bic, aicc, float(k_fit), float(n_fit),
     ])
+    return _format_result(values, return_type)

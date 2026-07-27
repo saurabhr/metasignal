@@ -482,6 +482,9 @@ def compute_meta_noise(
     pos_crit = c[n_ratings:] - c[n_ratings - 1]
     neg_crit = -(c[n_ratings - 2 :: -1] - c[n_ratings - 1])
     crit_values_all = np.vstack([pos_crit, neg_crit])
+    # Tiny FP negatives from criterion-grid differencing are treated as zero
+    # (same convention as the pr_full clipping below; avoids log of a negative).
+    crit_values_all[crit_values_all < 0.0] = 0.0
     crit_values_all[crit_values_all == 0.0] = 1e-5
     crit_lognorm = np.log(crit_values_all)
 

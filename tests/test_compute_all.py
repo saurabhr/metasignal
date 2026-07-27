@@ -1,9 +1,10 @@
 """Tests for metasignal.stdpy.compute_all — the primary public entry point."""
 
 import numpy as np
+import pandas as pd
 import pytest
 
-from metasignal.stdpy.compute_all import compute_all_measures
+from metasignal.stdpy.compute_all import compute_all_measures, MEASURE_NAMES
 
 
 # ---------------------------------------------------------------------------
@@ -83,3 +84,43 @@ def test_handles_constant_confidence(standard_data):
     conf = np.ones(len(stim))
     result = compute_all_measures(stim, resp, conf, n_ratings=2)
     assert np.all(np.isnan(result))
+
+
+# ---------------------------------------------------------------------------
+# return_type
+# ---------------------------------------------------------------------------
+
+def test_return_type_dict_matches_array(standard_data):
+    stim, resp, conf = standard_data
+    arr = compute_all_measures(stim, resp, conf, n_ratings=2)
+    result = compute_all_measures(stim, resp, conf, n_ratings=2, return_type="dict")
+    assert isinstance(result, dict)
+    assert list(result.keys()) == MEASURE_NAMES
+    np.testing.assert_array_equal(list(result.values()), arr)
+
+
+def test_return_type_dataframe_matches_array(standard_data):
+    stim, resp, conf = standard_data
+    arr = compute_all_measures(stim, resp, conf, n_ratings=2)
+    result = compute_all_measures(stim, resp, conf, n_ratings=2, return_type="dataframe")
+    assert isinstance(result, pd.DataFrame)
+    assert result.shape == (1, 26)
+    assert list(result.columns) == MEASURE_NAMES
+    np.testing.assert_array_equal(result.iloc[0].to_numpy(), arr)
+
+
+def test_return_type_dataframe_on_nan_edge_case():
+    """The NaN-array early-return paths must also respect return_type."""
+    stim = np.full(20, np.nan)
+    resp = np.full(20, np.nan)
+    conf = np.full(20, np.nan)
+    result = compute_all_measures(stim, resp, conf, n_ratings=2, return_type="dataframe")
+    assert isinstance(result, pd.DataFrame)
+    assert result.shape == (1, 26)
+    assert result.isna().all(axis=None)
+
+
+def test_return_type_invalid_raises(standard_data):
+    stim, resp, conf = standard_data
+    with pytest.raises(ValueError, match="return_type"):
+        compute_all_measures(stim, resp, conf, n_ratings=2, return_type="list")

@@ -28,7 +28,7 @@ affiliations:
     index: 2
   - name: University of Missouri, USA
     index: 3
-date: 24 July 2026
+date: 27 July 2026
 bibliography: paper.bib
 ---
 
@@ -57,7 +57,7 @@ The MATLAB toolbox by @maniscalco2014 and its Python port [@lee_metad_python] re
 
 `metasignal` is built around four primary design principles. First, input data (stimulus identity, behavioral response, and confidence) are structured as tabular trial-level data compatible with standard Python processing workflows. Second, the core `stdpy` layer relies solely on NumPy [@harris2020] and SciPy [@virtanen2020], providing a pure-Python implementation. Third, it offers flexible execution: `compute_all_measures` provides a single entry point for broad profiling, while individual functions remain exposed for focused queries. Fourth, complex Bayesian dependencies are isolated from the lightweight frequentist core.
 
-When invoked, `compute_all_measures` returns 26 values. The first 20 span $d'$, decision criterion, mean confidence, and the 17 metacognitive metrics. The final six outputs (log-likelihood, AIC, BIC, AICc, fitted parameter count, and sample size) serve as diagnostic parameters for the meta-$d'$ fit rather than distinct metacognitive measures.
+When invoked, `compute_all_measures` returns 26 values. The first 20 span $d'$, decision criterion, mean confidence, and the 17 metacognitive metrics. The final six outputs (log-likelihood, AIC, BIC, AICc, fitted parameter count, and sample size) serve as diagnostic parameters for the meta-$d'$ fit rather than distinct metacognitive measures. An optional `return_type` argument (`'dict'` or `'dataframe'`) labels these same 26 values by measure name instead of position; the default `'array'` preserves positional, backward-compatible output.
 
 # Methods
 
@@ -223,7 +223,7 @@ While `metasignal` perfectly reproduces the core task-performance, metacognitive
 
 # Code Availability
 
-`metasignal` is open source (MIT license) and available at <https://github.com/saurabhr/metasignal>. Full documentation, including the API reference and tutorials, is hosted at <https://metasignal.readthedocs.io/en/stable/>. The complete @rahnev2025 replication and validation workflow (comparison scripts, JSON/CSV results, and figures) is included in the repository under `analysis/rahnev_comparison/`, and the bundled MATLAB reference pipeline and results are under `matlab/metasignal_mat/`. The original MATLAB code for the 17 metacognition measures, from which the bundled MATLAB pipeline is derived, is available at <https://osf.io/y5w2d/> [@rahnev2025].
+`metasignal` is open source (MIT license) and available at <https://github.com/saurabhr/metasignal>. Full documentation, including the API reference and tutorials, is hosted at <https://metasignal.readthedocs.io/en/latest/>. The complete @rahnev2025 replication and validation workflow (comparison scripts, JSON/CSV results, and figures) is included in the repository under `analysis/rahnev_comparison/`, and the bundled MATLAB reference pipeline and results are under `matlab/metasignal_mat/`. The original MATLAB code for the 17 metacognition measures, from which the bundled MATLAB pipeline is derived, is available at <https://osf.io/y5w2d/> [@rahnev2025].
 
 # AI Usage Disclosure
 

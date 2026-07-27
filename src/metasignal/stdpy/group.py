@@ -14,7 +14,7 @@ from typing import List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from metasignal.stdpy.compute_all import compute_all_measures
+from metasignal.stdpy.compute_all import compute_all_measures, MEASURE_NAMES
 from metasignal.stdpy.core import compute_sdt_resp
 
 # Type-1 SDT measures computed directly from stimulus/response arrays
@@ -23,14 +23,9 @@ _TYPE1_COLS = [
     "n_trials", "n_hits", "n_misses", "n_fa", "n_cr",
 ]
 
-# Type-2 / metacognitive measures — same ordering as compute_all_measures
-_TYPE2_COLS = [
-    "meta_d", "AUC2", "Gamma", "Phi", "DeltaConf",
-    "M_ratio", "AUC2_ratio", "Gamma_ratio", "Phi_ratio", "DeltaConf_ratio",
-    "M_diff", "AUC2_diff", "Gamma_diff", "Phi_diff", "DeltaConf_diff",
-    "MetaNoise", "MetaUncertainty", "mean_conf",
-    "logL", "AIC", "BIC", "AICc", "k", "n",
-]
+# Type-2 / metacognitive measures — same ordering as compute_all_measures,
+# minus dprime/criterion (already provided by _TYPE1_COLS above).
+_TYPE2_COLS = [c for c in MEASURE_NAMES if c not in ("dprime", "criterion")]
 
 # All measures in display order: type-1 first, then type-2
 MEASURE_COLS: List[str] = _TYPE1_COLS + _TYPE2_COLS

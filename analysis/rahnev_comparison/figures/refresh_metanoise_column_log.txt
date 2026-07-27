@@ -13,7 +13,7 @@ Haddara...
     raw 60/70
     raw 65/70
     raw 70/70
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[raw] meta-noise mean=0.3564 n_finite=70
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/haddara_mle.npz[raw] meta-noise mean=0.3564 n_finite=70
     bias 5/70
     bias 10/70
     bias 15/70
@@ -28,7 +28,7 @@ Haddara...
     bias 60/70
     bias 65/70
     bias 70/70
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[bias] meta-noise mean=0.4247 n_finite=140
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/haddara_mle.npz[bias] meta-noise mean=0.4247 n_finite=140
     split 5/70
     split 10/70
     split 15/70
@@ -43,46 +43,46 @@ Haddara...
     split 60/70
     split 65/70
     split 70/70
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/haddara_mle.npz[split] meta-noise mean=0.3626 n_finite=140
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/haddara_mle.npz[split] meta-noise mean=0.3626 n_finite=140
 Maniscalco...
     raw 5/22
     raw 10/22
     raw 15/22
     raw 20/22
     raw 22/22
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[raw] meta-noise mean=0.4138 n_finite=22
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/maniscalco_mle.npz[raw] meta-noise mean=0.4138 n_finite=22
     bias 5/22
     bias 10/22
     bias 15/22
     bias 20/22
     bias 22/22
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[bias] meta-noise mean=0.6260 n_finite=44
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/maniscalco_mle.npz[bias] meta-noise mean=0.6260 n_finite=44
     split 5/22
     split 10/22
     split 15/22
     split 20/22
     split 22/22
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/maniscalco_mle.npz[split] meta-noise mean=0.4960 n_finite=44
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/maniscalco_mle.npz[split] meta-noise mean=0.4960 n_finite=44
 Shekhar...
     shekhar diff 5/20
     shekhar diff 10/20
     shekhar diff 15/20
     shekhar diff 20/20
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[diff] meta-noise mean=0.3791 n_finite=60
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/shekhar_mle.npz[diff] meta-noise mean=0.3791 n_finite=60
     shekhar bias 5/20
     shekhar bias 10/20
     shekhar bias 15/20
     shekhar bias 20/20
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[bias] meta-noise mean=0.4372 n_finite=120
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/shekhar_mle.npz[bias] meta-noise mean=0.4372 n_finite=120
     split 5/20
     split 10/20
     split 15/20
     split 20/20
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/shekhar_mle.npz[split] meta-noise mean=0.3722 n_finite=40
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/shekhar_mle.npz[split] meta-noise mean=0.3722 n_finite=40
 Locke...
     locke 5/10
     locke 10/10
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/locke_mle.npz[rb] meta-noise mean=1.1116 n_finite=70
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/locke_mle.npz[rb] meta-noise mean=1.1116 n_finite=70
 Rouault1...
     rouault 10/466
     rouault 20/466
@@ -131,7 +131,7 @@ Rouault1...
     rouault 450/466
     rouault 460/466
     rouault 466/466
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault1_mle.npz[diff] meta-noise mean=0.4072 n_finite=932
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/rouault1_mle.npz[diff] meta-noise mean=0.4087 n_finite=932
 Rouault2...
     rouault 10/484
     rouault 20/484
@@ -182,5 +182,5 @@ Rouault2...
     rouault 470/484
     rouault 480/484
     rouault 484/484
-  updated /Users/mukeshmakwana/Downloads/metasignal/notebooks/precomputed/rouault2_mle.npz[diff] meta-noise mean=0.2557 n_finite=968
+  updated /Users/saurabhext/Documents/metasignal/notebooks/precomputed/rouault2_mle.npz[diff] meta-noise mean=0.2582 n_finite=968
 Done.

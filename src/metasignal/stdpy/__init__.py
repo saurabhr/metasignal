@@ -15,7 +15,7 @@ from metasignal.stdpy.metanoise import (
     compute_meta_noise,
     is_matlab_meta_noise_artifact,
 )
-from metasignal.stdpy.compute_all import compute_all_measures
+from metasignal.stdpy.compute_all import compute_all_measures, MEASURE_NAMES
 from metasignal.stdpy.group import fit_group, MEASURE_COLS
 from metasignal.stdpy.plot import (
     plot_confidence,
@@ -48,6 +48,7 @@ __all__ = [
     "MATLAB_META_NOISE_SEARCH_ARTIFACT",
     "is_matlab_meta_noise_artifact",
     "compute_all_measures",
+    "MEASURE_NAMES",
     "fit_group",
     "MEASURE_COLS",
     "plot_confidence",
