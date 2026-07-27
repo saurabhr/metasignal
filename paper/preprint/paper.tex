@@ -66,15 +66,15 @@ The MATLAB toolbox by \citet{maniscalco2014} and its Python port \citep{lee_meta
 
 \section{Software Design}\label{software-design}
 
+\texttt{metasignal} is built around four primary design principles. First, input data (stimulus identity, behavioral response, and confidence) are structured as tabular trial-level data compatible with standard Python processing workflows. Second, the core \texttt{stdpy} layer relies solely on NumPy \citep{harris2020} and SciPy \citep{virtanen2020}, providing a pure-Python implementation. Third, it offers flexible execution: \texttt{compute\_all\_measures} provides a single entry point for broad profiling, while individual functions remain exposed for focused queries. Fourth, complex Bayesian dependencies are isolated from the lightweight frequentist core.
+
+When invoked, \texttt{compute\_all\_measures} returns 26 values. The first 20 span d', decision criterion, mean confidence, and the 17 metacognitive metrics. The final six outputs (log-likelihood, AIC, BIC, AICc, fitted parameter count, and sample size) serve as diagnostic parameters for the meta-d' fit rather than distinct metacognitive measures. An optional \texttt{return\_type} argument (\texttt{'dict'} or \texttt{'dataframe'}) labels these same 26 values by measure name instead of position; the default \texttt{'array'} preserves positional, backward-compatible output.
+
 \begin{figure}
 \centering
 \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={Architecture of metasignal. Trial-level data enter the stable stdpy layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.}]{structure.png}
 \caption{\textbf{Architecture of \protect\texttt{metasignal}.} Trial-level stimulus, response, confidence, and rating-scale arrays (\texttt{stim}, \texttt{resp}, \texttt{conf}, \texttt{n\_ratings}) enter the stable \texttt{stdpy} core, which computes Type-1 SDT quantities ($d'$, criterion $c$) and all 17 metacognitive measures; \texttt{compute\_all\_measures} packages these into a single 26-element array (20 measures plus 6 meta-$d'$ fit diagnostics). This output feeds the \texttt{analysis} layer (bootstrap confidence intervals, permutation tests, group summaries) and the \texttt{metasignal compute} command-line interface, which accepts CSV input without requiring code. The dashed box shows optional, dependency-isolated extensions: \texttt{sdtbayes} for hierarchical Bayesian estimation (seven modeling approaches) and \texttt{itmc} for information-theoretic metacognition measures.}
 \end{figure}
-
-\texttt{metasignal} is built around four primary design principles. First, input data (stimulus identity, behavioral response, and confidence) are structured as tabular trial-level data compatible with standard Python processing workflows. Second, the core \texttt{stdpy} layer relies solely on NumPy \citep{harris2020} and SciPy \citep{virtanen2020}, providing a pure-Python implementation. Third, it offers flexible execution: \texttt{compute\_all\_measures} provides a single entry point for broad profiling, while individual functions remain exposed for focused queries. Fourth, complex Bayesian dependencies are isolated from the lightweight frequentist core.
-
-When invoked, \texttt{compute\_all\_measures} returns 26 values. The first 20 span d', decision criterion, mean confidence, and the 17 metacognitive metrics. The final six outputs (log-likelihood, AIC, BIC, AICc, fitted parameter count, and sample size) serve as diagnostic parameters for the meta-d' fit rather than distinct metacognitive measures. An optional \texttt{return\_type} argument (\texttt{'dict'} or \texttt{'dataframe'}) labels these same 26 values by measure name instead of position; the default \texttt{'array'} preserves positional, backward-compatible output.
 
 \section{Methods}\label{methods}
 
