@@ -10,6 +10,27 @@ Python interface for the Signal Detection Theory (SDT) and meta-measures analysi
 
 <!-- end docs-include-index -->
 
+![Architecture of metasignal. Trial-level data enter the stable stdpy layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.](paper/structure.png)
+
+## Measures
+
+A single call to `compute_all_measures` returns a 26-element result: twenty metacognitive/SDT measures organised into five categories, followed by six meta-d' model-fit diagnostics.
+
+| Category               | Measures                                                      |
+| ----------------------- | -------------------------------------------------------------- |
+| Absolute sensitivity    | meta-d', AUC2, gamma, phi, deltaConf                            |
+| Efficiency ratios       | M-ratio, AUC2-ratio, gamma-ratio, phi-ratio, deltaConf-ratio    |
+| Efficiency differences  | M-diff, AUC2-diff, gamma-diff, phi-diff, deltaConf-diff         |
+| Noise & uncertainty     | metaNoise, metaUncertainty                                      |
+| Type-1 SDT              | d', c, mean confidence                                          |
+| Model-fit diagnostics   | logL, AIC, BIC, AICc, k, n                                      |
+
+## Validation
+
+`metasignal` is validated against the Rahnev (2025) MATLAB pipeline across six datasets. See [`analysis/rahnev_comparison/`](analysis/rahnev_comparison/) for the full replication workflow.
+
+![Cross-implementation validation against Rahnev (2025). Panels show task-performance effects, metacognitive-bias effects, response-bias correlations, test-retest ICC, and the task-performance profile across all 17 measures, comparing published values with MATLAB and Python replications.](paper/validation_main.png)
+
 ## Installation
 
 <!-- start docs-include-installation -->
@@ -60,9 +81,12 @@ correct = stim == resp
 conf = np.where(correct, rng.integers(2, n_ratings + 1, n),
                          rng.integers(1, n_ratings, n))   # higher conf when correct
 
-# Compute all measures at once (26-element array: 20 measures + 6 fit diagnostics)
+# Compute all measures at once, labeled by name (see Measures table above)
+results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings, return_type="dict")
+print(results["meta_d"], results["M_ratio"], results["AUC2"])
+
+# Or as a positional array (26 values: 20 measures + 6 fit diagnostics) — the default
 results = stdpy.compute_all_measures(stim, resp, conf, n_ratings=n_ratings)
-print(results)
 
 # Compute basic SDT
 dprime, c, _ = stdpy.compute_sdt_resp(stim, resp)
