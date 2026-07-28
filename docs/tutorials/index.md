@@ -21,20 +21,20 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 The 26 measures fall into five conceptual groups (the original 20, plus 6 model-fit diagnostics from the meta-d' MLE):
 
 ```
-Absolute sensitivity   meta-d', AUC2, Gamma, Phi, DeltaConf
-                       (how well does confidence track accuracy?)
+Metacognitive sensitivity meta-d', AUC2, Gamma, Phi, DeltaConf
+                          (how well does confidence track accuracy?)
 
-Efficiency ratios      M-ratio, AUC2-ratio, Gamma-ratio, Phi-ratio, DeltaConf-ratio
-                       (performance relative to an ideal observer)
+Efficiency ratios         M-ratio, AUC2-ratio, Gamma-ratio, Phi-ratio, DeltaConf-ratio
+                          (performance relative to an ideal observer)
 
-Efficiency differences M-diff, AUC2-diff, Gamma-diff, Phi-diff, DeltaConf-diff
-                       (same idea, additive rather than multiplicative)
+Efficiency differences    M-diff, AUC2-diff, Gamma-diff, Phi-diff, DeltaConf-diff
+                          (same idea, additive rather than multiplicative)
 
-Noise & uncertainty    metaNoise, metaUncertainty
-                       (dispersion in the confidence-generating process)
+Noise & uncertainty       metaNoise, metaUncertainty
+                          (dispersion in the confidence-generating process)
 
-Model-fit diagnostics  logL, AIC, BIC, AICc, k, n
-                       (from the meta-d' MLE fit)
+Model-fit diagnostics     logL, AIC, BIC, AICc, k, n
+                          (from the meta-d' MLE fit)
 ```
 
 Plus the three Type-1 SDT basics returned for convenience: **d'**, **c** (criterion), **mean confidence**.

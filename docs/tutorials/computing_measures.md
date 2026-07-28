@@ -9,11 +9,11 @@ This tutorial covers the full 26-measure battery in detail: what each measure ca
 ```
 Index   Measure              Block
 ──────────────────────────────────────────────────────────
- 0      meta-d'              Absolute sensitivity (MLE)
- 1      AUC2                 Absolute sensitivity
- 2      Gamma                Absolute sensitivity
- 3      Phi                  Absolute sensitivity
- 4      DeltaConf            Absolute sensitivity
+ 0      meta-d'              Metacognitive sensitivity (MLE)
+ 1      AUC2                 Metacognitive sensitivity
+ 2      Gamma                Metacognitive sensitivity
+ 3      Phi                  Metacognitive sensitivity
+ 4      DeltaConf            Metacognitive sensitivity
 
  5      M-Ratio              Efficiency ratio  (obs / ideal)
  6      AUC2-Ratio           Efficiency ratio
@@ -60,7 +60,7 @@ conf = np.where(
 )
 ```
 
-## Block 1 — Absolute sensitivity
+## Block 1 — Metacognitive sensitivity
 
 These five measures ask: *how well does this participant's confidence track their accuracy?*
 

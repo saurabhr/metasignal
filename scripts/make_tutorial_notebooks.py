@@ -129,7 +129,7 @@ conf = np.where(
 print("Data ready:", n_trials, "trials,", n_ratings, "ratings")
 """),
 
-    md("""## Block 1 — Absolute sensitivity (indices 0–4)
+    md("""## Block 1 — Metacognitive sensitivity (indices 0–4)
 
 These five measures ask: *how well does confidence track accuracy?*"""),
     code("""\

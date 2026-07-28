@@ -16,18 +16,18 @@
 
 A single call to `compute_all_measures` returns a 26-element result: twenty metacognitive/SDT measures organised into five categories, followed by six meta-d' model-fit diagnostics.
 
-| Category               | Measures                                                      |
-| ----------------------- | -------------------------------------------------------------- |
-| Absolute sensitivity    | meta-d', AUC2, gamma, phi, deltaConf                            |
-| Efficiency ratios       | M-ratio, AUC2-ratio, gamma-ratio, phi-ratio, deltaConf-ratio    |
-| Efficiency differences  | M-diff, AUC2-diff, gamma-diff, phi-diff, deltaConf-diff         |
-| Noise & uncertainty     | metaNoise, metaUncertainty                                      |
-| Type-1 SDT              | d', c, mean confidence                                          |
-| Model-fit diagnostics   | logL, AIC, BIC, AICc, k, n                                      |
+| Category                  | Measures                                                     |
+| ------------------------- | ------------------------------------------------------------ |
+| Metacognitive sensitivity | meta-d', AUC2, gamma, phi, deltaConf                         |
+| Efficiency ratios         | M-ratio, AUC2-ratio, gamma-ratio, phi-ratio, deltaConf-ratio |
+| Efficiency differences    | M-diff, AUC2-diff, gamma-diff, phi-diff, deltaConf-diff      |
+| Noise & uncertainty       | metaNoise, metaUncertainty                                   |
+| Type-1 SDT                | d', c, mean confidence                                       |
+| Model-fit diagnostics     | logL, AIC, BIC, AICc, k, n                                   |
 
 ## Validation
 
-`metasignal` is validated against the Rahnev (2025) MATLAB pipeline across six datasets. See [`analysis/rahnev_comparison/`](analysis/rahnev_comparison/) for the full replication workflow.
+`metasignal` is validated against the Rahnev (2025) MATLAB pipeline across the six datasets distributed with the Rahnev analysis pipeline — Haddara, Maniscalco, Rouault experiments 1 and 2, Shekhar, and Locke. See [`analysis/rahnev_comparison/`](analysis/rahnev_comparison/) for the full replication workflow.
 
 ![Cross-implementation validation against Rahnev (2025). Panels show task-performance effects, metacognitive-bias effects, response-bias correlations, test-retest ICC, and the task-performance profile across all 17 measures, comparing published values with MATLAB and Python replications.](paper/validation_main.png)
 

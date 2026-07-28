@@ -86,7 +86,7 @@ The `analysis` sub-package provides non-parametric inference tools that operate 
 
 ## itmc — Information-theoretic metacognition (experimental)
 
-The `itmc` sub-package implements the information-theoretic metacognition framework of Dayan (2023), measuring metacognitive sensitivity as mutual information between accuracy and confidence. It is a pre-1.0 component and its API may still change between releases.
+The `itmc` sub-package implements the information-theoretic metacognition framework of Dayan (2023), measuring metacognitive sensitivity as mutual information between accuracy and confidence. It is a pre-1.0 component and its API may still change between releases. Its test suite (`tests/test_itmc.py`) covers bounds, monotonicity, and internal-consistency properties only — it has not yet been cross-checked against reference values from Dayan (2023) or the R `statConfR` package (Rausch et al., 2025) it was ported from.
 
 ::: metasignal.itmc.meta_I
 
