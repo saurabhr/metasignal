@@ -1,6 +1,6 @@
 # metasignal
 
-Python library for Signal Detection Theory (SDT) and metacognitive measures, implementing the comprehensive assessment framework from [Rahnev (2025)](https://doi.org/10.1038/s41467-025-56117-0) — _A comprehensive assessment of current methods for measuring metacognition_, Nature Communications, 16(1), 701.
+**metasignal** is a Python library for Signal Detection Theory (SDT) and metacognitive measures that implements the comprehensive assessment framework from [Rahnev (2025)](https://doi.org/10.1038/s41467-025-56117-0) — _A comprehensive assessment of current methods for measuring metacognition_, Nature Communications, 16(1), 701.
 
 ## What is metasignal?
 

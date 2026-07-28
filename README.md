@@ -6,7 +6,7 @@
 
 <!-- start docs-include-index -->
 
-Python interface for the Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) _Nature Communications_, 16(1), 701.
+**metasignal** is a Python interface for Signal Detection Theory (SDT) and meta-measures analysis from Rahnev (2025), [A comprehensive assessment of current methods for measuring metacognition.](https://www.nature.com/articles/s41467-025-56117-0) _Nature Communications_, 16(1), 701.
 
 <!-- end docs-include-index -->
 
