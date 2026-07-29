@@ -1,9 +1,7 @@
 # Rahnev (2025) Figure Replication: Paper · MATLAB · Python
 
-**Repository:** `/Users/mukeshmakwana/Downloads/metasignal`  
 **Paper:** Rahnev, D. (2025). *A comprehensive assessment of current methods for measuring metacognition.* Nature Communications, 16:701.  
-**Local copies:**  
-- `/Users/mukeshmakwana/Downloads/metasignal/Rahnev_paper.pdf`  
+**Local copy (not tracked in git, add your own):**  
 - `analysis/rahnev_comparison/Rahnev_2025_NatureCommunications.pdf`  
 
 **Date:** 2026-07-18  
@@ -66,7 +64,7 @@ Main paper claims we target numerically:
 ### 4.2 Scripts
 
 ```bash
-cd /Users/mukeshmakwana/Downloads/metasignal
+cd metasignal  # repo root
 
 # Three-way numeric gate (arrays, Supp-table t-tests, paper scalars)
 python analysis/rahnev_comparison/scripts/compare_paper_matlab_python.py \
@@ -266,7 +264,7 @@ Full step-by-step protocol (fixes → cache refresh → gates → plots):
 **`analysis/rahnev_comparison/REPLICABILITY.md`**
 
 ```bash
-cd /Users/mukeshmakwana/Downloads/metasignal
+cd metasignal  # repo root
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONUNBUFFERED=1
 
 # After code fixes (already in tree):

@@ -1,7 +1,6 @@
 # Replicability protocol — Rahnev comparison figures
 
 **Date:** 2026-07-18  
-**Repo root:** `/Users/mukeshmakwana/Downloads/metasignal`
 
 This document records every step needed to regenerate the MATLAB–Python–paper
 comparison from a clean checkout after the scientifically motivated estimator
@@ -12,7 +11,7 @@ fixes.
 ## 0. Prerequisites
 
 ```bash
-cd /Users/mukeshmakwana/Downloads/metasignal
+cd metasignal  # repo root
 # Python 3.10+ with metasignal editable / src on path
 pip install -e ".[dev]"   # or: PYTHONPATH=src:notebooks
 ```
