@@ -8,13 +8,13 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 
 | # | Tutorial | What you'll learn |
 | --- | --- | --- |
-| 1 | [Getting Started](getting_started.md) | Install check, input format, smoke test |
-| 2 | [Computing All 26 Measures](computing_measures.md) | `compute_all_measures`, index→measure mapping, NaN handling |
-| 3 | [Statistical Inference](statistical_inference.md) | Bootstrap CIs, permutation tests, group summaries |
-| 4 | [Difficulty Dependence](difficulty_dependence.md) | Per-difficulty computation, 3-SD outlier removal, ANOVA |
-| 5 | [Metacognitive Bias](metacognitive_bias.md) | Xue recoding, bias sensitivity testing |
-| 6 | [Split-Half Reliability](split_half_reliability.md) | Odd/even splits, Spearman-Brown correction |
-| 7 | Bayesian Hierarchical Meta-d' | Hierarchical Bayesian estimation via `sdtbayes` (requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`) |
+| 1 | [Getting Started](01_getting_started.ipynb) | Install check, input format, smoke test |
+| 2 | [Computing All 26 Measures](02_computing_measures.ipynb) | `compute_all_measures`, index→measure mapping, NaN handling |
+| 3 | [Statistical Inference](03_statistical_inference.ipynb) | Bootstrap CIs, permutation tests, group summaries |
+| 4 | [Difficulty Dependence](04_difficulty_dependence.ipynb) | Per-difficulty computation, 3-SD outlier removal, ANOVA |
+| 5 | [Metacognitive Bias](05_metacognitive_bias.ipynb) | Xue recoding, bias sensitivity testing |
+| 6 | [Split-Half Reliability](06_split_half_reliability.ipynb) | Odd/even splits, Spearman-Brown correction |
+| 7 | [Bayesian Hierarchical Meta-d'](07_bayesian_hierarchical.ipynb) | Hierarchical Bayesian estimation via `sdtbayes` (requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`) |
 
 ## Background
 
