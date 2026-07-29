@@ -19,8 +19,8 @@ Outputs:
     comparison_values.csv
 
 Usage:
-    python scripts/generate_rahnev_comparison_plots.py
-    python scripts/generate_rahnev_comparison_plots.py --out path/to/output
+    python analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py
+    python analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py --out path/to/output
 """
 
 from __future__ import annotations

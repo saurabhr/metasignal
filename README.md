@@ -29,7 +29,7 @@ A single call to `compute_all_measures` returns a 26-element result: twenty meta
 
 `metasignal` is validated against the Rahnev (2025) MATLAB pipeline across the six datasets distributed with the Rahnev analysis pipeline — Haddara, Maniscalco, Rouault experiments 1 and 2, Shekhar, and Locke. See [`analysis/rahnev_comparison/`](analysis/rahnev_comparison/) for the full replication workflow.
 
-![Cross-implementation validation against Rahnev (2025). Panels show task-performance effects, metacognitive-bias effects, response-bias correlations, test-retest ICC, and the task-performance profile across all 17 measures, comparing published values with MATLAB and Python replications.](paper/validation_main.png)
+![Cross-implementation validation against Rahnev (2025). Panels show task-performance effects, metacognitive-bias effects, response-bias correlations, test-retest ICC, and the task-performance profile across all 17 measures, comparing published values with MATLAB and Python replications. Published ("Paper") values in all five panels are the per-measure averages reported in Rahnev (2025)'s Figure 7 ("Summary of results").](paper/validation_main.png)
 
 ## Installation
 
