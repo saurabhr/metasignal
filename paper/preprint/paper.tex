@@ -72,7 +72,7 @@ When invoked, \texttt{compute\_all\_measures} returns 26 values. The first 20 sp
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={Architecture of metasignal. Trial-level data enter the stable stdpy layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.}]{structure.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Architecture of metasignal. Trial-level data enter the stable stdpy layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.}]{structure.png}
 \caption{\textbf{Architecture of \protect\texttt{metasignal}.} Trial-level stimulus, response, confidence, and rating-scale arrays (\texttt{stim}, \texttt{resp}, \texttt{conf}, \texttt{n\_ratings}) enter the stable \texttt{stdpy} core, which computes Type-1 SDT quantities ($d'$, criterion $c$) and all 17 metacognitive measures; \texttt{compute\_all\_measures} packages these into a single 26-element array (20 measures plus 6 meta-$d'$ fit diagnostics). This output feeds the \texttt{analysis} layer (bootstrap confidence intervals, permutation tests, group summaries) and the \texttt{metasignal compute} command-line interface, which accepts CSV input without requiring code. The dashed box shows optional, dependency-isolated extensions: \texttt{sdtbayes} for hierarchical Bayesian estimation (seven modeling approaches) and \texttt{itmc} for information-theoretic metacognition measures.}
 \end{figure}
 
