@@ -40,6 +40,18 @@ def perform_ttest(data, test_description="", display=True):
 
     return pval, tstat, df, cohen_d, ci
 
+# McGraw & Wong (1996) letter-based codes -> pingouin's Shrout & Fleiss (1979)
+# numeric ``Type`` labels (confirmed against pingouin 0.5.5's own docstring).
+_ICC_TYPE_MAP = {
+    '1-1': 'ICC1',
+    '1-k': 'ICC1k',
+    'A-1': 'ICC2',
+    'A-k': 'ICC2k',
+    'C-1': 'ICC3',
+    'C-k': 'ICC3k',
+}
+
+
 def icc(data, icc_type='C-k'):
     """Intraclass Correlation Coefficient — port of ICC.m (Salarian 2008).
 
@@ -66,16 +78,23 @@ def icc(data, icc_type='C-k'):
         ) from e
     import pandas as pd
 
+    try:
+        pingouin_type = _ICC_TYPE_MAP[icc_type]
+    except KeyError:
+        raise ValueError(
+            f"icc_type '{icc_type}' not recognised. "
+            f"Available: {sorted(_ICC_TYPE_MAP)}"
+        ) from None
+
     df = pd.DataFrame(data)
     df = df.reset_index().melt(id_vars='index', var_name='rater', value_name='score')
     df.columns = ['target', 'rater', 'score']
     res = pg.intraclass_corr(data=df, targets='target', raters='rater', ratings='score')
 
-    pingouin_type = f"ICC({icc_type.replace('-', ',')})"
     match = res.loc[res["Type"] == pingouin_type]
     if match.empty:
         raise ValueError(
-            f"icc_type '{icc_type}' ('{pingouin_type}') not found. "
+            f"icc_type '{icc_type}' ('{pingouin_type}') not found in pingouin output. "
             f"Available: {res['Type'].tolist()}"
         )
     return match

@@ -112,20 +112,21 @@ def test_icc_returns_dataframe():
 def test_icc_uses_consistency_type():
     """Paper uses consistency ICC (C-k), not absolute agreement.
     Confirmed in Rahnev (2025) Nat Commun and peer review response to Reviewer #2.
-    pingouin >= 0.6 labels this type as 'ICC(C,k)' for k raters.
+    pingouin 0.5.5 labels this type 'ICC3k' (Shrout & Fleiss numeric convention);
+    icc_type='C-k' (McGraw & Wong) maps to it.
     """
     from metasignal.stdpy.stats_helpers import icc
     rng = np.random.default_rng(5)
     data = rng.normal(size=(20, 2))
     result = icc(data)
-    assert "ICC(C,k)" in result["Type"].values, (
-        "Expected ICC(C,k) (consistency, k-rater) row — paper uses C-k type"
+    assert "ICC3k" in result["Type"].values, (
+        "Expected ICC3k (consistency, k-rater) row — paper uses C-k type"
     )
 
 
 def _get_icc_ck(result):
-    """Extract the ICC(C,k) consistency value from a pingouin result DataFrame."""
-    return result.loc[result["Type"] == "ICC(C,k)", "ICC"].values[0]
+    """Extract the consistency ICC value from icc()'s single-row result."""
+    return result["ICC"].values[0]
 
 
 def test_icc_perfect_reliability():
