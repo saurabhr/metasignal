@@ -25,7 +25,7 @@ def setup_runtime(use_prebuilt: bool = True) -> None:
     except ImportError as e:
         msg = (
             "brmspy is not installed. Run:\n"
-            "    pip install metasignal[sdtbayes]"
+            '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
         )
         raise ImportError(msg) from e
 

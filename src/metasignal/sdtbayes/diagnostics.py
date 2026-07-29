@@ -237,5 +237,6 @@ def _require_arviz() -> Any:
         return az
     except ImportError as e:
         raise ImportError(
-            "arviz is not installed. Run:\n    pip install metasignal[sdtbayes]"
+            "arviz is not installed. Run:\n"
+            '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
         ) from e

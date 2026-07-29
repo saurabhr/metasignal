@@ -81,7 +81,10 @@ _STAN_FILES_SUBJECT = {
 
 _VALID_PARAMETERIZATIONS = tuple(_STAN_FILES)
 
-_BRMSPY_MSG  = "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
+_BRMSPY_MSG  = (
+    "brmspy is not installed. Run:\n"
+    '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
+)
 _CMDSTAN_MSG = (
     "cmdstanpy is not installed. Run:\n    pip install cmdstanpy\n"
     "Then set up CmdStan:  import cmdstanpy; cmdstanpy.install_cmdstan()"

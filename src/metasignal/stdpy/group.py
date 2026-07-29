@@ -87,7 +87,8 @@ def fit_group(
 
         ``'bayesian'``
             Hierarchical Bayesian via ``metasignal.sdtbayes``.  Requires
-            ``pip install metasignal[sdtbayes]`` and ``setup_runtime()``.
+            ``pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"``
+            and ``setup_runtime()``.
             The specific sdtbayes function is chosen automatically:
 
             - No ``subject`` → ``fit_subject_level`` (single participant)

@@ -11,7 +11,10 @@ from typing import Any
 
 import numpy as np
 
-_BRMSPY_MSG = "brmspy is not installed. Run:\n    pip install metasignal[sdtbayes]"
+_BRMSPY_MSG = (
+    "brmspy is not installed. Run:\n"
+    '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
+)
 
 
 def require_brms() -> Any:

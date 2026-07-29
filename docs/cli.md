@@ -2,7 +2,7 @@
 
 The `metasignal` command-line tool gives access to the pure-Python backend
 without writing any Python code. The optional `bayes` sub-group requires
-`pip install metasignal[sdtbayes]`.
+`pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`.
 
 ## Commands
 
@@ -82,7 +82,7 @@ Column names default to `stim`, `resp`, `conf` and can be overridden with
 
 ## `bayes` — Bayesian hierarchical meta-d'
 
-Requires `pip install metasignal[sdtbayes]` and a one-time Stan runtime setup
+Requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"` and a one-time Stan runtime setup
 (see [SDT Bayes](sdtbayes.md) for installation instructions).
 
 Both sub-commands take a **long-format CSV** — one trial per row — with

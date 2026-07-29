@@ -114,7 +114,7 @@ def _import_sdtbayes():
     except ImportError as exc:
         raise click.ClickException(
             "The sdtbayes extra is not installed. Run:\n"
-            "    pip install metasignal[sdtbayes]"
+            '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
         ) from exc
 
 
@@ -124,7 +124,8 @@ def _read_csv(csv_path: str, *required_cols: str) -> "pd.DataFrame":
         import pandas as pd
     except ImportError as exc:
         raise click.ClickException(
-            "pandas is required. Run:\n    pip install metasignal[sdtbayes]"
+            "pandas is required. Run:\n"
+            '    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"'
         ) from exc
     df = pd.read_csv(csv_path)
     missing = [c for c in required_cols if c not in df.columns]

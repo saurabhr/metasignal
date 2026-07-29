@@ -41,7 +41,8 @@ class MetaSignal:
         if not MATLAB_AVAILABLE:
             raise RuntimeError(
                 "MATLAB engine is not available. Please install it with "
-                "`pip install metasignal[matlab]` if you have MATLAB locally."
+                "`pip install \"metasignal[matlab] @ git+https://github.com/saurabhr/metasignal.git\"` "
+                "if you have MATLAB locally."
             )
 
         if engine is None:

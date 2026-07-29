@@ -14,7 +14,7 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 | 4 | [Difficulty Dependence](difficulty_dependence.md) | Per-difficulty computation, 3-SD outlier removal, ANOVA |
 | 5 | [Metacognitive Bias](metacognitive_bias.md) | Xue recoding, bias sensitivity testing |
 | 6 | [Split-Half Reliability](split_half_reliability.md) | Odd/even splits, Spearman-Brown correction |
-| 7 | Bayesian Hierarchical Meta-d' | Hierarchical Bayesian estimation via `sdtbayes` (requires `pip install metasignal[sdtbayes]`) |
+| 7 | Bayesian Hierarchical Meta-d' | Hierarchical Bayesian estimation via `sdtbayes` (requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`) |
 
 ## Background
 

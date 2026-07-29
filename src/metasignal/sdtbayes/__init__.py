@@ -3,7 +3,7 @@
 This sub-package fits hierarchical Bayesian models over the SDT measures
 computed by ``metasignal.stdpy``.  It requires an optional install:
 
-    pip install metasignal[sdtbayes]
+    pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"
 
 Two backends are in use, depending on the approach:
 

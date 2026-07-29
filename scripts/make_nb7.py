@@ -40,7 +40,7 @@ and demonstrates all three of `metasignal`'s Bayesian approaches using the
 
 > **Requirements** — Options A and B need the optional Bayesian extras:
 > ```bash
-> pip install metasignal[sdtbayes]
+> pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"
 > ```
 > followed by a one-time runtime setup:
 > ```python

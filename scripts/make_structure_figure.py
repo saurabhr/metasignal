@@ -153,7 +153,7 @@ ax.text(3.2, 1.14, "7 approaches: ordered logistic · two-stage · full HMeta-d 
          "subject-level · beta-AUC · meta-regression · within-subject\n"
          "diagnostics: posterior_summary, plot_trace,\nplot_posterior, plot_forest",
          ha="center", va="center", family="monospace", fontsize=8.6, linespacing=1.7)
-ax.text(3.2, 0.58, "optional install: pip install metasignal[sdtbayes]",
+ax.text(3.2, 0.58, "optional install — see docs/sdtbayes.md for setup",
          ha="center", va="center", fontsize=9.3, color="#5c3170", style="italic")
 
 # itmc panel
