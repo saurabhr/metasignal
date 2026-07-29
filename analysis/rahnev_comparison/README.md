@@ -2,12 +2,9 @@
 
 Comparative analysis of Rahnev *Nat Commun* 2025 figure replication using **this** repo’s MATLAB Results and Python (`metasignal.stdpy`) caches.
 
-**Location:** `/Users/mukeshmakwana/Downloads/metasignal/analysis/rahnev_comparison/`
-
 ## Paper
 
-- `Rahnev_2025_NatureCommunications.pdf` (this folder)
-- Also: `/Users/mukeshmakwana/Downloads/metasignal/Rahnev_paper.pdf`
+- `Rahnev_2025_NatureCommunications.pdf` (this folder — not tracked in git, add your own copy)
 
 ## Start here
 
@@ -26,7 +23,7 @@ Comparative analysis of Rahnev *Nat Commun* 2025 figure replication using **this
 | `scripts/refresh_metauncertainty_caches.py` | Patch meta-uncertainty (col 16) after multi-start fix |
 
 ```bash
-cd /Users/mukeshmakwana/Downloads/metasignal
+cd metasignal  # repo root
 python analysis/rahnev_comparison/scripts/compare_paper_matlab_python.py --repo .
 python analysis/rahnev_comparison/scripts/generate_rahnev_comparison_plots.py --repo . \
   --out analysis/rahnev_comparison/figures/rahnev_style
