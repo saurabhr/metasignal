@@ -10,6 +10,9 @@ Both sides consume the identical `data/shared_trials.csv` — any numeric
 difference below reflects a real implementation discrepancy, not a data
 difference.
 
+A second, independent check reproduces Dayan (2023)'s own hand-worked
+numerical example directly (`check_dayan_table1.py`) — see below.
+
 ## Verdict
 
 **Deterministic core math (`bias_reduction=FALSE`): exact match.** All 5
@@ -64,6 +67,48 @@ Python implementation discrepancy. Excluding that one participant:
 | meta_Ir2 | 0.9969 | 0.0107 | 0.0238 | 11 |
 | RMI | 0.9911 | 0.0252 | 0.0512 | 11 |
 
+## Direct check against Dayan (2023)'s own published example
+
+Dayan (2023) works through a full hand calculation of meta-I in the paper
+text (Table 1, p.397): subject 5, condition 3 of the Shekhar & Rahnev (2021)
+dataset, confidence binarized at a single threshold. He reports the exact
+trial counts (r=0,c=low: 138; r=0,c=high: 5; r=1,c=low: 440; r=1,c=high: 415;
+n=998) and works the entropy calculation by hand to **meta-I = 0.094**
+(matching the same value in his Figure 1 table, column `mI[2]`).
+
+`check_dayan_table1.py` reconstructs those exact trial counts and computes
+`metasignal.itmc.meta_I(backend='simple')` on them:
+
+```
+metasignal.itmc.meta_I (backend='simple'): 0.094320
+Dayan (2023) published value:               0.094
+Match (rounded to 3 d.p.): True
+```
+
+This is a direct reproduction of Dayan's own number — a stronger check than
+the R cross-validation above, since it validates against the theory paper
+itself rather than a third-party implementation of it.
+
+Note: `meta_Ir1`, `meta_Ir1_acc`, and `RMI` were **not** checked against Dayan's
+Figure 1 table (which also reports `mI1'[2]=0.775` for this same row). Those
+normalized measures require simulating the expected meta-I of an idealized
+first-order Bayesian rater at the reported d′ (Dayan's Eq. involving
+α ~ N(d, 4/d′²)), which in turn requires a dataset with real stimulus-category
+variability — the reconstruction above only has `stim=0` throughout (accuracy
+and rating are all that matter for `meta_I` itself), which is not a valid
+input for d′-dependent normalization. Extending this check would need
+reconstructing (or obtaining) the actual Shekhar & Rahnev (2021) per-trial
+data for subject 5, which is a distinct, larger effort from the plain
+`meta_I` hand-check above.
+
+Also worth noting, confirmed by reading the full Dayan (2023) paper text:
+`meta_I`, `meta_Ir1`, and `meta_Ir2` are the exact measures Dayan proposes.
+`meta_Ir1_acc` and `RMI` are **not** discussed anywhere in Dayan (2023) —
+both are additions from Rausch et al. (2025)'s `statConfR` package (confirmed
+independently via the R package's own help documentation and the statConfR
+JOSS paper text, which describes RMI as "a novel measure... also derived
+from information theory," not attributed to Dayan).
+
 ## How to reproduce
 
 ```bash
@@ -71,4 +116,5 @@ python analysis/itmc_comparison/scripts/generate_shared_data.py
 python analysis/itmc_comparison/scripts/run_python_itmc.py
 Rscript analysis/itmc_comparison/scripts/run_r_statconfr.R
 python analysis/itmc_comparison/scripts/compare.py
+python analysis/itmc_comparison/scripts/check_dayan_table1.py
 ```
