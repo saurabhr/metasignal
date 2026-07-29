@@ -40,7 +40,8 @@ plugins:
             show_root_heading: true
             show_root_full_path: false
             show_object_full_path: false
-            docstring_section_style: google
+            docstring_style: google
+            docstring_section_style: table
   - include-markdown
   - mkdocs-jupyter:
       # mkdocs-jupyter sniffs every *.md file with jupytext.read() to check

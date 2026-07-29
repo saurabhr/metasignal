@@ -271,6 +271,13 @@ def _fit_stan(
             stan_data["eps"]        = kwargs.pop("eps", 0.05)
         stan_file = str(_STAN_FILES[parameterization])
 
+    # Stan's default wide random init (unconstrained ~Uniform(-2,2)) can land on
+    # a degenerate ordered-criteria configuration for hierarchical fits with many
+    # subjects, causing an immediate -inf likelihood that crashes every chain
+    # before adaptation even starts. init=0 is a conservative, near-zero starting
+    # point that sidesteps this; callers can still override via inits=....
+    kwargs.setdefault("inits", 0)
+
     model = cmdstanpy.CmdStanModel(stan_file=stan_file)
     fit = model.sample(
         data=stan_data,

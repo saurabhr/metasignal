@@ -57,7 +57,7 @@ uv run pre-commit install
 - New measures added to `stdpy.compute_all_measures` should include a comparison against the
   reference MATLAB implementation where one exists (see
   [matlab/](https://github.com/saurabhr/metasignal/tree/main/matlab) and
-  [Matlab to Python mapping](https://github.com/saurabhr/metasignal/blob/main/docs/matlab_to_python_mapping.md)).
+  [analysis/rahnev_comparison/](https://github.com/saurabhr/metasignal/tree/main/analysis/rahnev_comparison)).
 
 ## Documentation
 

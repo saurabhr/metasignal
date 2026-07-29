@@ -32,26 +32,32 @@ Output:
 ```
 Measure                   Value
 --------------------------------
-meta_d                   1.4769
-AUC2                     0.7412
-gamma                    0.5795
-phi                      0.3493
-deltaConf                0.8941
-M_ratio                  0.9934
-AUC2_ratio               1.0467
-gamma_ratio              1.0558
-phi_ratio                1.1168
-deltaConf_ratio          1.1586
-M_diff                  -0.0098
-AUC2_diff                0.0331
-gamma_diff               0.0306
-phi_diff                 0.0365
-deltaConf_diff           0.1224
-metaNoise                0.0000
+meta_d                   1.6571
+AUC2                     0.8750
+gamma                    0.8571
+phi                      0.5455
+deltaConf                1.5000
+M_ratio                  1.2284
+AUC2_ratio               1.2755
+gamma_ratio              1.7820
+phi_ratio                1.8885
+deltaConf_ratio          2.0248
+M_diff                   0.3082
+AUC2_diff                0.1890
+gamma_diff               0.3761
+phi_diff                 0.2566
+deltaConf_diff           0.7592
+metaNoise                0.1115
 metaUncertainty          0.0100
-dprime                   1.6732
-c                       -0.0719
-mean_conf                2.6000
+dprime                   1.6832
+c                       -0.0000
+mean_conf                2.7000
+logL                   -13.0667
+AIC                     40.1334
+BIC                     43.5278
+AICc                    68.1334
+k                        7.0000
+n                       12.0000
 ```
 
 ### Input format
