@@ -539,7 +539,7 @@ def fig_main_highlight(paper, matlab, python, measures, out: Path, pdf: PdfPages
         ax.set_aspect("equal", adjustable="box")
         ax.set_xlabel("Paper")
         ax.set_ylabel("Replication")
-        ax.set_title(title, fontsize=9.5)
+        ax.set_title(f"$\\mathbf{{{letter}}}$  {title}", loc="left", fontsize=9.5)
         ax.grid(color=GRID_C, lw=0.5)
         ax.text(
             0.04,
@@ -551,7 +551,6 @@ def fig_main_highlight(paper, matlab, python, measures, out: Path, pdf: PdfPages
             family="DejaVu Sans Mono",
             bbox=dict(boxstyle="round,pad=0.2", facecolor="white", edgecolor="#dddddd"),
         )
-        panel_letter(ax, letter)
         if col == 1:
             ax.legend(frameon=False, loc="lower right", fontsize=7)
 
@@ -578,7 +577,7 @@ def fig_main_highlight(paper, matlab, python, measures, out: Path, pdf: PdfPages
         ax.set_aspect("equal", adjustable="box")
         ax.set_xlabel("Paper")
         ax.set_ylabel("Replication")
-        ax.set_title(title, fontsize=9.5)
+        ax.set_title(f"$\\mathbf{{{letter}}}$  {title}", loc="left", fontsize=9.5)
         ax.grid(color=GRID_C, lw=0.5)
         ax.text(
             0.04,
@@ -590,7 +589,6 @@ def fig_main_highlight(paper, matlab, python, measures, out: Path, pdf: PdfPages
             family="DejaVu Sans Mono",
             bbox=dict(boxstyle="round,pad=0.2", facecolor="white", edgecolor="#dddddd"),
         )
-        panel_letter(ax, letter)
 
     # Bottom: compact profile for task (most diagnostic)
     ax = fig.add_subplot(gs[2, :])
@@ -606,10 +604,11 @@ def fig_main_highlight(paper, matlab, python, measures, out: Path, pdf: PdfPages
     ax.set_xticks(x)
     ax.set_xticklabels(measures, rotation=50, ha="right")
     ax.set_ylabel("Cohen's d")
-    ax.set_title("e  Task-performance profile across all 17 measures", loc="left", fontweight="bold")
+    ax.set_title(
+        "$\\mathbf{e}$  Task-performance profile across all 17 measures", loc="left"
+    )
     ax.legend(ncol=3, frameon=False, loc="upper right")
     ax.grid(axis="y", color=GRID_C, lw=0.5)
-    panel_letter(ax, "e")
 
     fig.suptitle(
         "metasignal validation: Rahnev (2025) · MATLAB pipeline · Python package",
