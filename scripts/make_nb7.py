@@ -111,7 +111,7 @@ ax2 = axes[1]
 n_S1 = nR_S1.sum(); n_S2 = nR_S2.sum()
 hr2 = [nR_S2[n_ratings:][k:].sum() / n_S2 for k in range(n_ratings)]
 fr2 = [nR_S1[n_ratings:][k:].sum() / n_S1 for k in range(n_ratings)]
-ax2.plot([0] + fr2 + [1], [0] + hr2 + [1], "o-", color="#4C72B0", lw=2, label="Type-2 ROC")
+ax2.plot([0] + fr2[::-1] + [1], [0] + hr2[::-1] + [1], "o-", color="#4C72B0", lw=2, label="Type-2 ROC")
 ax2.plot([0, 1], [0, 1], "k--", lw=0.8)
 ax2.set_xlabel("Type-2 false-alarm rate"); ax2.set_ylabel("Type-2 hit rate")
 ax2.set_title("Type-2 ROC")
