@@ -6,7 +6,7 @@
 
 ## What is metasignal?
 
-Metacognition — the ability to reflect on one's own cognitive processes — is measured across cognitive neuroscience, psychology, and clinical research using many different methods. **metasignal** provides a unified Python interface to compute all major metacognitive measures from the same trial-level data, making it straightforward to compare measures and replicate the Rahnev (2025) benchmarking study.
+Metacognition — the ability to reflect on one's own cognitive processes — is measured across cognitive neuroscience, psychology, and clinical research using many different methods. **metasignal** provides a unified Python interface to compute all major metacognitive measures from the same trial-level data, making it straightforward to compare measures.
 
 A single call to `compute_all_measures` returns a 26-element array: twenty metacognitive/SDT measures organised into five categories, followed by six meta-d' model-fit diagnostics.
 
