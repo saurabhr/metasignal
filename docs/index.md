@@ -51,6 +51,25 @@ For group-level inference, `metasignal.analysis` provides bootstrap confidence i
 
 See [Installation](installation.md) to set up metasignal and [Usage](usage.md) for worked examples. For Bayesian modelling, see [Bayesian Analysis](sdtbayes.md).
 
+## How to Cite
+
+If you use metasignal in your research, please cite the preprint:
+
+> Ranjan, S., Makwana, M., Sokratous, K., & Odegaard, B. (2026). *metasignal: A Python Package for Comprehensive Metacognitive Analysis and Decision-Making*. arXiv:2607.29093. https://arxiv.org/abs/2607.29093
+
+```bibtex
+@misc{ranjan2026metasignal,
+  title         = {metasignal: A Python Package for Comprehensive Metacognitive Analysis and Decision-Making},
+  author        = {Ranjan, Saurabh and Makwana, Mukesh and Sokratous, Konstantina and Odegaard, Brian},
+  year          = {2026},
+  eprint        = {2607.29093},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2607.29093}
+}
+```
+
+See [CITATION.cff](https://github.com/saurabhr/metasignal/blob/main/CITATION.cff) for the software citation and full author affiliations.
+
 ## Contributing
 
 See [Contributing](contributing.md) for development setup and the PR process, and [Future Development](roadmap.md) for known gaps and planned directions.

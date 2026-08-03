@@ -111,6 +111,25 @@ metasignal compute \
 
 <!-- end docs-include-usage -->
 
+## How to Cite
+
+If you use metasignal in your research, please cite the preprint:
+
+> Ranjan, S., Makwana, M., Sokratous, K., & Odegaard, B. (2026). *metasignal: A Python Package for Comprehensive Metacognitive Analysis and Decision-Making*. arXiv:2607.29093. https://arxiv.org/abs/2607.29093
+
+```bibtex
+@misc{ranjan2026metasignal,
+  title         = {metasignal: A Python Package for Comprehensive Metacognitive Analysis and Decision-Making},
+  author        = {Ranjan, Saurabh and Makwana, Mukesh and Sokratous, Konstantina and Odegaard, Brian},
+  year          = {2026},
+  eprint        = {2607.29093},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2607.29093}
+}
+```
+
+See [CITATION.cff](CITATION.cff) for the software citation and full author affiliations.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, tests, and the PR process, and
