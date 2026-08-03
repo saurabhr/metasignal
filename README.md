@@ -1,3 +1,5 @@
+![metasignal](metasignal-logo.svg)
+
 # metasignal
 
 [![Tests](https://github.com/saurabhr/metasignal/actions/workflows/test.yml/badge.svg)](https://github.com/saurabhr/metasignal/actions/workflows/test.yml)
