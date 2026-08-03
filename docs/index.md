@@ -4,6 +4,8 @@
 
 **metasignal** is a Python library for Signal Detection Theory (SDT) and metacognitive measures that implements the comprehensive assessment framework from [Rahnev (2025)](https://doi.org/10.1038/s41467-025-56117-0) — _A comprehensive assessment of current methods for measuring metacognition_, Nature Communications, 16(1), 701, and a bit more with experimental components for Bayesian and information theoretic measures of metacognition.
 
+![Architecture of metasignal. Trial-level data enter the stable stdpy layer. Analysis and command-line layers provide inference and batch use; Bayesian and information-theoretic components are optional.](_static/structure.png)
+
 ## What is metasignal?
 
 Metacognition — the ability to reflect on one's own cognitive processes — is measured across cognitive neuroscience, psychology, and clinical research using many different methods. **metasignal** provides a unified Python interface to compute all major metacognitive measures from the same trial-level data, making it straightforward to compare measures.

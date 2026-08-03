@@ -15,6 +15,7 @@ Each `# %%` delimiter creates a runnable cell, and `# %% [markdown]` cells conta
 | `05_metacognitive_bias.py` | Tutorial 5 | Xue recoding, bias dependence, plot |
 | `06_split_half_reliability.py` | Tutorial 6 | Split-half r, Spearman-Brown, precision |
 | `07_bayesian_hierarchical.py` | Tutorial 7 | MLE vs Bayesian, HMeta-d, rm dataset |
+| `08_information_theoretic_metacognition.py` | Tutorial 8 | `itmc` meta-I/Ir1/Ir2/RMI, backend comparison, bias correction |
 
 ## How to use
 
@@ -49,6 +50,7 @@ python 00_run_all.py
 ```
 metasignal   # this package
 numpy
+pandas
 scipy
 matplotlib
 ```

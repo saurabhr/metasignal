@@ -77,6 +77,7 @@ nav:
       - 5. Metacognitive Bias: tutorials/05_metacognitive_bias.ipynb
       - 6. Split-Half Reliability: tutorials/06_split_half_reliability.ipynb
       - 7. Bayesian Hierarchical Meta-d': tutorials/07_bayesian_hierarchical.ipynb
+      - 8. Information-Theoretic Metacognition: tutorials/08_information_theoretic_metacognition.ipynb
   - API Reference: api.md
   - SDT Bayes: sdtbayes.md
   - CLI Reference: cli.md

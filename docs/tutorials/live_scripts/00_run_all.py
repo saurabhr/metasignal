@@ -17,6 +17,7 @@ scripts = [
     '05_metacognitive_bias.py',
     '06_split_half_reliability.py',
     '07_bayesian_hierarchical.py',
+    '08_information_theoretic_metacognition.py',
 ]
 
 for script in scripts:

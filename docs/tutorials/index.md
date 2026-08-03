@@ -15,6 +15,7 @@ All code examples use **synthetic data** generated with NumPy, so you can run ev
 | 5 | [Metacognitive Bias](05_metacognitive_bias.ipynb) | Xue recoding, bias sensitivity testing |
 | 6 | [Split-Half Reliability](06_split_half_reliability.ipynb) | Odd/even splits, Spearman-Brown correction |
 | 7 | [Bayesian Hierarchical Meta-d'](07_bayesian_hierarchical.ipynb) | Hierarchical Bayesian estimation via `sdtbayes` (requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`) |
+| 8 | [Information-Theoretic Metacognition](08_information_theoretic_metacognition.ipynb) | `itmc` measures (meta-I, meta-Ir1, meta-Ir2, RMI), `'simple'` vs `'statconfr'` backends, bias correction, `fit_group` |
 
 ## Background
 
