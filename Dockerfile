@@ -20,5 +20,8 @@ RUN uv pip install --system --no-cache .
 RUN useradd --no-create-home --shell /bin/false app
 USER app
 
+# No home dir for this user; point matplotlib's cache somewhere writable
+ENV MPLCONFIGDIR=/tmp/matplotlib
+
 ENTRYPOINT ["metasignal"]
 CMD ["--help"]

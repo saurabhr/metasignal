@@ -19,7 +19,8 @@ side-by-side comparison with [metadpy](https://github.com/embodied-computation-g
 The Bayesian submodule is an optional extra — install it alongside the base package:
 
 ```bash
-pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"
+pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"  # from GitHub
+pip install ".[sdtbayes]"       # from a local clone
 ```
 
 For the cmdstanpy-backed approaches (3, 4, and Approach 10's full path),

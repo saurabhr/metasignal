@@ -63,6 +63,9 @@ pip install ".[matlab]"         # adds the deprecated MATLAB engine wrapper
 pip install ".[sdtbayes,matlab]"  # everything
 ```
 
+New to GitHub? See [Installing with GitHub Desktop](docs/installation.md#installing-with-github-desktop-no-command-line-experience-needed)
+for a point-and-click walkthrough.
+
 <!-- end docs-include-installation -->
 
 ## Usage

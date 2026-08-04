@@ -1,8 +1,13 @@
 # CLI Reference
 
 The `metasignal` command-line tool gives access to the pure-Python backend
-without writing any Python code. The optional `bayes` sub-group requires
-`pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"`.
+without writing any Python code. The optional `bayes` sub-group requires the
+`sdtbayes` extra:
+
+```bash
+pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"  # from GitHub
+pip install ".[sdtbayes]"       # from a local clone
+```
 
 ## Commands
 
