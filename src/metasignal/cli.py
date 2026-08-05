@@ -7,6 +7,7 @@ import click
 import numpy as np
 
 from metasignal.analysis.group import MEASURE_LABELS
+from metasignal.itmc import estimate_meta_I
 from metasignal.stdpy.compute_all import compute_all_measures
 
 
@@ -102,6 +103,43 @@ def compute(
     for label, value in zip(MEASURE_LABELS, result):
         val_str = f"{value:.4f}" if not np.isnan(value) else "NaN"
         click.echo(f"{label:<20} {val_str:>10}")
+
+
+# ── itmc ─────────────────────────────────────────────────────────────────
+
+@cli.command()
+@click.option(
+    "--csv", "csv_path", type=click.Path(exists=True, dir_okay=False), required=True,
+    help="Long-format CSV with one trial per row.",
+)
+@click.option("--participant-col", default="participant", show_default=True,
+              help="Column name for participant IDs.")
+@click.option("--stim-col", default="stim", show_default=True, help="Stimulus column name (0/1).")
+@click.option("--resp-col", default="resp", show_default=True, help="Response column name (0/1).")
+@click.option("--conf-col", default="conf", show_default=True, help="Confidence rating column name.")
+@click.option(
+    "--backend", type=click.Choice(["simple", "statconfr"]), default="simple", show_default=True,
+    help="'simple': fast MI(accuracy; confidence). 'statconfr': exact port of the statConfR R package.",
+)
+@click.option("--bias-correction", is_flag=True, help="Subtract estimated positive sampling bias.")
+@click.option("--seed", default=42, show_default=True, help="Random seed for bias-correction resampling.")
+def itmc(
+    csv_path: str, participant_col: str, stim_col: str, resp_col: str, conf_col: str,
+    backend: str, bias_correction: bool, seed: int,
+) -> None:
+    """Information-theoretic metacognition measures per participant.
+
+    Computes meta-I, meta-Ir1, meta-Ir1_acc, meta-Ir2, and RMI (Dayan, 2023)
+    for each participant in a CSV of trial-level data.
+    """
+    df = _read_csv(csv_path, participant_col, stim_col, resp_col, conf_col)
+    result = estimate_meta_I(
+        df,
+        stimulus_col=stim_col, response_col=resp_col, rating_col=conf_col,
+        participant_col=participant_col,
+        backend=backend, bias_correction=bias_correction, seed=seed,
+    )
+    click.echo(result.to_string(index=False))
 
 
 # ── bayes ────────────────────────────────────────────────────────────────

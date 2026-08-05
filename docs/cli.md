@@ -91,6 +91,34 @@ Column names default to `stim`, `resp`, `conf` and can be overridden with
 
 ---
 
+## `itmc` — information-theoretic metacognition
+
+Computes meta-I, meta-Ir1, meta-Ir1_acc, meta-Ir2, and RMI (Dayan, 2023) for
+each participant in a **long-format CSV** — one trial per row.
+
+```bash
+metasignal itmc --csv trials.csv
+```
+
+Column names default to `participant`, `stim`, `resp`, `conf` and can be
+overridden with `--participant-col`, `--stim-col`, `--resp-col`,
+`--conf-col`. `--backend` selects `simple` (default, fast) or `statconfr`
+(exact port of the statConfR R package); `--bias-correction` subtracts the
+estimated positive sampling bias.
+
+Output — one row per participant:
+
+```
+participant   meta_I  meta_Ir1  meta_Ir1_acc  meta_Ir2     RMI
+         s1   0.1421    0.3384        0.3384    0.2116  0.2841
+         s2   0.1198    0.2872        0.2872    0.1874  0.2460
+```
+
+See [ITMC](api.md#itmc-information-theoretic-metacognition-experimental) for
+the underlying measures and the Python API.
+
+---
+
 ## `bayes` — Bayesian hierarchical meta-d'
 
 Requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"` and a one-time Stan runtime setup

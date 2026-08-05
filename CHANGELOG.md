@@ -20,8 +20,25 @@ The **third number** is for emergencies when we need to start branches for older
   *(default, unchanged)*, `'dict'`, or `'dataframe'`) to get the 26 values
   labeled by measure name instead of by position. The canonical name list is
   exported as `metasignal.stdpy.MEASURE_NAMES`.
+- [Installing with GitHub Desktop](docs/installation.md#installing-with-github-desktop-no-command-line-experience-needed),
+  a point-and-click walkthrough for users without command-line experience.
+- New `metasignal itmc` CLI command: computes meta-I, meta-Ir1, meta-Ir1_acc,
+  meta-Ir2, and RMI per participant from a trial-level CSV, mirroring the
+  `metasignal.itmc.estimate_meta_I` Python API. Supports `--backend`
+  (`simple`/`statconfr`) and `--bias-correction`.
 
 ### Fixed
+
+- `icc()` raised `ValueError` for every call: McGraw & Wong letter-based
+  `icc_type` codes (e.g. `'C-k'`) were formatted into strings like
+  `"ICC(C,k)"` that pingouin 0.5.5 never emits — it labels rows `ICC1`/
+  `ICC2`/`ICC3`/`ICC1k`/`ICC2k`/`ICC3k`. `icc_type` is now mapped to
+  pingouin's actual labels explicitly.
+- Install instructions for the optional `sdtbayes`/`matlab` extras
+  (`pip install metasignal[sdtbayes]`) failed with "No matching
+  distribution found" since metasignal isn't published to PyPI. Docs, CLI
+  help, and runtime error messages now show the working
+  `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"` form.
 
 - `sdt_expect_conf` (SDT-expected confidence distributions) now returns
   proportions matching MATLAB's `SDTexpectConf`, instead of counts rescaled

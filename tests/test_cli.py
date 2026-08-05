@@ -1,5 +1,6 @@
 from importlib import import_module, metadata
 
+import numpy as np
 import pytest
 from click.testing import CliRunner
 
@@ -112,3 +113,89 @@ def test_compute_neither_csv_nor_inline(runner: CliRunner) -> None:
     result = runner.invoke(cli, ["compute", "--n-ratings", "4"])
     assert result.exit_code != 0
     assert "Provide --csv" in result.output
+
+
+def _itmc_csv(tmp_path, n_participants: int = 2):
+    """Write a multi-participant trials CSV via trialSimulation, return its path."""
+    from metasignal.stdpy.simulate import trialSimulation
+
+    rows = []
+    for i in range(n_participants):
+        df = trialSimulation(d=1.5, metad=1.2, nTrials=300, rng=np.random.default_rng(i))
+        rows.append(
+            {
+                "participant": f"s{i}",
+                "stim": df["Stimuli"].astype(int).tolist(),
+                "resp": df["Responses"].astype(int).tolist(),
+                "conf": df["Confidence"].astype(int).tolist(),
+            }
+        )
+    csv_path = tmp_path / "itmc_trials.csv"
+    lines = ["participant,stim,resp,conf"]
+    for r in rows:
+        for stim, resp, conf in zip(r["stim"], r["resp"], r["conf"]):
+            lines.append(f"{r['participant']},{stim},{resp},{conf}")
+    csv_path.write_text("\n".join(lines) + "\n")
+    return csv_path
+
+
+def test_itmc_csv(tmp_path, runner: CliRunner) -> None:
+    """`itmc` reports one row per participant with informative meta_I."""
+    csv_path = _itmc_csv(tmp_path)
+    result = runner.invoke(cli, ["itmc", "--csv", str(csv_path)])
+    assert result.exit_code == 0
+    assert "meta_I" in result.output
+    assert "s0" in result.output
+    assert "s1" in result.output
+
+
+def test_itmc_matches_python_api(tmp_path, runner: CliRunner) -> None:
+    """`itmc` output matches calling `estimate_meta_I` directly."""
+    from metasignal.itmc import estimate_meta_I
+    import pandas as pd
+
+    csv_path = _itmc_csv(tmp_path)
+    expected = estimate_meta_I(
+        pd.read_csv(csv_path),
+        stimulus_col="stim", response_col="resp", rating_col="conf",
+        participant_col="participant",
+    )
+
+    result = runner.invoke(cli, ["itmc", "--csv", str(csv_path)])
+    assert result.exit_code == 0
+    assert result.output == expected.to_string(index=False) + "\n"
+
+
+def test_itmc_custom_column_names(tmp_path, runner: CliRunner) -> None:
+    """`itmc` respects --participant-col/--stim-col/--resp-col/--conf-col."""
+    csv_path = tmp_path / "itmc_custom.csv"
+    csv_path.write_text(_itmc_csv(tmp_path).read_text().replace(
+        "participant,stim,resp,conf", "subj,stimulus,response,confidence"
+    ))
+    result = runner.invoke(
+        cli,
+        [
+            "itmc", "--csv", str(csv_path),
+            "--participant-col", "subj", "--stim-col", "stimulus",
+            "--resp-col", "response", "--conf-col", "confidence",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "meta_I" in result.output
+
+
+def test_itmc_backend_statconfr(tmp_path, runner: CliRunner) -> None:
+    """`itmc --backend statconfr` runs and produces informative output."""
+    csv_path = _itmc_csv(tmp_path, n_participants=1)
+    result = runner.invoke(cli, ["itmc", "--csv", str(csv_path), "--backend", "statconfr"])
+    assert result.exit_code == 0
+    assert "RMI" in result.output
+
+
+def test_itmc_missing_csv_column(tmp_path, runner: CliRunner) -> None:
+    """`itmc` gives a clear usage error when a required column is absent."""
+    csv_path = tmp_path / "bad.csv"
+    csv_path.write_text("participant,stim,resp\ns1,0,0\n")
+    result = runner.invoke(cli, ["itmc", "--csv", str(csv_path)])
+    assert result.exit_code != 0
+    assert "not found in CSV" in result.output
