@@ -80,6 +80,7 @@ nav:
       - 8. Information-Theoretic Metacognition: tutorials/08_information_theoretic_metacognition.ipynb
   - API Reference: api.md
   - SDT Bayes: sdtbayes.md
+  - SDT-R: sdtr.md
   - CLI Reference: cli.md
   - Contributing: contributing.md
   - Future Development: roadmap.md

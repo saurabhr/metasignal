@@ -199,3 +199,54 @@ def test_itmc_missing_csv_column(tmp_path, runner: CliRunner) -> None:
     result = runner.invoke(cli, ["itmc", "--csv", str(csv_path)])
     assert result.exit_code != 0
     assert "not found in CSV" in result.output
+
+
+def _sdtr_csv(tmp_path):
+    """Write the Macho (2020) Ch. 5.1.1 Yes/No golden-example data as trial-level rows."""
+    import numpy as np
+
+    counts = np.array([[1780, 763], [883, 1025]])
+    lines = ["participant,signal,response"]
+    for signal_idx in (0, 1):
+        for cat_idx, n in enumerate(counts[signal_idx], start=1):
+            lines.extend(f"p1,{signal_idx},{cat_idx}" for _ in range(int(n)))
+    csv_path = tmp_path / "sdtr_trials.csv"
+    csv_path.write_text("\n".join(lines) + "\n")
+    return csv_path
+
+
+def test_sdtr_csv_matches_golden_values(tmp_path, runner: CliRunner) -> None:
+    """`sdtr` on the manual's own Yes/No example recovers its published values."""
+    csv_path = _sdtr_csv(tmp_path)
+    result = runner.invoke(cli, ["sdtr", "--csv", str(csv_path), "--restriction", "equalvar"])
+    assert result.exit_code == 0
+    assert "mean_1" in result.output
+    assert "0.617699" in result.output
+    assert "0.524287" in result.output
+
+
+def test_sdtr_custom_column_names(tmp_path, runner: CliRunner) -> None:
+    """`sdtr` respects --participant-col/--signal-col/--response-col."""
+    csv_path = tmp_path / "sdtr_custom.csv"
+    csv_path.write_text(_sdtr_csv(tmp_path).read_text().replace(
+        "participant,signal,response", "subj,stim_class,resp_cat"
+    ))
+    result = runner.invoke(
+        cli,
+        [
+            "sdtr", "--csv", str(csv_path),
+            "--participant-col", "subj", "--signal-col", "stim_class",
+            "--response-col", "resp_cat", "--restriction", "equalvar",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "mean_1" in result.output
+
+
+def test_sdtr_missing_csv_column(tmp_path, runner: CliRunner) -> None:
+    """`sdtr` gives a clear usage error when a required column is absent."""
+    csv_path = tmp_path / "bad.csv"
+    csv_path.write_text("participant,signal\np1,0\n")
+    result = runner.invoke(cli, ["sdtr", "--csv", str(csv_path)])
+    assert result.exit_code != 0
+    assert "not found in CSV" in result.output

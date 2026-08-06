@@ -119,6 +119,36 @@ the underlying measures and the Python API.
 
 ---
 
+## `sdtr` — alternative SDT models (Macho, 2020)
+
+Fits the base Gaussian SDT model — mean/SD per non-reference signal and a
+shared set of decision thresholds — for each participant in a **long-format
+CSV** — one trial per row, with a signal-class column (`0` = reference/noise
+signal) and a response-category column (`1..n_categories`).
+
+```bash
+metasignal sdtr --csv trials.csv --restriction equalvar
+```
+
+Column names default to `participant`, `signal`, `response` and can be
+overridden with `--participant-col`, `--signal-col`, `--response-col`.
+`--restriction` selects `no` (default, free SD per non-reference signal) or
+`equalvar` (all SDs fixed to 1 — use for rating data with more than two
+response categories per signal). `--n-starts` runs multiple optimizer
+starts, keeping the lowest-NLL result.
+
+Output — one row per participant:
+
+```
+participant   mean_1  sd_1    d_a_1    d_e_1    A_z_1  threshold_1        logL         aic         bic  success
+         p1 0.617699   1.0 0.617699 0.617699 0.668864     0.524287 -2870.748505 5745.497010 5758.298779     True
+```
+
+See [SDT-R](sdtr.md) for the model description and the Python API. This is
+Phase 1 of a larger planned model family — see [Roadmap](roadmap.md).
+
+---
+
 ## `bayes` — Bayesian hierarchical meta-d'
 
 Requires `pip install "metasignal[sdtbayes] @ git+https://github.com/saurabhr/metasignal.git"` and a one-time Stan runtime setup

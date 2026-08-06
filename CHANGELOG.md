@@ -26,6 +26,13 @@ The **third number** is for emergencies when we need to start branches for older
   meta-Ir2, and RMI per participant from a trial-level CSV, mirroring the
   `metasignal.itmc.estimate_meta_I` Python API. Supports `--backend`
   (`simple`/`statconfr`) and `--bias-correction`.
+- New `metasignal.sdtr` subpackage (base install, no extra) and `metasignal
+  sdtr` CLI command: Phase 1 of a pure-Python port of the model family from
+  Macho (2020), *SDT-Models in R* — a shared MLE estimation engine
+  (`fit_mle`) plus the base Gaussian SDT model (`fit_sdt`, `fit_group`),
+  validated against the manual's own worked-example numbers. See
+  [docs/sdtr.md](docs/sdtr.md) and the roadmap for the planned model family
+  and phasing.
 
 ### Fixed
 

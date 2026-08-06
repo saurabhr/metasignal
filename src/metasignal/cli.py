@@ -8,6 +8,7 @@ import numpy as np
 
 from metasignal.analysis.group import MEASURE_LABELS
 from metasignal.itmc import estimate_meta_I
+from metasignal.sdtr import fit_group as sdtr_fit_group
 from metasignal.stdpy.compute_all import compute_all_measures
 
 
@@ -138,6 +139,44 @@ def itmc(
         stimulus_col=stim_col, response_col=resp_col, rating_col=conf_col,
         participant_col=participant_col,
         backend=backend, bias_correction=bias_correction, seed=seed,
+    )
+    click.echo(result.to_string(index=False))
+
+
+# ── sdtr ─────────────────────────────────────────────────────────────────
+
+@cli.command()
+@click.option(
+    "--csv", "csv_path", type=click.Path(exists=True, dir_okay=False), required=True,
+    help="Long-format CSV with one trial per row.",
+)
+@click.option("--participant-col", default="participant", show_default=True,
+              help="Column name for participant IDs.")
+@click.option("--signal-col", default="signal", show_default=True,
+              help="Column with the signal-class id (0 = reference/noise signal).")
+@click.option("--response-col", default="response", show_default=True,
+              help="Column with the response category (1..n_categories).")
+@click.option(
+    "--restriction", type=click.Choice(["no", "equalvar"]), default="no", show_default=True,
+    help="'no': free SD per non-reference signal. 'equalvar': all SDs fixed to 1.",
+)
+@click.option("--n-starts", type=int, default=1, show_default=True,
+              help="Number of optimizer starts.")
+@click.option("--seed", default=42, show_default=True, help="Random seed for multi-start jitter.")
+def sdtr(
+    csv_path: str, participant_col: str, signal_col: str, response_col: str,
+    restriction: str, n_starts: int, seed: int,
+) -> None:
+    """Base Gaussian SDT model (Macho, 2020) per participant.
+
+    Fits mean/SD per non-reference signal and a shared set of decision
+    thresholds for each participant in a CSV of trial-level data.
+    """
+    df = _read_csv(csv_path, participant_col, signal_col, response_col)
+    result = sdtr_fit_group(
+        df,
+        signal=signal_col, response=response_col, subject=participant_col,
+        restriction=restriction, n_starts=n_starts, seed=seed,
     )
     click.echo(result.to_string(index=False))
 
