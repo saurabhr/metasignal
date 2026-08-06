@@ -8,7 +8,9 @@
 ## Install
 
 The base install includes `stdpy` (SDT + all 26 measures), `analysis` (bootstrap CIs, permutation
-tests, group summaries), `itmc` (information-theoretic metacognition), and the CLI.
+tests, group summaries), `itmc` (information-theoretic metacognition), `data_library` (bundled
+example datasets — the datasets themselves are only present in a development checkout, see
+[Data Library](data_library.md)), and the CLI.
 
 ### Directly from GitHub, no clone needed
 

@@ -15,6 +15,7 @@ wheel-exclude = [
     "**/sdtbayes/stan/hmeta_uncertainty",
     "**/sdtbayes/stan/hmeta_uncertainty_subject",
     "**/sdtbayes/stan/meta_d_subject",
+    "**/data_library/data/**",
 ]
 
 [project]

@@ -26,6 +26,13 @@ The **third number** is for emergencies when we need to start branches for older
   meta-Ir2, and RMI per participant from a trial-level CSV, mirroring the
   `metasignal.itmc.estimate_meta_I` Python API. Supports `--backend`
   (`simple`/`statconfr`) and `--bias-correction`.
+- New `metasignal.data_library` subpackage: bundles 7 real trial-level
+  confidence/perceptual-decision datasets (Haddara & Rahnev 2020, Locke et
+  al. 2020, Maniscalco et al. 2017, Rouault et al. 2018 Expts 1-2, Shekhar &
+  Rahnev, and metadpy's `rm` example) for one-line loading via
+  `list_datasets()`/`load_dataset(name)`/`describe_dataset(name)`. The data
+  files are a development-checkout convenience — excluded from the built
+  wheel — see [docs/data_library.md](docs/data_library.md).
 
 ### Fixed
 
